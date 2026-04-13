@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DNF壁纸站 · 配置后台</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei","PingFang SC",sans-serif;background:#f5f6fa;color:#333;min-height:100vh}
+
+/* Layout */
+.layout{display:flex;min-height:100vh}
+.sidebar{width:220px;background:#1e2235;color:#b0b8d0;flex-shrink:0;position:fixed;top:0;left:0;bottom:0;overflow-y:auto}
+.sidebar-logo{padding:20px 24px;font-size:15px;font-weight:700;color:#fff;border-bottom:1px solid rgba(255,255,255,0.06);letter-spacing:1px}
+.sidebar-logo small{display:block;font-size:11px;color:#5a6080;font-weight:400;margin-top:2px}
+.sidebar-nav{padding:12px 0}
+.nav-group-title{padding:8px 24px;font-size:11px;color:#4a5070;letter-spacing:2px;text-transform:uppercase}
+.sidebar-link{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 24px;font-size:13px;color:#8090b0;cursor:pointer;
+  transition:all .2s;border-left:3px solid transparent;
+}
+.sidebar-link:hover{background:rgba(255,255,255,0.04);color:#c0c8e0}
+.sidebar-link.active{background:rgba(80,144,255,0.08);color:#7eb6ff;border-left-color:#5090ff}
+.sidebar-link svg{width:16px;height:16px;flex-shrink:0}
+
+.main{margin-left:220px;flex:1;padding:0}
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:#fff;border-bottom:1px solid #e8eaf0;
+  padding:16px 32px;display:flex;align-items:center;justify-content:space-between;
+}
+.topbar-title{font-size:16px;font-weight:600;color:#1a1e30}
+.topbar-actions{display:flex;gap:8px}
+.btn{
+  padding:7px 18px;border-radius:6px;font-size:13px;font-weight:500;
+  cursor:pointer;border:1px solid #dde0e8;background:#fff;color:#555;
+  transition:all .2s;display:inline-flex;align-items:center;gap:6px;
+}
+.btn:hover{border-color:#bbc0d0;color:#333}
+.btn-primary{background:#4070e0;color:#fff;border-color:#4070e0}
+.btn-primary:hover{background:#3560d0}
+.btn-danger{color:#e04040;border-color:#f0c0c0}
+.btn-danger:hover{background:#fef0f0}
+.btn-sm{padding:5px 12px;font-size:12px}
+
+.content{padding:24px 32px}
+
+/* Cards */
+.card{background:#fff;border-radius:10px;border:1px solid #e8eaf0;margin-bottom:20px}
+.card-header{
+  padding:16px 20px;border-bottom:1px solid #f0f1f5;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-title{font-size:14px;font-weight:600;color:#1a1e30}
+.card-body{padding:20px}
+
+/* Table */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 14px;color:#8090b0;font-weight:500;border-bottom:1px solid #f0f1f5;font-size:12px;white-space:nowrap}
+td{padding:10px 14px;border-bottom:1px solid #f8f9fc;vertical-align:middle}
+tr:hover td{background:#fafbfe}
+.td-img{width:80px;height:45px;object-fit:cover;border-radius:4px;background:#f0f1f5}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500}
+.tag-blue{background:#eef3ff;color:#4070e0}
+.tag-green{background:#eefbf4;color:#30a060}
+.tag-orange{background:#fff5ee;color:#d07020}
+.tag-gray{background:#f0f1f5;color:#8090b0}
+.status-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:6px}
+.status-on{background:#30c060}
+.status-off{background:#ccc}
+
+/* Forms */
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:12px;font-weight:500;color:#666;margin-bottom:6px}
+.form-label .req{color:#e04040;margin-left:2px}
+.form-input,.form-select,.form-textarea{
+  width:100%;padding:8px 12px;border:1px solid #dde0e8;border-radius:6px;
+  font-size:13px;color:#333;background:#fff;transition:border-color .2s;
+  font-family:inherit;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:#4070e0}
+.form-textarea{min-height:80px;resize:vertical}
+.form-row{display:flex;gap:12px}
+.form-row>*{flex:1}
+.form-hint{font-size:11px;color:#aaa;margin-top:4px}
+
+/* Modal */
+.admin-modal{
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;
+  background:rgba(0,0,0,0.35);display:none;align-items:center;justify-content:center;
+}
+.admin-modal.show{display:flex}
+.admin-modal-box{
+  background:#fff;border-radius:12px;width:580px;max-height:85vh;
+  overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15);
+}
+.admin-modal-header{
+  padding:18px 24px;border-bottom:1px solid #f0f1f5;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.admin-modal-header h3{font-size:15px;font-weight:600}
+.admin-modal-close{
+  width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#999;font-size:18px;transition:all .2s;border:none;background:none;
+}
+.admin-modal-close:hover{background:#f0f1f5;color:#333}
+.admin-modal-body{padding:20px 24px}
+.admin-modal-footer{padding:16px 24px;border-top:1px solid #f0f1f5;display:flex;justify-content:flex-end;gap:8px}
+
+/* 扩展字段 */
+.ext-fields{margin-top:8px}
+.ext-row{display:flex;gap:8px;margin-bottom:6px;align-items:center}
+.ext-row input{flex:1}
+.ext-row .btn-sm{flex-shrink:0}
+.ext-row select{width:80px;flex-shrink:0;padding:7px 6px;border:1px solid #dde0e8;border-radius:6px;font-size:12px}
+
+/* 分辨率图片组 */
+.res-upload-row{display:flex;gap:8px;margin-bottom:8px;align-items:center;font-size:12px;color:#666;padding:8px 10px;border-radius:6px;border:1px solid #eee;background:#fafbfe}
+.res-upload-row.checked{border-color:#c0d0ff;background:#f4f7ff}
+.res-upload-row span.res-label{min-width:120px;display:flex;align-items:center;gap:6px}
+.res-upload-row input[type="checkbox"]{accent-color:#4070e0}
+.res-upload-row .res-type-tag{font-size:10px;padding:1px 6px;border-radius:3px;background:#eef3ff;color:#4070e0}
+.res-upload-row input[type="text"]{flex:1}
+
+/* 子分类列表 */
+.sub-cat-list{margin-top:8px;padding-left:12px}
+.sub-cat-item{
+  display:flex;align-items:center;gap:8px;padding:4px 0;font-size:12px;color:#666;
+}
+.sub-cat-item input{flex:1;padding:5px 8px;border:1px solid #e0e2ea;border-radius:4px;font-size:12px}
+
+/* Empty state */
+.empty-state{text-align:center;padding:40px 20px;color:#bbb;font-size:13px}
+
+/* 预览链接 */
+.preview-link{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:12px;color:#4070e0;cursor:pointer;
+}
+.preview-link:hover{text-decoration:underline}
+
+/* Toast */
+.toast{
+  position:fixed;top:20px;right:20px;z-index:9999;
+  padding:12px 20px;border-radius:8px;font-size:13px;
+  background:#1e2235;color:#fff;opacity:0;transform:translateY(-10px);
+  transition:all .3s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* Sortable handle */
+.drag-handle{cursor:grab;color:#ccc;font-size:16px;user-select:none}
+.drag-handle:hover{color:#888}
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">DNF壁纸站<small>配置后台</small></div>
+    <nav class="sidebar-nav">
+      <div class="nav-group-title">内容管理</div>
+      <div class="sidebar-link active" data-tab="banner" onclick="switchTab('banner')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="m8 21 4-4 4 4"/></svg>
+        Banner管理
+      </div>
+      <div class="sidebar-link" data-tab="category" onclick="switchTab('category')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+        分类管理
+      </div>
+      <div class="sidebar-link" data-tab="wallpaper" onclick="switchTab('wallpaper')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        壁纸管理
+      </div>
+      <div class="nav-group-title" style="margin-top:12px">系统配置</div>
+      <div class="sidebar-link" data-tab="submit" onclick="switchTab('submit')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
+        投稿配置
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="tabTitle">Banner管理</div>
+      <div class="topbar-actions">
+        <a class="preview-link" href="index.html" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+          预览前台
+        </a>
+        <button class="btn btn-primary" id="addBtn" onclick="handleAdd()">+ 新增</button>
+      </div>
+    </div>
+
+    <div class="content" id="tabContent">
+      <!-- Dynamic -->
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="admin-modal" id="adminModal">
+  <div class="admin-modal-box">
+    <div class="admin-modal-header">
+      <h3 id="modalTitle">新增</h3>
+      <button class="admin-modal-close" onclick="closeAdminModal()">×</button>
+    </div>
+    <div class="admin-modal-body" id="modalBody"></div>
+    <div class="admin-modal-footer">
+      <button class="btn" onclick="closeAdminModal()">取消</button>
+      <button class="btn btn-primary" onclick="handleSave()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== Storage Key =====
+const STORE_KEY = 'dnf_wallpaper_config';
+
+// ===== Default Data =====
+function getDefaultData(){
+  return {
+    banners: [
+      {id:1,img:'https://picsum.photos/1400/520?random=30',title:'雾岚黄昏战',desc:'2025年9月版本主视觉 · 高清壁纸现已上线',tag:'最新版本',link:'',sort:1,status:true},
+      {id:2,img:'https://picsum.photos/1400/520?random=31',title:'创作者之星 · 三月精选',desc:'来自COLG社区的优秀同人作品合集',tag:'精选同人',link:'',sort:2,status:true},
+      {id:3,img:'https://picsum.photos/1400/520?random=32',title:'DNF 18周年庆',desc:'周年庆限定壁纸 · 限时下载',tag:'周年庆典',link:'',sort:3,status:true},
+    ],
+    categories: [
+      {id:1,name:'官方壁纸',type:'normal',sort:1,status:true,children:[
+        {id:11,name:'版本KV',sort:1,status:true},
+        {id:12,name:'人物立绘',sort:2,status:true},
+        {id:13,name:'活动/节日壁纸',sort:3,status:true},
+      ]},
+      {id:2,name:'同人画廊',type:'ugc',sort:2,status:true,children:[]},
+    ],
+    wallpapers: [
+      // ===== 版本KV =====
+      {id:101,title:'雾岚黄昏战',catId:11,thumb:'https://picsum.photos/600/340?random=10',
+       status:true,sort:1,date:'2025/09/11',badge:'NEW',
+       originalImg:'https://picsum.photos/1920/1080?random=110',
+       extFields:[{key:'版本名称',value:'雾岚黄昏战',show:true},{key:'版本日期',value:'2025/09/11',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=110'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=111'},
+         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=112'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=113'},
+       ]},
+      {id:102,title:'暗夜裁决者',catId:11,thumb:'https://picsum.photos/600/340?random=11',
+       status:true,sort:2,date:'2025/06/20',badge:'',
+       originalImg:'https://picsum.photos/1920/1080?random=120',
+       extFields:[{key:'版本名称',value:'暗夜裁决者',show:true},{key:'版本日期',value:'2025/06/20',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=120'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=121'},
+         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=122'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=123'},
+         {label:'1080×2340',type:'竖版',url:'https://picsum.photos/1080/2340?random=124'},
+       ]},
+      {id:103,title:'龙之挽歌',catId:11,thumb:'https://picsum.photos/600/340?random=12',
+       status:true,sort:3,date:'2025/03/15',badge:'',
+       originalImg:'https://picsum.photos/1920/1080?random=130',
+       extFields:[{key:'版本名称',value:'龙之挽歌',show:true},{key:'版本日期',value:'2025/03/15',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=130'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=131'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=132'},
+       ]},
+      {id:104,title:'星辰之海',catId:11,thumb:'https://picsum.photos/600/340?random=17',
+       status:true,sort:4,date:'2024/12/05',badge:'',
+       extFields:[{key:'版本名称',value:'星辰之海',show:true},{key:'版本日期',value:'2024/12/05',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=140'},
+         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=141'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=142'},
+       ]},
+      {id:105,title:'黎明裂谷',catId:11,thumb:'https://picsum.photos/600/340?random=40',
+       status:true,sort:5,date:'2024/06/12',badge:'',
+       extFields:[{key:'版本名称',value:'黎明裂谷',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=150'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=151'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=152'},
+       ]},
+
+      // ===== 人物立绘 =====
+      {id:106,title:'鬼剑士觉醒立绘',catId:12,thumb:'https://picsum.photos/600/340?random=13',
+       status:true,sort:1,date:'2025/08/01',badge:'',
+       originalImg:'https://picsum.photos/800/1600?random=200',
+       extFields:[{key:'角色',value:'鬼剑士',show:true}],
+       resFiles:[
+         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=200'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=201'},
+         {label:'1125×2436',type:'竖版',url:'https://picsum.photos/1125/2436?random=202'},
+       ]},
+      {id:107,title:'女魔法师觉醒立绘',catId:12,thumb:'https://picsum.photos/600/340?random=14',
+       status:true,sort:2,date:'2025/07/10',badge:'',
+       originalImg:'https://picsum.photos/800/1600?random=210',
+       extFields:[{key:'角色',value:'女魔法师',show:true}],
+       resFiles:[
+         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=210'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=211'},
+         {label:'1080×2340',type:'竖版',url:'https://picsum.photos/1080/2340?random=212'},
+       ]},
+      {id:108,title:'神枪手三觉立绘',catId:12,thumb:'https://picsum.photos/600/340?random=18',
+       status:true,sort:3,date:'2024/11/01',badge:'HOT',
+       originalImg:'https://picsum.photos/800/1600?random=220',
+       extFields:[{key:'角色',value:'神枪手',show:true}],
+       resFiles:[
+         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=220'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=221'},
+         {label:'1179×2556',type:'竖版',url:'https://picsum.photos/1179/2556?random=222'},
+       ]},
+      {id:109,title:'格斗家觉醒全家福',catId:12,thumb:'https://picsum.photos/600/340?random=19',
+       status:true,sort:4,date:'2024/09/15',badge:'',
+       extFields:[{key:'角色',value:'格斗家',show:true}],
+       resFiles:[
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=230'},
+         {label:'1125×2436',type:'竖版',url:'https://picsum.photos/1125/2436?random=231'},
+       ]},
+      {id:110,title:'暗夜使者·影舞者',catId:12,thumb:'https://picsum.photos/600/340?random=42',
+       status:true,sort:5,date:'2024/07/22',badge:'',
+       extFields:[{key:'角色',value:'暗夜使者',show:true}],
+       resFiles:[
+         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=240'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=241'},
+       ]},
+      {id:111,title:'守护者·炽天使',catId:12,thumb:'https://picsum.photos/600/340?random=43',
+       status:true,sort:6,date:'2024/05/18',badge:'',
+       extFields:[{key:'角色',value:'守护者',show:true}],
+       resFiles:[
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=250'},
+         {label:'1080×2340',type:'竖版',url:'https://picsum.photos/1080/2340?random=251'},
+       ]},
+
+      // ===== 活动/节日壁纸 =====
+      {id:112,title:'DNF 18周年庆典',catId:13,thumb:'https://picsum.photos/600/340?random=15',
+       status:true,sort:1,date:'2026/06/19',badge:'HOT',
+       originalImg:'https://picsum.photos/1920/1080?random=300',
+       extFields:[{key:'活动',value:'18周年庆',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=300'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=301'},
+         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=302'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=303'},
+         {label:'1125×2436',type:'竖版',url:'https://picsum.photos/1125/2436?random=304'},
+       ]},
+      {id:113,title:'2026新春贺岁 · 烟火福运年',catId:13,thumb:'https://picsum.photos/600/340?random=16',
+       status:true,sort:2,date:'2026/01/20',badge:'NEW',
+       originalImg:'https://picsum.photos/1920/1080?random=310',
+       extFields:[{key:'活动',value:'新春版本',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=310'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=311'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=312'},
+       ]},
+      {id:114,title:'圣诞特辑 · 冬日魔法',catId:13,thumb:'https://picsum.photos/600/340?random=41',
+       status:true,sort:3,date:'2024/12/24',badge:'',
+       extFields:[{key:'活动',value:'圣诞版本',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=320'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=321'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=322'},
+       ]},
+      {id:115,title:'七夕限定 · 星河之约',catId:13,thumb:'https://picsum.photos/600/340?random=44',
+       status:true,sort:4,date:'2025/08/10',badge:'',
+       extFields:[{key:'活动',value:'七夕活动',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=330'},
+         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=331'},
+       ]},
+
+      // ===== 同人画廊 =====
+      {id:116,title:'赛利亚的日常',catId:2,thumb:'https://picsum.photos/600/340?random=20',
+       status:true,sort:1,date:'2026/03/01',badge:'精选',
+       authorAvatar:'https://i.pravatar.cc/80?img=1',
+       originalImg:'https://picsum.photos/1920/1080?random=400',
+       extFields:[{key:'创作者',value:'画师小A',show:true},{key:'来源',value:'COLG社区',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=400'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=401'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=402'},
+       ]},
+      {id:117,title:'阿拉德冒险记',catId:2,thumb:'https://picsum.photos/600/340?random=21',
+       status:true,sort:2,date:'2026/02/15',badge:'',
+       authorAvatar:'https://i.pravatar.cc/80?img=2',
+       extFields:[{key:'创作者',value:'colg_大触',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=410'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=411'},
+       ]},
+      {id:118,title:'暗夜使者之影',catId:2,thumb:'https://picsum.photos/600/340?random=22',
+       status:true,sort:3,date:'2026/01/28',badge:'',
+       authorAvatar:'https://i.pravatar.cc/80?img=3',
+       originalImg:'https://picsum.photos/1920/1080?random=420',
+       extFields:[{key:'创作者',value:'夜光绘',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=420'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=421'},
+         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=422'},
+       ]},
+      {id:119,title:'风暴之息',catId:2,thumb:'https://picsum.photos/600/340?random=23',
+       status:true,sort:4,date:'2025/12/20',badge:'精选',
+       authorAvatar:'https://i.pravatar.cc/80?img=4',
+       extFields:[{key:'创作者',value:'笔墨江湖',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=430'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=431'},
+       ]},
+      {id:120,title:'决斗场之王',catId:2,thumb:'https://picsum.photos/600/340?random=24',
+       status:true,sort:5,date:'2025/11/10',badge:'',
+       authorAvatar:'https://i.pravatar.cc/80?img=5',
+       extFields:[{key:'创作者',value:'像素匠人',show:true}],
+       resFiles:[
+         {label:'1920×1200',type:'横版',url:'https://picsum.photos/1920/1200?random=440'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=441'},
+         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=442'},
+       ]},
+      {id:121,title:'赫伊斯的黄昏',catId:2,thumb:'https://picsum.photos/600/340?random=25',
+       status:true,sort:6,date:'2025/10/05',badge:'',
+       authorAvatar:'https://i.pravatar.cc/80?img=6',
+       originalImg:'https://picsum.photos/1920/1080?random=450',
+       extFields:[{key:'创作者',value:'幻想画廊',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=450'},
+         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=451'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=452'},
+       ]},
+      {id:122,title:'天界机械狂潮',catId:2,thumb:'https://picsum.photos/600/340?random=26',
+       status:true,sort:7,date:'2025/09/18',badge:'NEW',
+       authorAvatar:'https://i.pravatar.cc/80?img=7',
+       extFields:[{key:'创作者',value:'钢铁画师',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=460'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=461'},
+       ]},
+      {id:123,title:'魔法少女的茶会',catId:2,thumb:'https://picsum.photos/600/340?random=27',
+       status:true,sort:8,date:'2025/08/25',badge:'精选',
+       authorAvatar:'https://i.pravatar.cc/80?img=8',
+       originalImg:'https://picsum.photos/1920/1080?random=470',
+       extFields:[{key:'创作者',value:'糖果工坊',show:true},{key:'来源',value:'LOFTER',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=470'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=471'},
+         {label:'1125×2436',type:'竖版',url:'https://picsum.photos/1125/2436?random=472'},
+       ]},
+    ],
+    submitConfig: {
+      catId:2,
+      email:'dnf-fanart@example.com',
+      content:'欢迎DNF创作者投稿原创同人作品，优秀作品将获得官方长期展示！\n\n【投稿方式】\n请将作品发送至上方邮箱\n\n【邮件标题格式】\n【DNF投稿】作品名-作者名\n\n【作品要求】\n1. 作品须为原创DNF相关同人创作\n2. 图片格式：PNG / JPG\n3. 分辨率：≥ 1920×1080\n4. 请在邮件正文中附上作者昵称和作品简介\n\n【授权说明】\n投稿即视为授权官网壁纸站展示使用\n审核通过后将在同人画廊展示',
+      status:true,
+    }
+  };
+}
+
+// ===== Load/Save =====
+let DATA;
+function load(){
+  try{ DATA = JSON.parse(localStorage.getItem(STORE_KEY)) || getDefaultData(); }
+  catch(e){ DATA = getDefaultData(); }
+}
+function save(){
+  localStorage.setItem(STORE_KEY, JSON.stringify(DATA));
+}
+function resetAll(){
+  if(!confirm('确定重置所有配置为默认数据？')) return;
+  DATA = getDefaultData();
+  save();
+  renderCurrentTab();
+  toast('已重置为默认数据');
+}
+
+// ===== Toast =====
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+// ===== Tab Switch =====
+let currentTab = 'banner';
+let editingItem = null;
+
+function switchTab(tab){
+  currentTab = tab;
+  document.querySelectorAll('.sidebar-link').forEach(l=>l.classList.toggle('active',l.dataset.tab===tab));
+  const titles = {banner:'Banner管理',category:'分类管理',wallpaper:'壁纸管理',submit:'投稿配置'};
+  document.getElementById('tabTitle').textContent = titles[tab];
+  document.getElementById('addBtn').style.display = (tab==='submit')?'none':'';
+  renderCurrentTab();
+}
+
+function renderCurrentTab(){
+  const c = document.getElementById('tabContent');
+  switch(currentTab){
+    case 'banner': c.innerHTML = renderBannerTab(); break;
+    case 'category': c.innerHTML = renderCategoryTab(); break;
+    case 'wallpaper': c.innerHTML = renderWallpaperTab(); break;
+    case 'submit': c.innerHTML = renderSubmitTab(); break;
+  }
+}
+
+// ===== ID Generator =====
+function nextId(arr){ return arr.length ? Math.max(...arr.map(a=>a.id))+1 : 1; }
+
+// ===== Helpers =====
+function getCatPath(catId){
+  for(const c of DATA.categories){
+    if(c.id===catId) return c.name;
+    for(const sub of (c.children||[])){
+      if(sub.id===catId) return c.name+' / '+sub.name;
+    }
+  }
+  return '-';
+}
+function getAllCatOptions(){
+  let opts=[];
+  for(const c of DATA.categories){
+    if((c.children||[]).length>0){
+      for(const sub of c.children){
+        opts.push({id:sub.id, label:c.name+' / '+sub.name});
+      }
+    }else{
+      opts.push({id:c.id, label:c.name});
+    }
+  }
+  return opts;
+}
+
+// =============================
+// Banner Tab
+// =============================
+function renderBannerTab(){
+  const rows = DATA.banners.sort((a,b)=>a.sort-b.sort).map(b=>`
+    <tr>
+      <td><span class="drag-handle">⠿</span></td>
+      <td><img class="td-img" src="${b.img}" onerror="this.style.background='#e0e2ea'"></td>
+      <td><span class="tag tag-blue">${b.tag||'-'}</span></td>
+      <td style="font-size:12px;color:#999">${b.link||'无'}</td>
+      <td><span class="status-dot ${b.status?'status-on':'status-off'}"></span>${b.status?'上线':'下线'}</td>
+      <td>
+        <button class="btn btn-sm" onclick="editBanner(${b.id})">编辑</button>
+        <button class="btn btn-sm btn-danger" onclick="delBanner(${b.id})">删除</button>
+      </td>
+    </tr>
+  `).join('');
+  return `<div class="card"><div class="card-header"><span class="card-title">Banner列表（${DATA.banners.length}）</span></div>
+    <div class="table-wrap"><table><thead><tr><th width="30"></th><th>图片</th><th>标签(内部)</th><th>跳转链接</th><th>状态</th><th width="140">操作</th></tr></thead>
+    <tbody>${rows||'<tr><td colspan="6"><div class="empty-state">暂无Banner，点击右上角新增</div></td></tr>'}</tbody></table></div></div>`;
+}
+function editBanner(id){ editingItem=DATA.banners.find(b=>b.id===id); openBannerModal(); }
+function delBanner(id){ if(!confirm('确定删除？'))return; DATA.banners=DATA.banners.filter(b=>b.id!==id); save(); renderCurrentTab(); toast('已删除'); }
+
+function openBannerModal(){
+  const b = editingItem || {img:'',tag:'',link:'',sort:DATA.banners.length+1,status:true};
+  document.getElementById('modalTitle').textContent = editingItem?'编辑Banner':'新增Banner';
+  document.getElementById('modalBody').innerHTML = `
+    <div class="form-group"><label class="form-label">图片URL<span class="req">*</span></label><input class="form-input" id="f_img" value="${b.img}" placeholder="Banner图片地址（文字内容请直接P在图上）"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">标签（内部管理用，不对外展示）</label><input class="form-input" id="f_tag" value="${b.tag||''}" placeholder="如：版本KV、同人精选、周年庆"></div>
+      <div class="form-group"><label class="form-label">跳转链接</label><input class="form-input" id="f_link" value="${b.link||''}" placeholder="可选，点击Banner跳转的地址"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">排序<span class="req">*</span></label><input class="form-input" id="f_sort" type="number" value="${b.sort}"></div>
+      <div class="form-group"><label class="form-label">状态<span class="req">*</span></label>
+        <select class="form-select" id="f_status"><option value="true" ${b.status?'selected':''}>上线</option><option value="false" ${!b.status?'selected':''}>下线</option></select>
+      </div>
+    </div>`;
+  document.getElementById('adminModal').classList.add('show');
+}
+
+// =============================
+// Category Tab
+// =============================
+function renderCategoryTab(){
+  const rows = DATA.categories.sort((a,b)=>a.sort-b.sort).map(c=>{
+    const subList = (c.children||[]).map(s=>
+      `<span class="tag tag-gray" style="margin:2px">${s.name}</span>`
+    ).join('') || '<span style="font-size:11px;color:#bbb">无二级分类</span>';
+    return `<tr>
+      <td><span class="drag-handle">⠿</span></td>
+      <td><strong>${c.name}</strong></td>
+      <td><span class="tag ${c.type==='ugc'?'tag-orange':'tag-blue'}">${c.type==='ugc'?'UGC投稿类':'普通'}</span></td>
+      <td>${subList}</td>
+      <td><span class="status-dot ${c.status?'status-on':'status-off'}"></span>${c.status?'显示':'隐藏'}</td>
+      <td>
+        <button class="btn btn-sm" onclick="editCat(${c.id})">编辑</button>
+        <button class="btn btn-sm btn-danger" onclick="delCat(${c.id})">删除</button>
+      </td>
+    </tr>`;
+  }).join('');
+  return `<div class="card"><div class="card-header"><span class="card-title">分类列表（${DATA.categories.length}）</span></div>
+    <div class="table-wrap"><table><thead><tr><th width="30"></th><th>一级分类</th><th>类型</th><th>二级分类</th><th>状态</th><th width="140">操作</th></tr></thead>
+    <tbody>${rows||'<tr><td colspan="6"><div class="empty-state">暂无分类</div></td></tr>'}</tbody></table></div></div>`;
+}
+function editCat(id){ editingItem=DATA.categories.find(c=>c.id===id); openCatModal(); }
+function delCat(id){ if(!confirm('删除分类会导致关联壁纸失去分类，确定？'))return; DATA.categories=DATA.categories.filter(c=>c.id!==id); save(); renderCurrentTab(); toast('已删除'); }
+
+function openCatModal(){
+  const c = editingItem || {name:'',type:'normal',sort:DATA.categories.length+1,status:true,children:[]};
+  const subs = (c.children||[]).map((s,i)=>
+    `<div class="sub-cat-item" data-idx="${i}">
+      <input value="${s.name}" class="sub-name" placeholder="二级分类名称">
+      <button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">删除</button>
+    </div>`
+  ).join('');
+  document.getElementById('modalTitle').textContent = editingItem?'编辑分类':'新增一级分类';
+  document.getElementById('modalBody').innerHTML = `
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">分类名称<span class="req">*</span></label><input class="form-input" id="f_name" value="${c.name}"></div>
+      <div class="form-group"><label class="form-label">类型<span class="req">*</span></label>
+        <select class="form-select" id="f_type">
+          <option value="normal" ${c.type==='normal'?'selected':''}>普通</option>
+          <option value="ugc" ${c.type==='ugc'?'selected':''}>UGC投稿类</option>
+        </select>
+        <div class="form-hint">UGC类型的分类会显示投稿入口</div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">排序<span class="req">*</span></label><input class="form-input" id="f_sort" type="number" value="${c.sort}"></div>
+      <div class="form-group"><label class="form-label">状态<span class="req">*</span></label>
+        <select class="form-select" id="f_status"><option value="true" ${c.status?'selected':''}>显示</option><option value="false" ${!c.status?'selected':''}>隐藏</option></select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">二级分类 <button class="btn btn-sm" onclick="addSubCat()" style="margin-left:8px">+ 添加</button></label>
+      <div class="form-hint">不配置二级分类时，壁纸直接挂在一级分类下</div>
+      <div class="sub-cat-list" id="subCatList">${subs}</div>
+    </div>`;
+  document.getElementById('adminModal').classList.add('show');
+}
+function addSubCat(){
+  const list = document.getElementById('subCatList');
+  const div = document.createElement('div');
+  div.className='sub-cat-item';
+  div.innerHTML=`<input value="" class="sub-name" placeholder="二级分类名称"><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">删除</button>`;
+  list.appendChild(div);
+}
+
+// =============================
+// Wallpaper Tab
+// =============================
+let wpFilterCatId = 0; // 0=全部
+
+function renderWallpaperTab(){
+  const catFilterOpts = `<option value="0" ${wpFilterCatId===0?'selected':''}>全部分类</option>` + getAllCatOptions().map(o=>`<option value="${o.id}" ${wpFilterCatId===o.id?'selected':''}>${o.label}</option>`).join('');
+  
+  const filtered = DATA.wallpapers
+    .filter(w=> wpFilterCatId===0 || w.catId===wpFilterCatId)
+    .sort((a,b)=>a.sort-b.sort);
+  
+  const rows = filtered.map(w=>{
+    const extStr = (w.extFields||[]).filter(e=>e.show).map(e=>`${e.key}: ${e.value}`).join(' · ') || '-';
+    return `<tr>
+      <td><img class="td-img" src="${w.thumb}" onerror="this.style.background='#e0e2ea'"></td>
+      <td><strong>${w.title}</strong></td>
+      <td>${getCatPath(w.catId)}</td>
+      <td style="font-size:11px;color:#888;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${extStr}</td>
+      <td>${w.badge?`<span class="tag tag-blue">${w.badge}</span>`:'-'}</td>
+      <td><span class="status-dot ${w.status?'status-on':'status-off'}"></span>${w.status?'上线':'下线'}</td>
+      <td>
+        <button class="btn btn-sm" onclick="editWP(${w.id})">编辑</button>
+        <button class="btn btn-sm btn-danger" onclick="delWP(${w.id})">删除</button>
+      </td>
+    </tr>`;
+  }).join('');
+  return `<div class="card"><div class="card-header">
+    <span class="card-title">壁纸列表（${filtered.length} / ${DATA.wallpapers.length}）</span>
+    <select class="form-select" style="width:200px" onchange="wpFilterCatId=parseInt(this.value);renderCurrentTab()">${catFilterOpts}</select>
+  </div>
+    <div class="table-wrap"><table><thead><tr><th>缩略图</th><th>标题</th><th>所属分类</th><th>扩展信息</th><th>角标</th><th>状态</th><th width="140">操作</th></tr></thead>
+    <tbody>${rows||'<tr><td colspan="7"><div class="empty-state">暂无壁纸</div></td></tr>'}</tbody></table></div></div>`;
+}
+function editWP(id){ editingItem=DATA.wallpapers.find(w=>w.id===id); openWPModal(); }
+function delWP(id){ if(!confirm('确定删除？'))return; DATA.wallpapers=DATA.wallpapers.filter(w=>w.id!==id); save(); renderCurrentTab(); toast('已删除'); }
+
+function openWPModal(){
+  const w = editingItem || {title:'',catId:'',thumb:'',status:true,sort:DATA.wallpapers.length+1,date:'',badge:'',extFields:[],resFiles:[],originalImg:'',authorAvatar:''};
+  const catOpts = getAllCatOptions().map(o=>`<option value="${o.id}" ${w.catId===o.id?'selected':''}>${o.label}</option>`).join('');
+  const extRows = (w.extFields||[]).map((e,i)=>`
+    <div class="ext-row">
+      <input class="form-input ext-key" value="${e.key}" placeholder="字段名">
+      <input class="form-input ext-val" value="${e.value}" placeholder="字段值">
+      <select class="ext-show"><option value="true" ${e.show?'selected':''}>显示</option><option value="false" ${!e.show?'selected':''}>隐藏</option></select>
+      <button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">×</button>
+    </div>
+  `).join('');
+  document.getElementById('modalTitle').textContent = editingItem?'编辑壁纸':'新增壁纸';
+  document.getElementById('modalBody').innerHTML = `
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">壁纸标题<span class="req">*</span></label><input class="form-input" id="f_title" value="${w.title}"></div>
+      <div class="form-group"><label class="form-label">所属分类<span class="req">*</span></label><select class="form-select" id="f_catId">${catOpts}</select></div>
+    </div>
+    <div class="form-group"><label class="form-label">缩略图URL<span class="req">*</span></label><input class="form-input" id="f_thumb" value="${w.thumb}" placeholder="列表页展示用的图片地址"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">原图URL（高清大图）</label><input class="form-input" id="f_originalImg" value="${w.originalImg||''}" placeholder="预览弹窗用，留空则使用缩略图放大版"></div>
+      <div class="form-group"><label class="form-label">作者头像</label><input class="form-input" id="f_authorAvatar" value="${w.authorAvatar||''}" placeholder="同人画廊专用，作者圆形头像URL"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">发布时间<span class="req">*</span></label><input class="form-input" id="f_date" value="${w.date}" placeholder="如 2025/09/11"></div>
+      <div class="form-group"><label class="form-label">角标文字</label><input class="form-input" id="f_badge" value="${w.badge}" placeholder="可选，如 NEW、HOT、精选"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">排序<span class="req">*</span></label><input class="form-input" id="f_sort" type="number" value="${w.sort}"></div>
+      <div class="form-group"><label class="form-label">状态<span class="req">*</span></label>
+        <select class="form-select" id="f_status"><option value="true" ${w.status?'selected':''}>上线</option><option value="false" ${!w.status?'selected':''}>下线</option></select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">扩展信息字段 <button class="btn btn-sm" onclick="addExtField()" style="margin-left:8px">+ 添加字段</button></label>
+      <div class="form-hint">自由添加任意字段（如版本名称、创作者、来源等），勾选"显示"的字段会在前端卡片展示</div>
+      <div class="ext-fields" id="extFieldList">${extRows}</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">多分辨率图片 <button class="btn btn-sm" onclick="addResRow()" style="margin-left:8px">+ 添加分辨率</button></label>
+      <div class="form-hint">按需添加该壁纸支持的分辨率及对应图片URL。可点击预设快捷添加常用尺寸。</div>
+      <div style="margin:8px 0 10px;display:flex;flex-wrap:wrap;gap:4px" id="resPresets"></div>
+      <div id="resUploadList" style="margin-top:4px">${(w.resFiles||[]).map(f=>`
+        <div class="res-upload-row checked">
+          <input type="text" class="form-input res-label-input" value="${f.label||''}" placeholder="分辨率 如1920×1080" style="width:140px;flex:none">
+          <select class="form-select res-type-select" style="width:80px;flex:none"><option value="横版" ${f.type==='横版'?'selected':''}>横版</option><option value="竖版" ${f.type==='竖版'?'selected':''}>竖版</option></select>
+          <input type="text" class="form-input res-url" value="${f.url||''}" placeholder="图片URL" style="flex:1">
+          <button class="btn btn-sm btn-danger" onclick="this.parentElement.remove();refreshPresets()">×</button>
+        </div>`).join('')}</div>
+    </div>`;
+
+  setTimeout(()=>refreshPresets(), 0);
+  document.getElementById('adminModal').classList.add('show');
+}
+function addExtField(){
+  const list = document.getElementById('extFieldList');
+  const div = document.createElement('div');
+  div.className='ext-row';
+  div.innerHTML=`<input class="form-input ext-key" value="" placeholder="字段名"><input class="form-input ext-val" value="" placeholder="字段值"><select class="ext-show"><option value="true" selected>显示</option><option value="false">隐藏</option></select><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">×</button>`;
+  list.appendChild(div);
+}
+
+// ===== 分辨率预设 & 行管理 =====
+const RES_PRESETS = [
+  {label:'1920×1080',type:'横版'},{label:'1920×1200',type:'横版'},
+  {label:'2560×1440',type:'横版'},{label:'3840×2160',type:'横版'},
+  {label:'750×1334',type:'竖版'},{label:'1080×1920',type:'竖版'},
+  {label:'1080×2160',type:'竖版'},{label:'1125×2436',type:'竖版'},
+];
+
+function refreshPresets(){
+  const box = document.getElementById('resPresets');
+  if(!box) return;
+  const usedLabels = [...document.querySelectorAll('#resUploadList .res-label-input')].map(el=>el.value.trim());
+  box.innerHTML = RES_PRESETS.filter(p=>!usedLabels.includes(p.label)).map(p=>
+    `<button class="btn btn-sm" style="font-size:11px;padding:3px 10px" onclick="addResPreset('${p.label}','${p.type}')">${p.label} (${p.type})</button>`
+  ).join('');
+}
+
+function addResPreset(label, type){
+  addResRow(label, type);
+  refreshPresets();
+}
+
+function addResRow(label, type){
+  label = label||''; type = type||'横版';
+  const list = document.getElementById('resUploadList');
+  const div = document.createElement('div');
+  div.className='res-upload-row checked';
+  div.innerHTML=`
+    <input type="text" class="form-input res-label-input" value="${label}" placeholder="分辨率 如1920×1080" style="width:140px;flex:none">
+    <select class="form-select res-type-select" style="width:80px;flex:none"><option value="横版" ${type==='横版'?'selected':''}>横版</option><option value="竖版" ${type==='竖版'?'selected':''}>竖版</option></select>
+    <input type="text" class="form-input res-url" value="" placeholder="图片URL" style="flex:1">
+    <button class="btn btn-sm btn-danger" onclick="this.parentElement.remove();refreshPresets()">×</button>`;
+  list.appendChild(div);
+}
+
+// =============================
+// Submit Config Tab
+// =============================
+function renderSubmitTab(){
+  const s = DATA.submitConfig;
+  const catOpts = DATA.categories.filter(c=>c.type==='ugc').map(c=>`<option value="${c.id}" ${s.catId===c.id?'selected':''}>${c.name}</option>`).join('');
+  return `<div class="card"><div class="card-header"><span class="card-title">投稿配置</span></div><div class="card-body">
+    <div class="form-group"><label class="form-label">关联分类（UGC类型）</label>
+      <select class="form-select" id="sub_catId">${catOpts||'<option value="">请先创建UGC类型的分类</option>'}</select>
+      <div class="form-hint">选择哪个一级分类下显示投稿入口</div>
+    </div>
+    <div class="form-group"><label class="form-label">投稿邮箱</label><input class="form-input" id="sub_email" value="${s.email}"></div>
+    <div class="form-group"><label class="form-label">投稿说明</label>
+      <div class="form-hint">完整的投稿规则说明，包含格式要求、分辨率要求、邮件标题格式等，前端弹窗直接展示此内容</div>
+      <textarea class="form-textarea" id="sub_content" style="min-height:200px">${s.content||''}</textarea>
+    </div>
+    <div class="form-group"><label class="form-label">状态</label>
+      <select class="form-select" id="sub_status"><option value="true" ${s.status?'selected':''}>启用</option><option value="false" ${!s.status?'selected':''}>禁用</option></select>
+    </div>
+    <div style="text-align:right;margin-top:12px"><button class="btn btn-primary" onclick="saveSubmitConfig()">保存配置</button></div>
+  </div></div>`;
+}
+function saveSubmitConfig(){
+  DATA.submitConfig = {
+    catId: parseInt(document.getElementById('sub_catId').value)||0,
+    email: document.getElementById('sub_email').value,
+    content: document.getElementById('sub_content').value,
+    status: document.getElementById('sub_status').value==='true',
+  };
+  save(); toast('投稿配置已保存');
+}
+
+// =============================
+// Modal Save Handler
+// =============================
+function handleAdd(){
+  editingItem = null;
+  switch(currentTab){
+    case 'banner': openBannerModal(); break;
+    case 'category': openCatModal(); break;
+    case 'wallpaper': openWPModal(); break;
+  }
+}
+
+function handleSave(){
+  switch(currentTab){
+    case 'banner': saveBanner(); break;
+    case 'category': saveCat(); break;
+    case 'wallpaper': saveWP(); break;
+  }
+}
+
+function saveBanner(){
+  const obj = {
+    id: editingItem ? editingItem.id : nextId(DATA.banners),
+    img: document.getElementById('f_img').value,
+    tag: document.getElementById('f_tag').value,
+    link: document.getElementById('f_link').value,
+    sort: parseInt(document.getElementById('f_sort').value)||1,
+    status: document.getElementById('f_status').value==='true',
+  };
+  if(!obj.img){toast('请填写图片URL');return}
+  if(editingItem){ Object.assign(editingItem, obj); }
+  else{ DATA.banners.push(obj); }
+  save(); closeAdminModal(); renderCurrentTab(); toast('已保存');
+}
+
+function saveCat(){
+  const subItems = [...document.querySelectorAll('#subCatList .sub-cat-item')].map((el,i)=>{
+    const name = el.querySelector('.sub-name').value.trim();
+    return name ? {id: (editingItem && editingItem.children && editingItem.children[i]) ? editingItem.children[i].id : Date.now()+i, name, sort:i+1, status:true} : null;
+  }).filter(Boolean);
+  const obj = {
+    id: editingItem ? editingItem.id : nextId(DATA.categories),
+    name: document.getElementById('f_name').value,
+    type: document.getElementById('f_type').value,
+    sort: parseInt(document.getElementById('f_sort').value)||1,
+    status: document.getElementById('f_status').value==='true',
+    children: subItems,
+  };
+  if(!obj.name){toast('请填写分类名称');return}
+  if(editingItem){ Object.assign(editingItem, obj); }
+  else{ DATA.categories.push(obj); }
+  save(); closeAdminModal(); renderCurrentTab(); toast('已保存');
+}
+
+function saveWP(){
+  const extFields = [...document.querySelectorAll('#extFieldList .ext-row')].map(el=>({
+    key: el.querySelector('.ext-key').value.trim(),
+    value: el.querySelector('.ext-val').value.trim(),
+    show: el.querySelector('.ext-show').value==='true',
+  })).filter(e=>e.key);
+  const obj = {
+    id: editingItem ? editingItem.id : nextId(DATA.wallpapers),
+    title: document.getElementById('f_title').value,
+    catId: parseInt(document.getElementById('f_catId').value),
+    thumb: document.getElementById('f_thumb').value,
+    originalImg: document.getElementById('f_originalImg').value,
+    authorAvatar: document.getElementById('f_authorAvatar').value,
+    date: document.getElementById('f_date').value,
+    badge: document.getElementById('f_badge').value,
+    sort: parseInt(document.getElementById('f_sort').value)||1,
+    status: document.getElementById('f_status').value==='true',
+    extFields,
+    resFiles: [...document.querySelectorAll('#resUploadList .res-upload-row')].map(row=>{
+      const label = row.querySelector('.res-label-input').value.trim();
+      const type = row.querySelector('.res-type-select').value;
+      const url = row.querySelector('.res-url').value.trim();
+      return label ? {label, type, url} : null;
+    }).filter(Boolean),
+  };
+  if(!obj.title){toast('请填写标题');return}
+  if(editingItem){ Object.assign(editingItem, obj); }
+  else{ DATA.wallpapers.push(obj); }
+  save(); closeAdminModal(); renderCurrentTab(); toast('已保存');
+}
+
+function closeAdminModal(){
+  document.getElementById('adminModal').classList.remove('show');
+  editingItem = null;
+}
+
+// Close modal on mask click
+document.getElementById('adminModal').addEventListener('click',e=>{
+  if(e.target.id==='adminModal') closeAdminModal();
+});
+
+// ===== PRD Preview Bridge (postMessage) =====
+window.addEventListener('message', e => {
+  if(e.data.action === 'switchTab' && e.data.tab){
+    switchTab(e.data.tab);
+  }
+  if(e.data.action === 'openEdit'){
+    // Open the first wallpaper edit modal
+    const tab = currentTab;
+    switchTab('wallpaper');
+    setTimeout(() => {
+      const wp = DATA.wallpapers.find(w => w.status);
+      if(wp){editWP(wp);currentTab = tab;}
+    }, 400);
+  }
+});
+
+// ===== Init =====
+load();
+renderCurrentTab();
+</script>
+</body>
+</html>

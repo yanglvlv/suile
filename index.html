@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="《地下城与勇士:创新世纪》是全球2D横版格斗网络游戏（MMOACT）的先行者。无限连击的动作特性、极富多样化的职业分支、精准的操作与多样化副本体验，让玩家全方位体验打击爽快感。" />
+<meta name="keywords" content="地下城与勇士:创新世纪,DNF,Dungeon&Fighter,DF,D&F,地下城,勇士,名将,三国志,横版,2D,腾讯游戏,免费,ACT,转职,觉醒,冒险家,鬼剑士,格斗,格斗家,神枪手,枪手,圣职,红眼,白手,鬼气,阿修罗,气功师,大枪,漫游,阿拉德" />
+<title>地下城与勇士壁纸站-地下城与勇士:创新世纪-DNF-官方网站-腾讯游戏</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"Microsoft YaHei","PingFang SC",-apple-system,sans-serif;background:#f4f6f9;color:#333;min-height:100vh;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;border:none;background:none;font-family:inherit;color:inherit}
+img{display:block}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#f0f2f5}
+::-webkit-scrollbar-thumb{background:#ccd0da;border-radius:3px}
+
+.bg-particles{display:none}
+
+/* Header */
+.header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-bottom:1px solid #e8ecf2;box-shadow:0 1px 8px rgba(0,0,0,0.04)}
+.header-inner{max-width:1320px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:60px}
+.logo-text{font-size:16px;font-weight:800;letter-spacing:2px;background:linear-gradient(135deg,#3b7ddd,#6c5ce7);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.logo-sub{font-size:10px;color:#a0a8b8;margin-left:4px;letter-spacing:1px}
+.main-nav{display:flex;align-items:center;gap:4px}
+.main-nav-item{position:relative;padding:8px 22px;font-size:14px;font-weight:500;color:#8090a8;border-radius:8px;transition:all .25s;letter-spacing:0.5px}
+.main-nav-item:hover{color:#3b7ddd;background:rgba(59,125,221,0.05)}
+.main-nav-item.active{color:#3b7ddd;font-weight:600}
+.main-nav-item.active::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:2.5px;border-radius:2px;background:#3b7ddd}
+.search-wrap{display:flex;align-items:center;background:#f0f2f6;border:1px solid #e4e8ee;border-radius:22px;padding:6px 16px;gap:8px;transition:all .3s}
+.search-wrap:focus-within{border-color:#3b7ddd;background:#fff;box-shadow:0 0 0 3px rgba(59,125,221,0.08)}
+.search-wrap svg{width:15px;height:15px;color:#a0a8b8;flex-shrink:0}
+.search-wrap input{background:none;border:none;outline:none;color:#333;font-size:13px;width:160px}
+.search-wrap input::placeholder{color:#b0b8c8}
+
+/* Hero */
+.hero{position:relative;width:100%;height:340px;margin-top:60px;overflow:hidden;border-radius:0 0 20px 20px}
+.hero-slide{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;transition:opacity 1s ease}
+.hero-slide.active{opacity:1}
+.hero-slide img{width:100%;height:100%;object-fit:cover}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;height:80px;z-index:2;background:linear-gradient(rgba(0,0,0,0.08),transparent)}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;z-index:2;background:linear-gradient(transparent,rgba(0,0,0,0.15))}
+.hero-indicators{position:absolute;bottom:24px;right:40px;z-index:3;display:flex;align-items:center;gap:6px}
+.hero-dot{width:20px;height:3px;border-radius:2px;background:rgba(255,255,255,0.3);cursor:pointer;transition:all .3s}
+.hero-dot.active{width:36px;background:#fff}
+.hero-nav-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;transition:all .25s;margin-left:8px}
+.hero-nav-btn:hover{background:rgba(255,255,255,0.3)}
+
+/* Filter */
+.filter-bar{max-width:1320px;margin:0 auto;padding:24px 32px 0;display:flex;align-items:center;justify-content:space-between}
+.category-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.cat-tab{padding:7px 20px;border-radius:20px;font-size:13px;font-weight:500;color:#8090a8;transition:all .25s;letter-spacing:0.5px;border:1px solid transparent}
+.cat-tab:hover{color:#3b7ddd;background:rgba(59,125,221,0.04)}
+.cat-tab.active{color:#fff;background:#3b7ddd;border-color:#3b7ddd;font-weight:600}
+
+/* Submit bar */
+.submit-bar{max-width:1320px;margin:16px auto 0;padding:0 32px;display:none}
+.submit-bar.show{display:block}
+.submit-card{background:linear-gradient(135deg,#eef4ff,#f0ecff);border:1px solid #d8e2ff;border-radius:14px;padding:20px 28px;display:flex;align-items:center;justify-content:space-between}
+.submit-card h4{font-size:15px;font-weight:600;color:#3b5998;margin-bottom:4px}
+.submit-card p{font-size:12px;color:#8090a8}
+.submit-btn{padding:9px 28px;border-radius:22px;font-size:13px;font-weight:600;background:#3b7ddd;color:#fff;transition:all .3s;flex-shrink:0;letter-spacing:0.5px}
+.submit-btn:hover{background:#2d6bc4;box-shadow:0 4px 16px rgba(59,125,221,0.25)}
+
+/* Grid */
+.grid-section{max-width:1320px;margin:0 auto;padding:20px 32px 40px}
+.grid-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.grid-count{font-size:13px;color:#a0a8b8}
+.wallpaper-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.wp-card{position:relative;border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .35s,box-shadow .35s;background:#fff;animation:fadeUp .45s ease both;border:1px solid #eaeef4}
+.wp-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.08);border-color:#d0d8e8}
+.wp-card-img{position:relative;width:100%;padding-top:56.25%;overflow:hidden}
+.wp-card-img img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.wp-card:hover .wp-card-img img{transform:scale(1.04)}
+.wp-card-hover{position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(transparent 30%,rgba(0,0,0,0.7));opacity:0;transition:opacity .3s;display:flex;flex-direction:column;justify-content:flex-end;padding:20px}
+.wp-card:hover .wp-card-hover{opacity:1}
+.wp-card-hover .hover-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:6px}
+.wp-card-hover .hover-meta{font-size:12px;color:rgba(255,255,255,0.65)}
+.wp-card-hover .hover-actions{position:absolute;top:14px;right:14px;display:flex;gap:8px}
+.hover-act-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;transition:all .2s}
+.hover-act-btn:hover{background:rgba(255,255,255,0.4)}
+.wp-badge{position:absolute;top:12px;left:12px;z-index:2;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:1px;background:#3b7ddd;color:#fff}
+/* Author avatar for UGC cards */
+.wp-card-author{display:flex;align-items:center;gap:6px;margin-top:4px}
+.wp-card-avatar{width:20px;height:20px;border-radius:50%;object-fit:cover;background:#e8ecf2;flex-shrink:0}
+.wp-card-author-name{font-size:11px;color:#7a8a9e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
+.wp-card-info{padding:16px 18px}
+.wp-card-title{font-size:15px;font-weight:600;color:#2c3e50;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px}
+.wp-card-meta{font-size:12px;color:#a0a8b8}
+
+/* Pagination */
+.pagination{display:flex;align-items:center;justify-content:center;gap:6px;padding:32px 0 8px}
+.page-btn{
+  min-width:36px;height:36px;border-radius:8px;font-size:13px;font-weight:500;
+  display:flex;align-items:center;justify-content:center;
+  color:#6a7a90;border:1px solid #e0e4ea;background:#fff;
+  transition:all .2s;padding:0 10px;
+}
+.page-btn:hover{border-color:#3b7ddd;color:#3b7ddd;background:#f0f5ff}
+.page-btn.active{background:#3b7ddd;border-color:#3b7ddd;color:#fff;font-weight:600}
+.page-btn.disabled{opacity:0.3;pointer-events:none}
+.page-info{font-size:12px;color:#a0a8b8;margin-left:12px}
+
+.empty-msg{text-align:center;padding:60px 20px;color:#b0b8c8;font-size:14px}
+
+/* Modal */
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:2000;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:none;opacity:0;transition:opacity .3s}
+.modal.show{display:flex;opacity:1;align-items:center;justify-content:center}
+.modal-close{position:absolute;top:20px;right:28px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;transition:all .2s;z-index:1}
+.modal-close:hover{background:rgba(255,255,255,0.3)}
+.modal-layout{display:flex;gap:24px;max-width:1140px;width:92%;max-height:88vh}
+.modal-preview{flex:1;display:flex;align-items:center;justify-content:center;min-width:0;position:relative;overflow:hidden}
+.modal-preview img{max-width:100%;max-height:82vh;object-fit:contain;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,0.3);transition:transform .2s ease}
+/* Zoom controls */
+.modal-zoom-bar{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);border-radius:20px;padding:6px 14px;border:1px solid rgba(255,255,255,0.15)}
+.modal-zoom-btn{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;cursor:pointer;transition:all .2s}
+.modal-zoom-btn:hover{background:rgba(255,255,255,0.3)}
+.modal-zoom-pct{color:#fff;font-size:12px;font-weight:600;min-width:40px;text-align:center}
+.modal-arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;transition:all .2s;z-index:2}
+.modal-arrow:hover{background:rgba(255,255,255,0.4)}
+.modal-arrow.prev{left:12px}
+.modal-arrow.next{right:12px}
+.modal-side{width:300px;flex-shrink:0;background:#fff;border-radius:14px;padding:24px;display:flex;flex-direction:column;overflow-y:auto;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+.modal-side-title{font-size:18px;font-weight:700;color:#2c3e50;margin-bottom:6px;line-height:1.4}
+.modal-side-date{font-size:12px;color:#a0a8b8;margin-bottom:20px}
+.modal-info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f2f5;font-size:13px}
+.modal-info-label{color:#8090a8}
+.modal-info-value{color:#2c3e50;font-weight:500}
+.dl-section{margin-top:auto;padding-top:20px}
+.dl-title{font-size:14px;font-weight:600;color:#2c3e50;margin-bottom:12px}
+.dl-group-title{font-size:11px;color:#a0a8b8;margin:12px 0 8px;letter-spacing:1px;text-transform:uppercase}
+.dl-list{display:flex;flex-direction:column;gap:6px}
+.dl-item{display:flex;align-items:center;justify-content:space-between;padding:0;border-radius:10px;background:#f7f9fc;border:1px solid #eaeef4;transition:all .2s;overflow:hidden}
+.dl-item-info{flex:1;padding:10px 14px;cursor:pointer;transition:background .2s}
+.dl-item-info:hover{background:#eef4ff}
+.dl-item-info .dl-label{font-size:13px;color:#4a5568;font-weight:500}
+.dl-icon{width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;border-left:1px solid #eaeef4}
+.dl-icon:hover{background:#3b7ddd}
+.dl-icon:hover svg{color:#fff}
+.dl-icon svg{width:14px;height:14px;color:#3b7ddd;transition:color .2s}
+
+/* Submit modal */
+.submit-modal-content{width:460px;background:#fff;border-radius:16px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+.submit-modal-content h3{font-size:18px;font-weight:700;color:#2c3e50;margin-bottom:6px}
+.submit-modal-content .sub-desc{font-size:13px;color:#8090a8;margin-bottom:20px}
+.submit-rule-box{margin-top:20px;padding:16px;border-radius:10px;background:#f7f9fc;border:1px solid #eaeef4;font-size:12px;color:#6a7a90;line-height:2;white-space:pre-line}
+.submit-rule-box strong{color:#3b7ddd}
+
+.footer{border-top:1px solid #e8ecf2;padding:28px;text-align:center;font-size:11px;color:#b0b8c8;letter-spacing:1px;background:#fff}
+
+@media(max-width:1100px){.wallpaper-grid{grid-template-columns:repeat(2,1fr)} .modal-layout{flex-direction:column} .modal-side{width:100%}}
+@media(max-width:768px){.header-inner{padding:0 16px} .main-nav{display:none} .hero{height:220px;border-radius:0} .hero-title{font-size:20px} .filter-bar,.grid-section,.submit-bar{padding-left:16px;padding-right:16px} .wallpaper-grid{grid-template-columns:repeat(2,1fr);gap:12px} .submit-card{flex-direction:column;gap:12px;text-align:center}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div class="bg-particles"></div>
+
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="#"><div><span class="logo-text">DNF 壁纸站</span><span class="logo-sub">WALLPAPER GALLERY</span></div></a>
+    <nav class="main-nav" id="mainNav"></nav>
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="搜索版本名称、作者..." id="searchInput" onkeyup="handleSearch(event)">
+      </div>
+  </div>
+</header>
+
+<section class="hero" id="heroSection"></section>
+
+<div class="filter-bar">
+  <div class="category-tabs" id="catTabs"></div>
+</div>
+
+<div class="submit-bar" id="submitBar">
+  <div class="submit-card">
+    <div><h4>投稿你的作品</h4><p style="font-size:12px;color:#8090a8">欢迎DNF创作者投稿原创同人作品</p></div>
+    <button class="submit-btn" onclick="openSubmitModal()">我要投稿</button>
+  </div>
+</div>
+
+<div class="grid-section">
+  <div class="grid-header">
+    <div class="grid-count" id="gridCount"></div>
+  </div>
+  <div class="wallpaper-grid" id="grid"></div>
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<div class="modal" id="previewModal">
+  <button class="modal-close" onclick="closePreview()">×</button>
+  <div class="modal-layout">
+    <div class="modal-preview">
+      <button class="modal-arrow prev" onclick="modalPrev()">‹</button>
+      <img id="modalImg" src="" alt="">
+      <button class="modal-arrow next" onclick="modalNext()">›</button>
+      <div class="modal-zoom-bar">
+        <button class="modal-zoom-btn" onclick="zoomOut()">−</button>
+        <span class="modal-zoom-pct" id="zoomPct">100%</span>
+        <button class="modal-zoom-btn" onclick="zoomIn()">+</button>
+      </div>
+    </div>
+    <div class="modal-side" id="modalSide"></div>
+  </div>
+</div>
+
+<div class="modal" id="submitModal">
+  <button class="modal-close" onclick="closeSubmitModal()">×</button>
+  <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">
+    <div class="submit-modal-content" id="submitModalContent"></div>
+  </div>
+</div>
+
+<footer class="footer">© 2025 地下城与勇士 DNF · 壁纸站</footer>
+
+<script>
+const STORE_KEY = 'dnf_wallpaper_config';
+let DATA, activeCatId = null, activeSubCatId = null;
+let currentList = [], modalIdx = 0;
+let currentPage = 1;
+const PAGE_SIZE = 9;
+
+// ===== Load =====
+function load(){
+  try { DATA = JSON.parse(localStorage.getItem(STORE_KEY)); } catch(e){}
+  if(!DATA) DATA = null; // Will use inline defaults
+}
+
+function getDefaultData(){
+  return {
+    banners:[
+      {id:1,img:'https://picsum.photos/1400/520?random=30',title:'雾岚黄昏战',desc:'2025年9月版本主视觉 · 高清壁纸现已上线',tag:'最新版本',link:'',sort:1,status:true},
+      {id:2,img:'https://picsum.photos/1400/520?random=31',title:'创作者之星 · 三月精选',desc:'来自COLG社区的优秀同人作品合集',tag:'精选同人',link:'',sort:2,status:true},
+      {id:3,img:'https://picsum.photos/1400/520?random=32',title:'DNF 18周年庆',desc:'周年庆限定壁纸 · 限时下载',tag:'周年庆典',link:'',sort:3,status:true},
+    ],
+    categories:[
+      {id:1,name:'官方壁纸',type:'normal',sort:1,status:true,children:[
+        {id:11,name:'版本KV',sort:1,status:true},{id:12,name:'人物立绘',sort:2,status:true},{id:13,name:'活动/节日壁纸',sort:3,status:true}
+      ]},
+      {id:2,name:'同人画廊',type:'ugc',sort:2,status:true,children:[]},
+    ],
+    wallpapers:[
+      // ===== 版本KV =====
+      {id:101,title:'雾岚黄昏战',catId:11,thumb:'https://picsum.photos/600/340?random=10',
+       status:true,sort:1,date:'2025/09/11',badge:'NEW',
+       originalImg:'https://picsum.photos/1920/1080?random=110',
+       extFields:[{key:'版本名称',value:'雾岚黄昏战',show:true},{key:'版本日期',value:'2025/09/11',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=110'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=111'},
+         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=112'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=113'},
+       ]},
+      {id:102,title:'暗夜裁决者',catId:11,thumb:'https://picsum.photos/600/340?random=11',
+       status:true,sort:2,date:'2025/06/20',badge:'',
+       originalImg:'https://picsum.photos/1920/1080?random=120',
+       extFields:[{key:'版本名称',value:'暗夜裁决者',show:true},{key:'版本日期',value:'2025/06/20',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=120'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=121'},
+         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=122'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=123'},
+         {label:'1080×2340',type:'竖版',url:'https://picsum.photos/1080/2340?random=124'},
+       ]},
+      {id:103,title:'龙之挽歌',catId:11,thumb:'https://picsum.photos/600/340?random=12',
+       status:true,sort:3,date:'2025/03/15',badge:'',
+       originalImg:'https://picsum.photos/1920/1080?random=130',
+       extFields:[{key:'版本名称',value:'龙之挽歌',show:true},{key:'版本日期',value:'2025/03/15',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=130'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=131'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=132'},
+       ]},
+      {id:104,title:'星辰之海',catId:11,thumb:'https://picsum.photos/600/340?random=17',
+       status:true,sort:4,date:'2024/12/05',badge:'',
+       extFields:[{key:'版本名称',value:'星辰之海',show:true},{key:'版本日期',value:'2024/12/05',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=140'},
+         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=141'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=142'},
+       ]},
+      {id:105,title:'黎明裂谷',catId:11,thumb:'https://picsum.photos/600/340?random=40',
+       status:true,sort:5,date:'2024/06/12',badge:'',
+       extFields:[{key:'版本名称',value:'黎明裂谷',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=150'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=151'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=152'},
+       ]},
+
+      // ===== 人物立绘 =====
+      {id:106,title:'鬼剑士觉醒立绘',catId:12,thumb:'https://picsum.photos/600/340?random=13',
+       status:true,sort:1,date:'2025/08/01',badge:'',
+       originalImg:'https://picsum.photos/800/1600?random=200',
+       extFields:[{key:'角色',value:'鬼剑士',show:true}],
+       resFiles:[
+         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=200'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=201'},
+         {label:'1125×2436',type:'竖版',url:'https://picsum.photos/1125/2436?random=202'},
+       ]},
+      {id:107,title:'女魔法师觉醒立绘',catId:12,thumb:'https://picsum.photos/600/340?random=14',
+       status:true,sort:2,date:'2025/07/10',badge:'',
+       originalImg:'https://picsum.photos/800/1600?random=210',
+       extFields:[{key:'角色',value:'女魔法师',show:true}],
+       resFiles:[
+         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=210'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=211'},
+         {label:'1080×2340',type:'竖版',url:'https://picsum.photos/1080/2340?random=212'},
+       ]},
+      {id:108,title:'神枪手三觉立绘',catId:12,thumb:'https://picsum.photos/600/340?random=18',
+       status:true,sort:3,date:'2024/11/01',badge:'HOT',
+       originalImg:'https://picsum.photos/800/1600?random=220',
+       extFields:[{key:'角色',value:'神枪手',show:true}],
+       resFiles:[
+         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=220'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=221'},
+         {label:'1179×2556',type:'竖版',url:'https://picsum.photos/1179/2556?random=222'},
+       ]},
+      {id:109,title:'格斗家觉醒全家福',catId:12,thumb:'https://picsum.photos/600/340?random=19',
+       status:true,sort:4,date:'2024/09/15',badge:'',
+       extFields:[{key:'角色',value:'格斗家',show:true}],
+       resFiles:[
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=230'},
+         {label:'1125×2436',type:'竖版',url:'https://picsum.photos/1125/2436?random=231'},
+       ]},
+      {id:110,title:'暗夜使者·影舞者',catId:12,thumb:'https://picsum.photos/600/340?random=42',
+       status:true,sort:5,date:'2024/07/22',badge:'',
+       extFields:[{key:'角色',value:'暗夜使者',show:true}],
+       resFiles:[
+         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=240'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=241'},
+       ]},
+      {id:111,title:'守护者·炽天使',catId:12,thumb:'https://picsum.photos/600/340?random=43',
+       status:true,sort:6,date:'2024/05/18',badge:'',
+       extFields:[{key:'角色',value:'守护者',show:true}],
+       resFiles:[
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=250'},
+         {label:'1080×2340',type:'竖版',url:'https://picsum.photos/1080/2340?random=251'},
+       ]},
+
+      // ===== 活动/节日壁纸 =====
+      {id:112,title:'DNF 18周年庆典',catId:13,thumb:'https://picsum.photos/600/340?random=15',
+       status:true,sort:1,date:'2026/06/19',badge:'HOT',
+       originalImg:'https://picsum.photos/1920/1080?random=300',
+       extFields:[{key:'活动',value:'18周年庆',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=300'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=301'},
+         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=302'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=303'},
+         {label:'1125×2436',type:'竖版',url:'https://picsum.photos/1125/2436?random=304'},
+       ]},
+      {id:113,title:'2026新春贺岁 · 烟火福运年',catId:13,thumb:'https://picsum.photos/600/340?random=16',
+       status:true,sort:2,date:'2026/01/20',badge:'NEW',
+       originalImg:'https://picsum.photos/1920/1080?random=310',
+       extFields:[{key:'活动',value:'新春版本',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=310'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=311'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=312'},
+       ]},
+      {id:114,title:'圣诞特辑 · 冬日魔法',catId:13,thumb:'https://picsum.photos/600/340?random=41',
+       status:true,sort:3,date:'2024/12/24',badge:'',
+       extFields:[{key:'活动',value:'圣诞版本',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=320'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=321'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=322'},
+       ]},
+      {id:115,title:'七夕限定 · 星河之约',catId:13,thumb:'https://picsum.photos/600/340?random=44',
+       status:true,sort:4,date:'2025/08/10',badge:'',
+       extFields:[{key:'活动',value:'七夕活动',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=330'},
+         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=331'},
+       ]},
+
+      // ===== 同人画廊 =====
+      {id:116,title:'赛利亚的日常',catId:2,thumb:'https://picsum.photos/600/340?random=20',
+       status:true,sort:1,date:'2026/03/01',badge:'精选',
+       authorAvatar:'https://i.pravatar.cc/80?img=1',
+       originalImg:'https://picsum.photos/1920/1080?random=400',
+       extFields:[{key:'创作者',value:'画师小A',show:true},{key:'来源',value:'COLG社区',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=400'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=401'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=402'},
+       ]},
+      {id:117,title:'阿拉德冒险记',catId:2,thumb:'https://picsum.photos/600/340?random=21',
+       status:true,sort:2,date:'2026/02/15',badge:'',
+       authorAvatar:'https://i.pravatar.cc/80?img=2',
+       extFields:[{key:'创作者',value:'colg_大触',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=410'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=411'},
+       ]},
+      {id:118,title:'暗夜使者之影',catId:2,thumb:'https://picsum.photos/600/340?random=22',
+       status:true,sort:3,date:'2026/01/28',badge:'',
+       authorAvatar:'https://i.pravatar.cc/80?img=3',
+       originalImg:'https://picsum.photos/1920/1080?random=420',
+       extFields:[{key:'创作者',value:'夜光绘',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=420'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=421'},
+         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=422'},
+       ]},
+      {id:119,title:'风暴之息',catId:2,thumb:'https://picsum.photos/600/340?random=23',
+       status:true,sort:4,date:'2025/12/20',badge:'精选',
+       authorAvatar:'https://i.pravatar.cc/80?img=4',
+       extFields:[{key:'创作者',value:'笔墨江湖',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=430'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=431'},
+       ]},
+      {id:120,title:'决斗场之王',catId:2,thumb:'https://picsum.photos/600/340?random=24',
+       status:true,sort:5,date:'2025/11/10',badge:'',
+       authorAvatar:'https://i.pravatar.cc/80?img=5',
+       extFields:[{key:'创作者',value:'像素匠人',show:true}],
+       resFiles:[
+         {label:'1920×1200',type:'横版',url:'https://picsum.photos/1920/1200?random=440'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=441'},
+         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=442'},
+       ]},
+      {id:121,title:'赫伊斯的黄昏',catId:2,thumb:'https://picsum.photos/600/340?random=25',
+       status:true,sort:6,date:'2025/10/05',badge:'',
+       authorAvatar:'https://i.pravatar.cc/80?img=6',
+       originalImg:'https://picsum.photos/1920/1080?random=450',
+       extFields:[{key:'创作者',value:'幻想画廊',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=450'},
+         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=451'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=452'},
+       ]},
+      {id:122,title:'天界机械狂潮',catId:2,thumb:'https://picsum.photos/600/340?random=26',
+       status:true,sort:7,date:'2025/09/18',badge:'NEW',
+       authorAvatar:'https://i.pravatar.cc/80?img=7',
+       extFields:[{key:'创作者',value:'钢铁画师',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=460'},
+         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=461'},
+       ]},
+      {id:123,title:'魔法少女的茶会',catId:2,thumb:'https://picsum.photos/600/340?random=27',
+       status:true,sort:8,date:'2025/08/25',badge:'精选',
+       authorAvatar:'https://i.pravatar.cc/80?img=8',
+       originalImg:'https://picsum.photos/1920/1080?random=470',
+       extFields:[{key:'创作者',value:'糖果工坊',show:true},{key:'来源',value:'LOFTER',show:true}],
+       resFiles:[
+         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=470'},
+         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=471'},
+         {label:'1125×2436',type:'竖版',url:'https://picsum.photos/1125/2436?random=472'},
+       ]},
+    ],
+    submitConfig:{catId:2,email:'dnf-fanart@example.com',content:'欢迎DNF创作者投稿原创同人作品，优秀作品将获得官方长期展示！\n\n【投稿方式】\n请将作品发送至上方邮箱\n\n【邮件标题格式】\n【DNF投稿】作品名-作者名\n\n【作品要求】\n1. 作品须为原创DNF相关同人创作\n2. 图片格式：PNG / JPG\n3. 分辨率：≥ 1920×1080\n4. 请在邮件正文中附上作者昵称和作品简介\n\n【授权说明】\n投稿即视为授权官网壁纸站展示使用\n审核通过后将在同人画廊展示',status:true}
+  };
+}
+
+// ===== Init =====
+function init(){
+  load();
+  if(!DATA) DATA = getDefaultData();
+  
+  const cats = DATA.categories.filter(c=>c.status).sort((a,b)=>a.sort-b.sort);
+  if(cats.length>0){
+    activeCatId = cats[0].id;
+    const firstCat = cats[0];
+    const subs = (firstCat.children||[]).filter(s=>s.status);
+    activeSubCatId = subs.length>0 ? null : null; // null = 全部
+  }
+  
+  renderNav();
+  renderBanner();
+  renderCatTabs();
+  renderSubmitBar();
+  renderGrid();
+}
+
+// ===== Nav (一级分类) =====
+function renderNav(){
+  const nav = document.getElementById('mainNav');
+  const cats = DATA.categories.filter(c=>c.status).sort((a,b)=>a.sort-b.sort);
+  nav.innerHTML = cats.map(c=>
+    `<button class="main-nav-item ${c.id===activeCatId?'active':''}" data-id="${c.id}" onclick="switchCat(${c.id})">${c.name}</button>`
+  ).join('');
+}
+
+// ===== Banner =====
+let slideIdx=0, slideTimer=null;
+function renderBanner(){
+  const banners = DATA.banners.filter(b=>b.status).sort((a,b)=>a.sort-b.sort);
+  if(banners.length===0){
+    document.getElementById('heroSection').innerHTML='<div style="height:200px"></div>';
+    document.getElementById('heroSection').style.height='200px';
+    return;
+  }
+  const slides = banners.map((b,i)=>
+    `<div class="hero-slide ${i===0?'active':''}" data-idx="${i}"><img src="${b.img}" alt="">${b.link?`<a href="${b.link}" style="position:absolute;inset:0;z-index:1"></a>`:''}</div>`
+  ).join('');
+  const dots = banners.map((_,i)=>
+    `<div class="hero-dot ${i===0?'active':''}" onclick="goSlide(${i})"></div>`
+  ).join('');
+  const b0 = banners[0];
+  document.getElementById('heroSection').innerHTML = `
+    ${slides}
+    <div class="hero-indicators">${dots}<button class="hero-nav-btn" onclick="prevSlide()">‹</button><button class="hero-nav-btn" onclick="nextSlide()">›</button></div>
+  `;
+  slideIdx=0;
+  clearInterval(slideTimer);
+  if(banners.length>1) slideTimer=setInterval(nextSlide,5000);
+}
+function goSlide(i){
+  clearInterval(slideTimer);
+  const banners=DATA.banners.filter(b=>b.status).sort((a,b)=>a.sort-b.sort);
+  document.querySelectorAll('.hero-slide').forEach((s,j)=>s.classList.toggle('active',j===i));
+  document.querySelectorAll('.hero-dot').forEach((d,j)=>d.classList.toggle('active',j===i));
+  slideIdx=i;
+  if(banners.length>1) slideTimer=setInterval(nextSlide,5000);
+}
+function nextSlide(){const n=DATA.banners.filter(b=>b.status).length;goSlide((slideIdx+1)%n)}
+function prevSlide(){const n=DATA.banners.filter(b=>b.status).length;goSlide((slideIdx-1+n)%n)}
+
+// ===== Category Tabs (二级分类) =====
+function switchCat(catId){
+  activeCatId=catId;
+  activeSubCatId=null;
+  currentPage=1;
+  renderNav();
+  renderCatTabs();
+  renderSubmitBar();
+  renderGrid();
+}
+
+function renderCatTabs(){
+  const cat = DATA.categories.find(c=>c.id===activeCatId);
+  if(!cat) return;
+  const subs = (cat.children||[]).filter(s=>s.status).sort((a,b)=>a.sort-b.sort);
+  const tabs = document.getElementById('catTabs');
+  if(subs.length===0){
+    tabs.innerHTML='';
+    return;
+  }
+  tabs.innerHTML = `<button class="cat-tab ${activeSubCatId===null?'active':''}" onclick="switchSubCat(null)">全部</button>`
+    + subs.map(s=>`<button class="cat-tab ${activeSubCatId===s.id?'active':''}" onclick="switchSubCat(${s.id})">${s.name}</button>`).join('');
+}
+
+function switchSubCat(subId){
+  activeSubCatId=subId;
+  currentPage=1;
+  renderCatTabs();
+  renderGrid();
+}
+
+// ===== Submit Bar =====
+function renderSubmitBar(){
+  const cat = DATA.categories.find(c=>c.id===activeCatId);
+  const sc = DATA.submitConfig;
+  const bar = document.getElementById('submitBar');
+  if(cat && cat.type==='ugc' && sc && sc.status && sc.catId===activeCatId){
+    bar.classList.add('show');
+  } else {
+    bar.classList.remove('show');
+  }
+}
+
+// ===== Grid =====
+function getVisibleWallpapers(){
+  const cat = DATA.categories.find(c=>c.id===activeCatId);
+  if(!cat) return [];
+  const subs = (cat.children||[]).filter(s=>s.status);
+  let validCatIds = [];
+  if(subs.length===0){
+    validCatIds=[cat.id];
+  } else if(activeSubCatId===null){
+    validCatIds = subs.map(s=>s.id);
+  } else {
+    validCatIds = [activeSubCatId];
+  }
+  return DATA.wallpapers.filter(w=>w.status && validCatIds.includes(w.catId)).sort((a,b)=>a.sort-b.sort);
+}
+
+function renderGrid(list){
+  const allData = list || getVisibleWallpapers();
+  const totalPages = Math.max(1, Math.ceil(allData.length / PAGE_SIZE));
+  if(currentPage > totalPages) currentPage = totalPages;
+  
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageData = allData.slice(start, start + PAGE_SIZE);
+  currentList = allData; // keep full list for modal navigation
+  
+  // Count
+  document.getElementById('gridCount').textContent = `共 ${allData.length} 张壁纸`;
+  
+  const grid = document.getElementById('grid');
+  if(allData.length===0){
+    grid.innerHTML='<div class="empty-msg" style="grid-column:1/-1">暂无壁纸内容</div>';
+    document.getElementById('pagination').innerHTML='';
+    return;
+  }
+  grid.innerHTML = pageData.map((w,i)=>{
+    const globalIdx = start + i; // index in full list for modal
+    const showFields = (w.extFields||[]).filter(e=>e.show);
+    const metaStr = showFields.filter(e=>e.key!=='创作者').map(e=>e.value).join(' · ');
+    // Author info for UGC cards
+    const creatorField = showFields.find(e=>e.key==='创作者');
+    const hasAuthor = w.authorAvatar && creatorField;
+    return `<div class="wp-card" style="animation-delay:${i*0.04}s" onclick="openPreview(${globalIdx})">
+      ${w.badge?`<span class="wp-badge">${w.badge}</span>`:''}
+      <div class="wp-card-img">
+        <img src="${w.thumb}" alt="${w.title}" loading="lazy">
+        <div class="wp-card-hover">
+          <div class="hover-actions">
+            <button class="hover-act-btn" title="预览" onclick="event.stopPropagation();openPreview(${globalIdx})">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            </button>
+            <button class="hover-act-btn" title="下载" onclick="event.stopPropagation();openPreview(${globalIdx})">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            </button>
+          </div>
+          <div class="hover-title">${w.title}</div>
+          <div class="hover-meta">${w.date}${metaStr?' · '+metaStr:''}</div>
+        </div>
+      </div>
+      <div class="wp-card-info">
+        <div class="wp-card-title">${w.title}</div>
+        <div class="wp-card-meta">${w.date}${metaStr?' · '+metaStr:''}</div>
+        ${hasAuthor?`<div class="wp-card-author"><img class="wp-card-avatar" src="${w.authorAvatar}" onerror="this.style.display='none'"><span class="wp-card-author-name">${creatorField.value}</span></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  
+  // Pagination
+  renderPagination(totalPages, allData.length);
+}
+
+function renderPagination(totalPages, total){
+  const pg = document.getElementById('pagination');
+  if(totalPages <= 1){ pg.innerHTML=''; return; }
+  let html = `<button class="page-btn ${currentPage===1?'disabled':''}" onclick="goPage(${currentPage-1})">‹</button>`;
+  for(let i=1;i<=totalPages;i++){
+    if(totalPages>7 && i>2 && i<totalPages-1 && Math.abs(i-currentPage)>1){
+      if(i===3 || i===totalPages-2) html+=`<span class="page-btn" style="border:none;pointer-events:none">…</span>`;
+      continue;
+    }
+    html+=`<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+  html+=`<button class="page-btn ${currentPage===totalPages?'disabled':''}" onclick="goPage(${currentPage+1})">›</button>`;
+  html+=`<span class="page-info">${(currentPage-1)*PAGE_SIZE+1}-${Math.min(currentPage*PAGE_SIZE,total)} / ${total}</span>`;
+  pg.innerHTML = html;
+}
+
+function goPage(p){
+  const allData = getVisibleWallpapers();
+  const totalPages = Math.ceil(allData.length / PAGE_SIZE);
+  if(p<1||p>totalPages)return;
+  currentPage=p;
+  renderGrid();
+  document.querySelector('.grid-section').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ===== Search =====
+function handleSearch(e){
+  if(e.key!=='Enter')return;
+  const kw=document.getElementById('searchInput').value.trim().toLowerCase();
+  if(!kw){renderGrid();return}
+  // Search across ALL wallpapers
+  const all = DATA.wallpapers.filter(w=>w.status);
+  const results = all.filter(w=>{
+    if(w.title.toLowerCase().includes(kw)) return true;
+    if(w.date&&w.date.includes(kw)) return true;
+    for(const ext of (w.extFields||[])){
+      if(ext.value.toLowerCase().includes(kw)) return true;
+    }
+    return false;
+  });
+  renderGrid(results);
+}
+
+// ===== Preview =====
+function getCatName(catId){
+  for(const c of DATA.categories){
+    if(c.id===catId) return c.name;
+    for(const s of (c.children||[])){
+      if(s.id===catId) return c.name+' / '+s.name;
+    }
+  }
+  return '';
+}
+
+let modalZoom = 100;
+const ZOOM_STEP = 25;
+const ZOOM_MIN = 25;
+const ZOOM_MAX = 300;
+
+function openPreview(idx){
+  modalIdx=idx;
+  const w=currentList[idx];if(!w)return;
+  // 直接加载最清晰的图：originalImg > 缩略图放大版
+  const previewSrc = w.originalImg || w.thumb.replace(/\d+\/\d+/,'1200/680');
+  document.getElementById('modalImg').src = previewSrc;
+  // Reset zoom
+  modalZoom = 100;
+  applyZoom();
+  
+  // Build side panel
+  const extRows = (w.extFields||[]).filter(e=>e.show).map(e=>
+    `<div class="modal-info-row"><span class="modal-info-label">${e.key}</span><span class="modal-info-value">${e.value}</span></div>`
+  ).join('');
+  
+  // Resolution download — 直接从壁纸自身的resFiles读取
+  const wpResFiles = (w.resFiles || []).filter(f=>f.label);
+  const hRes = wpResFiles.filter(f=>f.type==='横版');
+  const vRes = wpResFiles.filter(f=>f.type==='竖版');
+  let dlHtml='';
+  if(hRes.length===0 && vRes.length===0){
+    dlHtml='<div style="font-size:12px;color:#a0a8b8;padding:8px 0">暂无可下载的分辨率</div>';
+  }
+  if(hRes.length>0){
+    dlHtml+=`<div class="dl-group-title">横版尺寸</div><div class="dl-list">${hRes.map(f=>`
+      <div class="dl-item">
+        <div class="dl-item-info" onclick="event.stopPropagation();switchPreviewRes('${f.url||''}')"><div class="dl-label">${f.label}</div></div>
+        <div class="dl-icon" onclick="event.stopPropagation();downloadRes('${f.url||''}','${f.label}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></div>
+      </div>`).join('')}</div>`;
+  }
+  if(vRes.length>0){
+    dlHtml+=`<div class="dl-group-title">竖版尺寸</div><div class="dl-list">${vRes.map(f=>`
+      <div class="dl-item">
+        <div class="dl-item-info" onclick="event.stopPropagation();switchPreviewRes('${f.url||''}')"><div class="dl-label">${f.label}</div></div>
+        <div class="dl-icon" onclick="event.stopPropagation();downloadRes('${f.url||''}','${f.label}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></div>
+      </div>`).join('')}</div>`;
+  }
+  
+  document.getElementById('modalSide').innerHTML = `
+    <div class="modal-side-title">${w.title}</div>
+    <div class="modal-side-date">${w.date||''}</div>
+    <div class="modal-info-row"><span class="modal-info-label">分类</span><span class="modal-info-value">${getCatName(w.catId)}</span></div>
+    ${extRows}
+    <div class="dl-section">
+      <div class="dl-title">选择壁纸尺寸</div>
+      ${dlHtml}
+    </div>
+  `;
+  
+  document.getElementById('previewModal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closePreview(){document.getElementById('previewModal').classList.remove('show');document.body.style.overflow='';modalZoom=100;applyZoom()}
+function modalPrev(){if(modalIdx>0)openPreview(modalIdx-1)}
+function modalNext(){if(modalIdx<currentList.length-1)openPreview(modalIdx+1)}
+
+// ===== Zoom =====
+function applyZoom(){
+  const img=document.getElementById('modalImg');
+  img.style.transform=`scale(${modalZoom/100})`;
+  document.getElementById('zoomPct').textContent=modalZoom+'%';
+}
+function zoomIn(){
+  if(modalZoom<ZOOM_MAX){modalZoom=Math.min(ZOOM_MAX,modalZoom+ZOOM_STEP);applyZoom()}
+}
+function zoomOut(){
+  if(modalZoom>ZOOM_MIN){modalZoom=Math.max(ZOOM_MIN,modalZoom-ZOOM_STEP);applyZoom()}
+}
+
+// 点击分辨率文字 → 切换预览图为该分辨率
+function switchPreviewRes(url){
+  if(url){
+    document.getElementById('modalImg').src=url;
+    modalZoom=100;applyZoom();
+  }
+}
+// 点击下载图标 → 下载
+function downloadRes(url,label){
+  if(url){
+    const a=document.createElement('a');a.href=url;a.download=label||'wallpaper';a.target='_blank';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+  } else {
+    alert('下载 '+label);
+  }
+}
+// ===== Submit Modal =====
+function openSubmitModal(){
+  const sc=DATA.submitConfig;
+  document.getElementById('submitModalContent').innerHTML=`
+    <h3>投稿说明</h3>
+    <div class="modal-info-row" style="margin:16px 0"><span class="modal-info-label">投稿邮箱</span><span class="modal-info-value" style="color:#3b7ddd;font-weight:600">${sc.email||''}</span></div>
+    <div class="submit-rule-box" style="white-space:pre-line;line-height:1.8">${sc.content||'暂无投稿说明'}</div>
+  `;
+  document.getElementById('submitModal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeSubmitModal(){document.getElementById('submitModal').classList.remove('show');document.body.style.overflow=''}
+
+// Events
+// ===== PRD Preview Bridge (postMessage) =====
+window.addEventListener('message', e => {
+  if(e.data.action === 'openModal'){
+    // Open the first wallpaper preview
+    const ugcCat = DATA.categories.find(c=>c.type==='ugc');
+    if(ugcCat){
+      activeCatId = ugcCat.id;
+      currentList = DATA.wallpapers.filter(w=>w.catId===activeCatId && w.status).sort((a,b)=>a.sort-b.sort);
+      if(currentList.length > 0) openPreview(0);
+    }
+  }
+  if(e.data.action === 'switchNav' && e.data.catId){
+    activeCatId = e.data.catId;
+    renderNav();renderBanner();renderCatTabs();renderSubmitBar();renderGrid();
+  }
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closePreview();closeSubmitModal()}
+  if(document.getElementById('previewModal').classList.contains('show')){
+    if(e.key==='ArrowLeft')modalPrev();
+    if(e.key==='ArrowRight')modalNext();
+    if(e.key==='+'||e.key==='='){e.preventDefault();zoomIn()}
+    if(e.key==='-'||e.key==='_'){e.preventDefault();zoomOut()}
+    if(e.key==='0'){e.preventDefault();modalZoom=100;applyZoom()}
+  }
+});
+document.getElementById('previewModal').addEventListener('click',e=>{if(e.target.id==='previewModal')closePreview()});
+document.getElementById('submitModal').addEventListener('click',e=>{if(e.target.id==='submitModal')closeSubmitModal()});
+
+// Go
+init();
+</script>
+</body>
+</html>
