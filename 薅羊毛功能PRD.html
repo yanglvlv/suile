@@ -148,13 +148,35 @@
     </div>
     <span class="ui-bell">🔔</span>
   </div>
+  <!-- 进度卡 -->
   <div class="ui-card">
-    <div style="font-size:9px;color:rgba(255,255,255,0.4);">今日羊毛进度</div>
-    <div class="ui-pct">67%</div>
-    <div style="font-size:8px;color:rgba(255,255,255,0.3);text-align:center;">薅到就是赚到</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:10px;font-weight:700;">今日羊毛进度</div>
+        <div style="font-size:7px;color:rgba(255,255,255,0.3);margin-top:1px;">薅到就是赚到</div>
+      </div>
+      <span style="font-size:18px;font-weight:800;color:#e63946;">67%</span>
+    </div>
     <div class="ui-bar"><div class="ui-bar-inner"></div></div>
-    <div class="ui-hint">🎁 完成全部任务可领取 <b style="color:#fbbf24;">羊毛达人礼包x1</b>，还差1个</div>
+    <!-- 一周日历 -->
+    <div style="display:flex;justify-content:space-between;margin-top:8px;padding:0 2px;">
+      <div style="text-align:center;"><div style="font-size:7px;color:rgba(255,255,255,0.3);">周一</div><div style="width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:7px;color:rgba(255,255,255,0.25);margin-top:2px;">13</div></div>
+      <div style="text-align:center;"><div style="font-size:7px;color:rgba(255,255,255,0.3);">周二</div><div style="width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#e8a838,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:7px;color:#1a1a2e;font-weight:700;margin-top:2px;">✓</div></div>
+      <div style="text-align:center;"><div style="font-size:7px;color:rgba(255,255,255,0.3);">周三</div><div style="width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#e8a838,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:7px;color:#1a1a2e;font-weight:700;margin-top:2px;box-shadow:0 0 6px rgba(232,168,56,0.4);">✓</div></div>
+      <div style="text-align:center;"><div style="font-size:7px;color:rgba(255,255,255,0.3);">周四</div><div style="width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:7px;color:rgba(255,255,255,0.25);margin-top:2px;">16</div></div>
+      <div style="text-align:center;"><div style="font-size:7px;color:rgba(255,255,255,0.3);">周五</div><div style="width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:7px;color:rgba(255,255,255,0.25);margin-top:2px;">17</div></div>
+      <div style="text-align:center;"><div style="font-size:7px;color:rgba(255,255,255,0.3);">周六</div><div style="width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:7px;color:rgba(255,255,255,0.25);margin-top:2px;">18</div></div>
+      <div style="text-align:center;"><div style="font-size:7px;color:rgba(255,255,255,0.3);">周日</div><div style="width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:7px;color:rgba(255,255,255,0.25);margin-top:2px;">19</div></div>
+    </div>
+    <!-- 周奖励提示 -->
+    <div class="ui-hint">🎁 还需薅 <b style="color:#fbbf24;">3 天</b> 解锁 <b style="color:#fbbf24;">羊毛达人礼包x1</b></div>
   </div>
+  <!-- 羊毛任务标题 + 领取记录 -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 6px;">
+    <span style="font-size:10px;font-weight:700;">📋 羊毛任务</span>
+    <span style="font-size:8px;color:rgba(255,255,255,0.3);">📋 领取记录</span>
+  </div>
+  <!-- 任务卡片 -->
   <div class="ui-card">
     <div class="ui-task">
       <div class="ui-task-icon">🎁</div>
@@ -185,7 +207,6 @@
       <span class="ui-btn ui-btn-done">已薅</span>
     </div>
   </div>
-  <div style="text-align:center;margin-top:6px;font-size:9px;color:rgba(255,255,255,0.25);">📋 领取记录</div>
 </div>
 
 <!-- 3.2 顶部栏 -->
@@ -322,8 +343,9 @@
 <!-- 3.6 领取记录 -->
 <h3>3.6 领取记录</h3>
 <ul>
-  <li>入口在<strong>「羊毛任务」标题行右侧</strong>，显示「📋 领取记录」文字链接（有记录时才显示）</li>
+  <li>入口在<strong>「羊毛任务」标题行右侧</strong>，显示「📋 领取记录」文字链接，<strong>始终显示</strong></li>
   <li>点击弹窗展示历史列表：奖励名称 + 领取时间，按时间倒序，最多 20 条</li>
+  <li>无记录时弹窗显示「暂无领取记录」</li>
 </ul>
 
 <!-- 3.7 空状态 -->
