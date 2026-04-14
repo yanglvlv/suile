@@ -256,11 +256,11 @@ function getDefaultData(){
       {id:3,img:'https://picsum.photos/id/32/800/300',tag:'周年庆典',link:'',sort:3,status:true},
     ],
     categories: [
-      {id:1,name:'官方壁纸',type:'normal',sort:1,status:true,children:[
-        {id:11,name:'版本KV',sort:1,status:true},
-        {id:13,name:'活动/节日壁纸',sort:2,status:true},
+      {id:1,name:'官方壁纸',type:'normal',sort:1,status:true,link:'',children:[
+        {id:11,name:'版本KV',sort:1,status:true,link:''},
+        {id:13,name:'活动/节日壁纸',sort:2,status:true,link:''},
       ]},
-      {id:2,name:'同人作品',type:'ugc',sort:2,status:true,children:[]},
+      {id:2,name:'同人作品',type:'ugc',sort:2,status:true,link:'',children:[]},
     ],
     wallpapers:[
       // ===== 版本KV（36张横版）=====
@@ -397,7 +397,7 @@ function getDefaultData(){
 }
 
 // ===== Load/Save =====
-const DATA_VERSION = 'v2.3';
+const DATA_VERSION = 'v2.4';
 let DATA;
 function load(){
   try{ DATA = JSON.parse(localStorage.getItem(STORE_KEY)); } catch(e){}
@@ -543,10 +543,11 @@ function editCat(id){ editingItem=DATA.categories.find(c=>c.id===id); openCatMod
 function delCat(id){ if(!confirm('删除分类会导致关联壁纸失去分类，确定？'))return; DATA.categories=DATA.categories.filter(c=>c.id!==id); save(); renderCurrentTab(); toast('已删除'); }
 
 function openCatModal(){
-  const c = editingItem || {name:'',type:'normal',sort:DATA.categories.length+1,status:true,children:[]};
+  const c = editingItem || {name:'',type:'normal',sort:DATA.categories.length+1,status:true,link:'',children:[]};
   const subs = (c.children||[]).map((s,i)=>
     `<div class="sub-cat-item" data-idx="${i}">
       <input value="${s.name}" class="sub-name" placeholder="二级分类名称">
+      <input value="${s.link||''}" class="sub-link" placeholder="跳转URL（可选）" style="flex:1">
       <button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">删除</button>
     </div>`
   ).join('');
@@ -562,6 +563,9 @@ function openCatModal(){
         <div class="form-hint">UGC类型的分类会显示投稿入口</div>
       </div>
     </div>
+    <div class="form-group"><label class="form-label">跳转链接</label><input class="form-input" id="f_link" value="${c.link||''}" placeholder="可选，配置后前台点击一级分类直接跳转此URL而非切换分类">
+      <div class="form-hint">留空 = 正常切换分类；填写URL = 点击后新窗口打开该链接</div>
+    </div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">排序<span class="req">*</span></label><input class="form-input" id="f_sort" type="number" value="${c.sort}"></div>
       <div class="form-group"><label class="form-label">状态<span class="req">*</span></label>
@@ -570,7 +574,7 @@ function openCatModal(){
     </div>
     <div class="form-group">
       <label class="form-label">二级分类 <button class="btn btn-sm" onclick="addSubCat()" style="margin-left:8px">+ 添加</button></label>
-      <div class="form-hint">不配置二级分类时，壁纸直接挂在一级分类下</div>
+      <div class="form-hint">不配置二级分类时，壁纸直接挂在一级分类下。每个二级分类可单独配跳转链接</div>
       <div class="sub-cat-list" id="subCatList">${subs}</div>
     </div>`;
   document.getElementById('adminModal').classList.add('show');
@@ -579,7 +583,7 @@ function addSubCat(){
   const list = document.getElementById('subCatList');
   const div = document.createElement('div');
   div.className='sub-cat-item';
-  div.innerHTML=`<input value="" class="sub-name" placeholder="二级分类名称"><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">删除</button>`;
+  div.innerHTML=`<input value="" class="sub-name" placeholder="二级分类名称"><input value="" class="sub-link" placeholder="跳转URL（可选）" style="flex:1"><button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">删除</button>`;
   list.appendChild(div);
 }
 
@@ -912,12 +916,14 @@ function saveBanner(){
 function saveCat(){
   const subItems = [...document.querySelectorAll('#subCatList .sub-cat-item')].map((el,i)=>{
     const name = el.querySelector('.sub-name').value.trim();
-    return name ? {id: (editingItem && editingItem.children && editingItem.children[i]) ? editingItem.children[i].id : Date.now()+i, name, sort:i+1, status:true} : null;
+    const link = el.querySelector('.sub-link') ? el.querySelector('.sub-link').value.trim() : '';
+    return name ? {id: (editingItem && editingItem.children && editingItem.children[i]) ? editingItem.children[i].id : Date.now()+i, name, sort:i+1, status:true, link} : null;
   }).filter(Boolean);
   const obj = {
     id: editingItem ? editingItem.id : nextId(DATA.categories),
     name: document.getElementById('f_name').value,
     type: document.getElementById('f_type').value,
+    link: document.getElementById('f_link').value.trim(),
     sort: parseInt(document.getElementById('f_sort').value)||1,
     status: document.getElementById('f_status').value==='true',
     children: subItems,

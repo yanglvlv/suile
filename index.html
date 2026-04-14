@@ -341,7 +341,7 @@ let currentList = [], modalIdx = 0;
 let currentPage = 1;
 const PAGE_SIZE = 20;
 
-const DATA_VERSION = 'v2.3';
+const DATA_VERSION = 'v2.4';
 
 // ===== Load =====
 function load(){
@@ -361,10 +361,10 @@ function getDefaultData(){
       {id:3,img:'https://picsum.photos/id/32/800/300',tag:'周年庆典',link:'',sort:3,status:true},
     ],
     categories:[
-      {id:1,name:'官方壁纸',type:'normal',sort:1,status:true,children:[
-        {id:11,name:'版本KV',sort:1,status:true},{id:13,name:'活动/节日壁纸',sort:2,status:true}
+      {id:1,name:'官方壁纸',type:'normal',sort:1,status:true,link:'',children:[
+        {id:11,name:'版本KV',sort:1,status:true,link:''},{id:13,name:'活动/节日壁纸',sort:2,status:true,link:''}
       ]},
-      {id:2,name:'同人作品',type:'ugc',sort:2,status:true,children:[]},
+      {id:2,name:'同人作品',type:'ugc',sort:2,status:true,link:'',children:[]},
     ],
     wallpapers:[
       // ===== 版本KV（36张横版）=====
@@ -523,9 +523,12 @@ function renderNav(){
     normal:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;vertical-align:-2px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>',
     ugc:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;vertical-align:-2px"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
   };
-  nav.innerHTML = cats.map(c=>
-    `<button class="main-nav-item ${c.id===activeCatId?'active':''}" data-id="${c.id}" onclick="switchCat(${c.id})">${icons[c.type]||''}${c.name}</button>`
-  ).join('');
+  nav.innerHTML = cats.map(c=>{
+    if(c.link){
+      return `<a class="main-nav-item" href="${c.link}" target="_blank">${icons[c.type]||''}${c.name}</a>`;
+    }
+    return `<button class="main-nav-item ${c.id===activeCatId?'active':''}" data-id="${c.id}" onclick="switchCat(${c.id})">${icons[c.type]||''}${c.name}</button>`;
+  }).join('');
 }
 
 // ===== Banner Carousel =====
@@ -608,7 +611,12 @@ function renderCatTabs(){
     return;
   }
   tabs.innerHTML = `<button class="cat-tab ${activeSubCatId===null?'active':''}" onclick="switchSubCat(null)">全部</button>`
-    + subs.map(s=>`<button class="cat-tab ${activeSubCatId===s.id?'active':''}" onclick="switchSubCat(${s.id})">${s.name}</button>`).join('');
+    + subs.map(s=>{
+      if(s.link){
+        return `<a class="cat-tab" href="${s.link}" target="_blank">${s.name}</a>`;
+      }
+      return `<button class="cat-tab ${activeSubCatId===s.id?'active':''}" onclick="switchSubCat(${s.id})">${s.name}</button>`;
+    }).join('');
 }
 
 function switchSubCat(subId){

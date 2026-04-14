@@ -207,6 +207,13 @@
 <tr><td>官方壁纸 (normal)</td><td>下方展示二级分类 Tab 栏；壁纸使用分组 Grid 布局（每5张一组，1大+4小交替）；每页20条分页</td></tr>
 <tr><td>同人作品 (ugc)</td><td>不展示二级分类 Tab；显示投稿入口横幅+公告活动区；壁纸使用瀑布流布局（column-count:4，横竖混排）；不分页全展示</td></tr>
 </table>
+<h4>跳转链接（一级/二级分类通用）</h4>
+<ul>
+<li>一级分类和二级分类均支持配置<strong>跳转链接（link）</strong>字段</li>
+<li><strong>link 为空</strong>：点击正常切换分类/筛选壁纸（默认行为）</li>
+<li><strong>link 有值</strong>：点击后<strong>新窗口打开</strong>该 URL（<code>target="_blank"</code>），不切换分类</li>
+<li>此功能用于运营将某个分类 Tab 指向外部专题页、活动页等</li>
+</ul>
 </div>
 
 <div class="feat-mock">
@@ -610,7 +617,8 @@
 <h4>一级分类</h4>
 <ul style="font-size:12px">
 <li>可新增、编辑、删除一级分类</li>
-<li>编辑弹窗内容：<strong>分类名称<span style="color:#e04040">*</span>、类型<span style="color:#e04040">*</span>（普通/UGC投稿类）、排序<span style="color:#e04040">*</span>、启用状态<span style="color:#e04040">*</span></strong></li>
+<li>编辑弹窗内容：<strong>分类名称<span style="color:#e04040">*</span>、类型<span style="color:#e04040">*</span>（普通/UGC投稿类）、跳转链接、排序<span style="color:#e04040">*</span>、启用状态<span style="color:#e04040">*</span></strong></li>
+<li><strong>跳转链接</strong>：可选字段。留空时前台点击正常切换分类；填写 URL 后前台点击该分类将<strong>新窗口打开链接</strong>而非切换分类</li>
 <li>类型为「普通」的分类支持在弹窗内直接添加/管理二级子分类</li>
 <li>类型为「UGC投稿类」的分类，前台会自动显示投稿入口横幅</li>
 <li>删除一级分类时提示"关联壁纸将失去分类"的确认弹窗</li>
@@ -618,7 +626,8 @@
 <h4>二级分类</h4>
 <ul style="font-size:12px">
 <li>在一级分类的编辑弹窗内嵌管理，支持动态增删行</li>
-<li>每个二级分类只需填写<strong>名称</strong>，排序按添加顺序自动生成</li>
+<li>每个二级分类填写<strong>名称</strong>和<strong>跳转链接</strong>（可选），排序按添加顺序自动生成</li>
+<li><strong>跳转链接</strong>：留空时前台点击 Tab 正常筛选壁纸；填写 URL 后前台点击该 Tab 将<strong>新窗口打开链接</strong></li>
 <li>不配置二级分类时，壁纸直接挂在一级分类下</li>
 </ul>
 </div>
