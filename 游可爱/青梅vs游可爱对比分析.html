@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>青梅 vs 游可爱 — 直接对比</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #0f1219;
+    min-height: 100vh;
+    color: #d4d4d4;
+    padding: 40px 20px;
+    line-height: 1.8;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+
+  /* 标题 */
+  .header { text-align: center; margin-bottom: 48px; }
+  .header h1 {
+    font-size: 32px; font-weight: 900; color: #fff;
+    margin-bottom: 8px;
+  }
+  .header h1 span { color: #66bb6a; }
+  .header p { font-size: 14px; color: rgba(255,255,255,0.35); }
+
+  /* 通用分隔 */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    margin: 40px 0;
+  }
+
+  /* 板块标题 */
+  .section-title {
+    font-size: 22px; font-weight: 900; color: #fff;
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title .emoji { font-size: 24px; }
+  .section-desc {
+    font-size: 13px; color: rgba(255,255,255,0.35);
+    margin-bottom: 24px;
+  }
+
+  /* ===== 青梅审核 — 核心板块 ===== */
+  .audit-section {
+    background: linear-gradient(135deg, rgba(76,175,80,0.1), rgba(76,175,80,0.02));
+    border: 2px solid rgba(76,175,80,0.25);
+    border-radius: 20px;
+    padding: 36px 32px;
+  }
+  .audit-title {
+    font-size: 20px; font-weight: 900; color: #81c784;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .audit-flow {
+    display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .audit-step {
+    padding: 10px 16px; border-radius: 10px;
+    font-size: 13px; font-weight: 700; white-space: nowrap;
+  }
+  .audit-step.auto {
+    background: rgba(255,193,7,0.12); border: 1.5px solid rgba(255,193,7,0.35); color: #ffe082;
+  }
+  .audit-step.check {
+    background: rgba(76,175,80,0.12); border: 1.5px solid rgba(76,175,80,0.3); color: #a5d6a7;
+  }
+  .audit-step.secure {
+    background: rgba(244,67,54,0.08); border: 1.5px solid rgba(244,67,54,0.25); color: #ef9a9a;
+  }
+  .audit-step.finance {
+    background: rgba(33,150,243,0.08); border: 1.5px solid rgba(33,150,243,0.25); color: #90caf9;
+  }
+  .audit-arrow { color: rgba(76,175,80,0.35); font-weight: 900; font-size: 16px; }
+  .audit-side {
+    display: inline-block; margin-top: 8px;
+    padding: 6px 14px; border-radius: 8px; font-size: 12px;
+    background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.12); color: rgba(255,255,255,0.4);
+  }
+
+  .audit-points {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin-top: 20px;
+  }
+  .audit-point {
+    padding: 20px; border-radius: 14px;
+    background: rgba(255,255,255,0.025); border: 1px solid rgba(76,175,80,0.15);
+  }
+  .audit-point h4 {
+    font-size: 15px; font-weight: 800; color: #a5d6a7; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .audit-point p { font-size: 13px; color: rgba(255,255,255,0.55); }
+  .audit-point p strong { color: rgba(255,255,255,0.85); }
+
+  .compare-note {
+    margin-top: 20px; padding: 14px 18px; border-radius: 10px;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+    font-size: 13px; color: rgba(255,255,255,0.5);
+  }
+  .compare-note strong { color: rgba(255,255,255,0.8); }
+  .compare-note .vs-label {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 800; margin-right: 4px;
+  }
+  .compare-note .vs-qm { background: rgba(76,175,80,0.15); color: #a5d6a7; }
+  .compare-note .vs-yka { background: rgba(66,165,245,0.1); color: #90caf9; }
+
+  /* ===== 未来方向 ===== */
+  .future-section {
+    background: linear-gradient(135deg, rgba(255,193,7,0.08), rgba(255,152,0,0.02));
+    border: 2px solid rgba(255,193,7,0.2);
+    border-radius: 20px;
+    padding: 36px 32px;
+  }
+  .future-title {
+    font-size: 20px; font-weight: 900; color: #ffe082;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .future-desc {
+    font-size: 14px; color: rgba(255,255,255,0.45); margin-bottom: 24px;
+  }
+  .future-flow {
+    display: flex; align-items: center; gap: 0;
+    margin-bottom: 24px;
+  }
+  .future-node {
+    flex: 1; text-align: center; padding: 18px 12px; position: relative;
+  }
+  .future-node .fn-step {
+    font-size: 12px; font-weight: 900; color: rgba(255,193,7,0.6);
+    margin-bottom: 4px;
+  }
+  .future-node .fn-icon { font-size: 32px; margin-bottom: 6px; }
+  .future-node .fn-name { font-size: 14px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+  .future-node .fn-desc { font-size: 11px; color: rgba(255,255,255,0.4); }
+  .future-node::after {
+    content: '→'; position: absolute; right: -8px; top: 50%;
+    transform: translateY(-50%); color: rgba(255,193,7,0.3);
+    font-size: 20px; font-weight: 900;
+  }
+  .future-node:last-child::after { display: none; }
+
+  .future-points { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .future-point {
+    padding: 18px; border-radius: 12px;
+    background: rgba(255,255,255,0.025); border: 1px solid rgba(255,193,7,0.12);
+    text-align: center;
+  }
+  .future-point .fp-icon { font-size: 28px; margin-bottom: 6px; }
+  .future-point h4 { font-size: 14px; font-weight: 800; color: #ffe082; margin-bottom: 6px; }
+  .future-point p { font-size: 12px; color: rgba(255,255,255,0.45); }
+
+  /* ===== 游可爱优点 ===== */
+  .yka-section {
+    background: rgba(66,165,245,0.04);
+    border: 1px solid rgba(66,165,245,0.12);
+    border-radius: 16px;
+    padding: 28px 28px;
+  }
+  .yka-title {
+    font-size: 18px; font-weight: 800; color: rgba(100,181,246,0.8);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .yka-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .yka-card {
+    padding: 18px; border-radius: 12px;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(66,165,245,0.08);
+  }
+  .yka-card .yk-icon { font-size: 24px; margin-bottom: 6px; }
+  .yka-card h4 { font-size: 14px; font-weight: 700; color: rgba(144,202,249,0.75); margin-bottom: 6px; }
+  .yka-card p { font-size: 12px; color: rgba(255,255,255,0.4); }
+  .yka-card p strong { color: rgba(255,255,255,0.6); }
+
+  /* ===== 直接对比表 ===== */
+  .compare-table {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    border-radius: 14px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .compare-table th {
+    padding: 14px 18px; font-size: 13px; font-weight: 800;
+    text-align: left; background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .compare-table th:first-child { color: rgba(255,255,255,0.5); width: 140px; }
+  .compare-table th:nth-child(2) { color: #81c784; }
+  .compare-table th:nth-child(3) { color: rgba(100,181,246,0.7); }
+  .compare-table td {
+    padding: 12px 18px; font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top;
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table td:first-child {
+    font-weight: 700; color: rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.02);
+  }
+  .compare-table td:nth-child(2) { color: rgba(255,255,255,0.7); }
+  .compare-table td:nth-child(3) { color: rgba(255,255,255,0.5); }
+  .compare-table td strong { color: rgba(255,255,255,0.9); }
+  .compare-table .win {
+    position: relative;
+  }
+  .compare-table .win::before {
+    content: '✓'; display: inline-block;
+    margin-right: 4px; color: #66bb6a; font-weight: 900;
+  }
+  .compare-table .yka-win::before {
+    content: '✓'; display: inline-block;
+    margin-right: 4px; color: #42a5f5; font-weight: 900;
+  }
+
+  /* ===== 总结 ===== */
+  .summary {
+    background: rgba(76,175,80,0.06);
+    border: 2px solid rgba(76,175,80,0.2);
+    border-radius: 16px;
+    padding: 28px 28px;
+    font-size: 14px; color: rgba(255,255,255,0.65);
+    line-height: 2;
+  }
+  .summary strong { color: #fff; }
+  .summary .green { color: #81c784; font-weight: 700; }
+  .summary .blue { color: #64b5f6; }
+  .summary .yellow { color: #ffe082; }
+
+  .footer {
+    text-align: center; margin-top: 40px; padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.12); font-size: 11px;
+  }
+
+  /* ===== 功能树 ===== */
+  .tree-wrap {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .tree-panel {
+    border-radius: 18px; padding: 28px 24px; position: relative; overflow: hidden;
+  }
+  .tree-panel.qm-tree {
+    background: linear-gradient(135deg, rgba(76,175,80,0.08), rgba(76,175,80,0.02));
+    border: 2px solid rgba(76,175,80,0.2);
+  }
+  .tree-panel.yka-tree {
+    background: linear-gradient(135deg, rgba(66,165,245,0.06), rgba(66,165,245,0.015));
+    border: 1.5px solid rgba(66,165,245,0.15);
+  }
+  .tree-panel .tree-root {
+    font-size: 18px; font-weight: 900; margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tree-panel.qm-tree .tree-root { color: #81c784; }
+  .tree-panel.yka-tree .tree-root { color: #64b5f6; }
+  .tree-panel .tree-root .tree-tag {
+    font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 10px;
+  }
+  .qm-tree .tree-root .tree-tag { background: rgba(76,175,80,0.15); color: #a5d6a7; }
+  .yka-tree .tree-root .tree-tag { background: rgba(66,165,245,0.1); color: #90caf9; }
+
+  .tree-branch { margin-bottom: 14px; }
+  .tree-branch .branch-name {
+    font-size: 14px; font-weight: 800; margin-bottom: 6px;
+    padding-left: 20px; position: relative;
+  }
+  .tree-branch .branch-name::before {
+    content: ''; position: absolute; left: 0; top: 4px;
+    width: 12px; height: 12px; border-radius: 4px;
+  }
+  .qm-tree .branch-name { color: rgba(255,255,255,0.8); }
+  .qm-tree .branch-name::before { background: rgba(76,175,80,0.35); }
+  .yka-tree .branch-name { color: rgba(255,255,255,0.7); }
+  .yka-tree .branch-name::before { background: rgba(66,165,245,0.3); }
+
+  .tree-leaves {
+    padding-left: 20px; border-left: 2px solid rgba(255,255,255,0.06);
+    margin-left: 5px;
+  }
+  .qm-tree .tree-leaves { border-left-color: rgba(76,175,80,0.15); }
+  .yka-tree .tree-leaves { border-left-color: rgba(66,165,245,0.1); }
+  .tree-leaf {
+    font-size: 12px; color: rgba(255,255,255,0.5); padding: 2px 0 2px 12px;
+    position: relative;
+  }
+  .tree-leaf::before {
+    content: '─'; position: absolute; left: -2px; top: 2px;
+    color: rgba(255,255,255,0.1); font-size: 12px;
+  }
+  .tree-leaf strong { color: rgba(255,255,255,0.75); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- 标题 -->
+  <div class="header">
+    <h1><span>青梅</span> vs 游可爱 — 直接对比</h1>
+    <p>大家都对着两个系统用，直接说区别</p>
+  </div>
+
+  <!-- ===== 0. 两棵功能树 ===== -->
+  <div class="section-title"><span class="emoji">🌳</span> 先看全貌：两个平台各有什么</div>
+  <div class="section-desc">左边青梅、右边游可爱，功能模块一目了然</div>
+
+  <div class="tree-wrap">
+    <!-- 青梅功能树 -->
+    <div class="tree-panel qm-tree">
+      <div class="tree-root">🌿 青梅系统 <span class="tree-tag">结算中台</span></div>
+
+      <div class="tree-branch">
+        <div class="branch-name">📋 政策配置</div>
+        <div class="tree-leaves">
+          <div class="tree-leaf">活动创建 / 关联产品</div>
+          <div class="tree-leaf">多算子引擎（阶梯/排名/达标/分成/累进…）</div>
+        </div>
+      </div>
+
+      <div class="tree-branch">
+        <div class="branch-name">📥 数据获取</div>
+        <div class="tree-leaves">
+          <div class="tree-leaf">对接数据源拉取直播/视频/流水数据</div>
+          <div class="tree-leaf"><strong>未来：自动获取</strong>，配好活动系统自己拉 <span style="color:#ffe082;font-size:10px;">🔨</span></div>
+        </div>
+      </div>
+
+      <div class="tree-branch">
+        <div class="branch-name">🧮 薪酬核算</div>
+        <div class="tree-leaves">
+          <div class="tree-leaf">按配置规则自动计算薪酬</div>
+          <div class="tree-leaf"><strong>低代码画布</strong>拖拽配规则</div>
+          <div class="tree-leaf">支持复杂公式、多维度计算</div>
+          <div class="tree-leaf"><strong>未来：配置即结算</strong>，全自动 <span style="color:#ffe082;font-size:10px;">🔨</span></div>
+        </div>
+      </div>
+
+      <div class="tree-branch">
+        <div class="branch-name">🔐 审核管控（核心）</div>
+        <div class="tree-leaves">
+          <div class="tree-leaf"><strong>达人小程序确认</strong>薪酬金额</div>
+          <div class="tree-leaf"><strong>财务审批</strong>（履约单→付款单→终审）</div>
+          <div class="tree-leaf"><strong>OA多级审批</strong>（不分金额大小，统一走审批）</div>
+          <div class="tree-leaf">全链路可溯源、每步留痕</div>
+        </div>
+      </div>
+
+      <div class="tree-branch">
+        <div class="branch-name">📝 合同管理</div>
+        <div class="tree-leaves">
+          <div class="tree-leaf">模板合同库</div>
+          <div class="tree-leaf"><strong>CMP电子签约</strong></div>
+          <div class="tree-leaf"><strong>支持二方合同</strong></div>
+          <div class="tree-leaf">到期自动提醒</div>
+        </div>
+      </div>
+
+      <div class="tree-branch">
+        <div class="branch-name">🏦 财务打款</div>
+        <div class="tree-leaves">
+          <div class="tree-leaf">履约单 / 付款单拆分</div>
+          <div class="tree-leaf">对公 / 对私 / 分期</div>
+          <div class="tree-leaf"><strong>FPP付款系统</strong>对接</div>
+        </div>
+      </div>
+
+      <div class="tree-branch">
+        <div class="branch-name">👥 达人/机构管理</div>
+        <div class="tree-leaves">
+          <div class="tree-leaf">运营录入签约达人/机构</div>
+          <div class="tree-leaf">SMS供应商系统对接</div>
+          <div class="tree-leaf">达人小程序端（确认/签约/发票）</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 游可爱功能树 -->
+    <div class="tree-panel yka-tree">
+      <div class="tree-root">🎮 游可爱 <span class="tree-tag">交易平台</span></div>
+
+      <div class="tree-branch">
+        <div class="branch-name">👥 达人广场</div>
+        <div class="tree-leaves">
+          <div class="tree-leaf"><strong>开放入驻</strong>，达人/MCN自助注册</div>
+          <div class="tree-leaf">达人画像、标签体系</div>
+          <div class="tree-leaf">多维筛选、智能推荐匹配</div>
+        </div>
+      </div>
+
+      <div class="tree-branch">
+        <div class="branch-name">📋 任务发布</div>
+        <div class="tree-leaves">
+          <div class="tree-leaf">项目组发布合作需求</div>
+          <div class="tree-leaf">一口价 / 赏金模式</div>
+          <div class="tree-leaf">任务广场，达人自主报名</div>
+        </div>
+      </div>
+
+      <div class="tree-branch">
+        <div class="branch-name">🤝 撮合交易</div>
+        <div class="tree-leaves">
+          <div class="tree-leaf">达人接单 → 确认合作</div>
+          <div class="tree-leaf">MCN代理接单</div>
+          <div class="tree-leaf">在线协议签署</div>
+        </div>
+      </div>
+
+      <div class="tree-branch">
+        <div class="branch-name">📊 数据追踪</div>
+        <div class="tree-leaves">
+          <div class="tree-leaf"><strong>T+1自动回收作品数据</strong></div>
+          <div class="tree-leaf">B站/抖音/快手/微博多平台</div>
+          <div class="tree-leaf">持续追踪数据变化趋势</div>
+        </div>
+      </div>
+
+      <div class="tree-branch">
+        <div class="branch-name">✅ 验收结算</div>
+        <div class="tree-leaves">
+          <div class="tree-leaf">项目组验收内容</div>
+          <div class="tree-leaf">通过即触发结算</div>
+          <div class="tree-leaf">自动到达人/MCN账户</div>
+        </div>
+      </div>
+
+      <div class="tree-branch">
+        <div class="branch-name">🏢 MCN管理</div>
+        <div class="tree-leaves">
+          <div class="tree-leaf">MCN标准化入驻</div>
+          <div class="tree-leaf">管理旗下达人、统一报价</div>
+          <div class="tree-leaf">开票结算、0平台服务费</div>
+        </div>
+      </div>
+
+      <div class="tree-branch" style="opacity:0.5;">
+        <div class="branch-name" style="color:rgba(255,255,255,0.35);">🔐 审核管控</div>
+        <div class="tree-leaves">
+          <div class="tree-leaf" style="color:rgba(255,255,255,0.25);">项目组验收 = 全部审核</div>
+          <div class="tree-leaf" style="color:rgba(255,255,255,0.25);">无多级审批、无财务闭环、无合同管理</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== 1. 直接对比表（紧跟功能树） ===== -->
+  <div class="section-title"><span class="emoji">⚖️</span> 直接对比：能力差在哪</div>
+  <div class="section-desc">看完功能树，再一张表对比差异</div>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>能力维度</th>
+        <th>🌿 青梅</th>
+        <th>🎮 游可爱</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>审核深度</td>
+        <td class="win"><strong>多层穿透审核</strong>（达人确认→财务→OA→打款）</td>
+        <td>项目组验收通过就行</td>
+      </tr>
+      <tr>
+        <td>合同管理</td>
+        <td class="win"><strong>模板合同 + CMP电子签 + 二方合同</strong>，全生命周期管理</td>
+        <td>在线协议，比较简单</td>
+      </tr>
+      <tr>
+        <td>财务管控</td>
+        <td class="win"><strong>履约单/付款单拆分</strong>，FPP打款，对公对私分期</td>
+        <td>验收通过自动到账</td>
+      </tr>
+      <tr>
+        <td>薪酬规则</td>
+        <td class="win"><strong>多算子引擎</strong>（阶梯/排名/达标/分成/累进等）</td>
+        <td>一口价 / 赏金</td>
+      </tr>
+      <tr>
+        <td>低代码配置</td>
+        <td class="win"><strong>画布拖拽引擎</strong>，运营自己配薪酬规则</td>
+        <td>没有</td>
+      </tr>
+      <tr>
+        <td>溯源能力</td>
+        <td class="win"><strong>全链路留痕</strong>，谁操作、何时、什么结果全可查</td>
+        <td>基础操作记录</td>
+      </tr>
+      <tr>
+        <td>数据获取</td>
+        <td>正在建设智能化自动获取 <span style="color:#ffe082;font-size:11px;">🔨 建设中</span></td>
+        <td class="yka-win"><strong>T+1自动回收</strong>，多平台数据</td>
+      </tr>
+      <tr>
+        <td>达人资源</td>
+        <td>签约达人为主，运营录入</td>
+        <td class="yka-win"><strong>开放入驻</strong>，达人/MCN自助注册，量大</td>
+      </tr>
+      <tr>
+        <td>交易效率</td>
+        <td>流程长但安全（该审的必须审）</td>
+        <td class="yka-win"><strong>链路短，到账快</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="divider"></div>
+
+  <!-- ===== 2. 青梅最强的点：审核 ===== -->
+  <div class="section-title"><span class="emoji">🔐</span> 青梅最强的能力：审核管控</div>
+  <div class="section-desc">这是游可爱完全做不了的事</div>
+
+  <div class="audit-section">
+    <div class="audit-title">完整审核链路 — 每一分钱都有人把关</div>
+
+    <!-- 审核流程 -->
+    <div class="audit-flow">
+      <div class="audit-step auto">⚡ 配置活动</div>
+      <div class="audit-arrow">→</div>
+      <div class="audit-step auto">📥 数据获取</div>
+      <div class="audit-arrow">→</div>
+      <div class="audit-step auto">🧮 自动结算</div>
+      <div class="audit-arrow">→</div>
+      <div class="audit-step check">👤 达人确认</div>
+      <div class="audit-arrow">→</div>
+      <div class="audit-step finance">🏦 财务审批</div>
+      <div class="audit-arrow">→</div>
+      <div class="audit-step secure">📋 OA多级审批</div>
+      <div class="audit-arrow">→</div>
+      <div class="audit-step finance">💳 FPP打款</div>
+    </div>
+
+    <!-- 审核四个关键点 -->
+    <div class="audit-points">
+      <div class="audit-point">
+        <h4>📋 OA多级审批</h4>
+        <p>不管金额大小，<strong>统一走多级审批</strong>。不是随便点个"通过"就完事，<strong>每一层都有对应负责人</strong></p>
+      </div>
+      <div class="audit-point">
+        <h4>👤 达人亲自确认</h4>
+        <p>达人在小程序上<strong>自己确认薪酬金额</strong>，不是运营说多少就是多少，<strong>双方确认减少扯皮</strong></p>
+      </div>
+      <div class="audit-point">
+        <h4>📝 合同全管理</h4>
+        <p>模板合同库 + CMP电子签约，<strong>支持二方合同</strong>，每笔钱都有合同对应。到期自动提醒，不会漏</p>
+      </div>
+      <div class="audit-point">
+        <h4>🏦 财务闭环</h4>
+        <p>履约单 → 付款单 → FPP打款，<strong>钱从哪出、付给谁、多少钱，全链路可查</strong></p>
+      </div>
+    </div>
+
+    <!-- 和游可爱直接对比 -->
+    <div class="compare-note">
+      <span class="vs-label vs-yka">游可爱</span> 的审核是什么？——<strong>项目组看一下内容，觉得行就给钱</strong>。没有多级审批、没有财务闭环、没有合同管理。<br>
+      说白了：<span class="vs-label vs-qm">青梅</span> 管的是<strong>"这笔钱该不该出、审批过没过、合同签没签、谁批的"</strong>；<span class="vs-label vs-yka">游可爱</span> 管的是<strong>"内容交了没、质量行不行"</strong>。<br>
+      <strong>层次完全不一样。</strong>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== 2. 青梅未来方向：智能数据获取+自动结算 ===== -->
+  <div class="section-title"><span class="emoji">🚀</span> 青梅未来方向：智能数据获取 + 自动结算</div>
+  <div class="section-desc">配置好活动规则 → 数据自己拉 → 薪酬自己算 → 人只管审批</div>
+
+  <div class="future-section">
+    <div class="future-title">🤖 目标：配置即结算</div>
+    <div class="future-desc">运营不用再手动导数据、算钱，系统全自动搞定</div>
+
+    <!-- 自动化流程 -->
+    <div class="future-flow">
+      <div class="future-node">
+        <div class="fn-step">STEP 1</div>
+        <div class="fn-icon">⚙️</div>
+        <div class="fn-name">配置活动规则</div>
+        <div class="fn-desc">低代码画布拖拽<br>选算子、定规则</div>
+      </div>
+      <div class="future-node">
+        <div class="fn-step">STEP 2</div>
+        <div class="fn-icon">📥</div>
+        <div class="fn-name">自动获取数据</div>
+        <div class="fn-desc">系统自动拉取<br>直播/视频/流水数据</div>
+      </div>
+      <div class="future-node">
+        <div class="fn-step">STEP 3</div>
+        <div class="fn-icon">🧮</div>
+        <div class="fn-name">自动核算薪酬</div>
+        <div class="fn-desc">按规则自动计算<br>不用人工算Excel</div>
+      </div>
+      <div class="future-node">
+        <div class="fn-step">STEP 4</div>
+        <div class="fn-icon">✅</div>
+        <div class="fn-name">审批 → 打款</div>
+        <div class="fn-desc">该审的审，该批的批<br>最后FPP打款</div>
+      </div>
+    </div>
+
+    <!-- 三个支撑能力 -->
+    <div class="future-points">
+      <div class="future-point">
+        <div class="fp-icon">🧩</div>
+        <h4>低代码画布</h4>
+        <p>运营自己拖拽建规则<br>不用找开发写代码</p>
+      </div>
+      <div class="future-point">
+        <div class="fp-icon">🔢</div>
+        <h4>多类型算子</h4>
+        <p>阶梯/排名/达标/分成<br>裂变/累进/自定义…</p>
+      </div>
+      <div class="future-point">
+        <div class="fp-icon">📡</div>
+        <h4>智能数据接入</h4>
+        <p>对接各平台数据源<br>自动拉、自动清洗</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== 4. 游可爱的优点 ===== -->
+  <div class="section-title"><span class="emoji">🎮</span> 游可爱的优点</div>
+  <div class="section-desc">客观说，这几个方面确实不错</div>
+
+  <div class="yka-section">
+    <div class="yka-title">🎮 游可爱做得好的地方</div>
+    <div class="yka-grid">
+      <div class="yka-card">
+        <div class="yk-icon">👥</div>
+        <h4>达人库大</h4>
+        <p>开放入驻，<strong>达人/MCN自己来注册</strong>，量大面广。达人画像、多维筛选做得比较全</p>
+      </div>
+      <div class="yka-card">
+        <div class="yk-icon">📊</div>
+        <h4>数据看得到</h4>
+        <p><strong>T+1自动回收作品数据</strong>，B站/抖音/快手都接了，持续追踪效果变化</p>
+      </div>
+      <div class="yka-card">
+        <div class="yk-icon">⚡</div>
+        <h4>交易快</h4>
+        <p>接单 → 交稿 → 验收 → 给钱，<strong>链路短、到账快</strong>。适合小额快速结算场景</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== 5. 总结 ===== -->
+  <div class="summary">
+    <strong style="font-size:16px;">📌 一句话说清楚：</strong><br><br>
+    <span class="green">青梅</span> = <strong>审核严、管得住、查得到</strong>。多层审批、合同管理、财务闭环、全链路可溯源，<strong>管钱管合规的事只有青梅能做</strong>。<br>
+    未来方向是 <span class="yellow">智能数据获取 + 自动结算</span>：配置好规则，数据自己拉，薪酬自己算，<strong>人只管审批就行</strong>。<br><br>
+    <span class="blue">游可爱</span> 的优势在<strong>达人库大、数据看得见、交易快</strong>，适合找人和快速小额结算。<br><br>
+    <strong>结论：涉及到管钱、管合规、管安全 → 青梅。找人看数据 → 游可爱。两个系统各有各的活。</strong>
+  </div>
+
+  <div class="footer">
+    青梅 vs 游可爱 直接对比 · v7 · 2026.04
+  </div>
+
+</div>
+</body>
+</html>

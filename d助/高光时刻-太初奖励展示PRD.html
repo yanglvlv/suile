@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>D助 - 高光时刻·太初奖励展示 PRD</title>
+<style>
+  body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; color: #333; line-height: 1.8; max-width: 960px; margin: 0 auto; padding: 20px 40px; background: #fff; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 18px 0; }
+  th, td { border: 1px solid #d0d0d0; padding: 6px 10px; text-align: left; font-size: 13px; }
+  th { background-color: #f0f2f5; font-weight: bold; }
+  h1 { font-size: 22px; border-bottom: 2px solid #4f6ef7; padding-bottom: 8px; }
+  h2 { font-size: 18px; margin-top: 28px; border-left: 4px solid #4f6ef7; padding-left: 10px; }
+  h3 { font-size: 15px; margin-top: 20px; }
+  h4 { font-size: 14px; margin-top: 16px; }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 4px; }
+  code { background: #f3f4f6; padding: 1px 5px; border-radius: 3px; font-size: 12px; color: #c7254e; }
+  pre { background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 4px; padding: 12px 16px; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; font-family: "SF Mono", "Menlo", monospace; }
+  blockquote { border-left: 4px solid #f59e0b; background: #fffbeb; margin: 12px 0; padding: 10px 16px; color: #92400e; }
+  .tag-new { color: #ef4444; font-weight: bold; }
+  .tag-change { color: #d97706; font-weight: bold; }
+  .section-sep { border: none; border-top: 1px solid #e5e7eb; margin: 24px 0; }
+  strong { color: #1a1a2e; }
+</style>
+</head>
+<body>
+
+<h1>D助 - 高光时刻·新增太初奖励展示 PRD</h1>
+
+<table>
+<tr><th style="width:120px;">文档属性</th><th>内容</th></tr>
+<tr><td><strong>文档版本</strong></td><td>V1.0</td></tr>
+<tr><td><strong>产品名称</strong></td><td>D助</td></tr>
+<tr><td><strong>模块名称</strong></td><td>高光时刻 - 太初奖励展示 + 红点提示</td></tr>
+<tr><td><strong>优先级</strong></td><td>P1</td></tr>
+<tr><td><strong>涉及端</strong></td><td>移动端（D助App）</td></tr>
+<tr><td><strong>文档状态</strong></td><td>初稿</td></tr>
+<tr><td><strong>创建日期</strong></td><td>2026-03-31</td></tr>
+</table>
+
+<hr class="section-sep">
+
+<h2>一、需求背景</h2>
+
+<p>当前D助「高光时刻」模块仅支持<strong>增幅</strong>、<strong>强化</strong>和<strong>土罐</strong>三类高光记录的展示与分享。太初装备作为游戏中重要的装备获取途径，获得太初装备同样是玩家值得记录和炫耀的高光时刻，但目前缺少对应的展示入口。</p>
+
+<p>本次需求目标：</p>
+<ol>
+<li>高光时刻详情页<strong>新增「太初」Tab</strong>，支持太初装备获取记录的展示与分享</li>
+<li>D助首页「高光时刻」模块入口<strong>增加红点提示</strong>，当有新的高光数据（增幅/强化/土罐/太初）时提醒用户查看</li>
+</ol>
+
+<hr class="section-sep">
+
+<h2>二、功能详细设计</h2>
+
+<h3>2.1 首页入口 - 红点提示 <span class="tag-new">[新增]</span></h3>
+
+<p><strong>位置：</strong>D助首页「高光时刻」标题右侧</p>
+
+<h4>交互规则</h4>
+<table>
+<tr><th style="width:130px;">规则</th><th>说明</th></tr>
+<tr><td><strong>红点出现条件</strong></td><td>用户有<strong>未查看</strong>的新高光时刻记录（包含增幅/强化/土罐/太初任一类型）</td></tr>
+<tr><td><strong>红点消除条件</strong></td><td>用户<strong>点击进入</strong>高光时刻详情页后，红点消失</td></tr>
+<tr><td><strong>红点样式</strong></td><td>标题右侧小红点（无数字），参考通用红点规范</td></tr>
+<tr><td><strong>刷新机制</strong></td><td>每次进入D助首页时请求接口判断是否有新数据</td></tr>
+</table>
+
+<h4>红点流程</h4>
+<pre>进入D助首页 → 请求红点接口 → has_new=true → 展示红点 → 用户点击进入详情页 → 上报已读 → 红点消失</pre>
+
+<hr class="section-sep">
+
+<h3>2.2 高光时刻详情页 - 新增太初Tab <span class="tag-new">[新增]</span></h3>
+
+<h4>Tab栏变更</h4>
+<table>
+<tr><th>变更前</th><th>变更后</th></tr>
+<tr><td>全部 | 增幅 | 强化 | 土罐</td><td>全部 | <strong style="color:#7c3aed">太初</strong> | 增幅 | 强化 | 土罐</td></tr>
+</table>
+
+<h4>Tab交互规则</h4>
+<table>
+<tr><th style="width:80px;">Tab</th><th>行为</th></tr>
+<tr><td><strong>全部</strong></td><td>展示所有类型，按时间倒序混排（太初/增幅/强化/土罐）</td></tr>
+<tr><td><strong>太初</strong></td><td>仅展示太初装备获取记录（<span class="tag-new">新增</span>），样式与其他Tab一致</td></tr>
+<tr><td><strong>增幅</strong></td><td>仅展示增幅类型记录（同现有）</td></tr>
+<tr><td><strong>强化</strong></td><td>仅展示强化类型记录（同现有）</td></tr>
+<tr><td><strong>土罐</strong></td><td>仅展示土罐类型记录（同现有）</td></tr>
+</table>
+
+<hr class="section-sep">
+
+<h3>2.3 太初高光时刻卡片</h3>
+
+<p>复用现有「闪光时刻」卡片模板，调整展示元素：将装备icon和名称替换为太初装备对应内容。</p>
+
+<h4>卡片元素对比</h4>
+<table>
+<tr><th style="width:100px;">元素</th><th>增幅/强化（现有）</th><th>太初（<span class="tag-new">新增</span>）</th></tr>
+<tr><td><strong>标题</strong></td><td>· 闪光时刻 ·</td><td>· 闪光时刻 ·</td></tr>
+<tr><td><strong>装备图标</strong></td><td>增幅/强化装备icon</td><td><strong style="color:#7c3aed">太初装备icon</strong></td></tr>
+<tr><td><strong>装备名称</strong></td><td>装备名称</td><td><strong style="color:#7c3aed">太初装备名称</strong></td></tr>
+<tr><td><strong>操作描述</strong></td><td>增幅大成功！/ 强化大成功！</td><td><strong style="color:#7c3aed">太初获取！</strong></td></tr>
+<tr><td><strong>等级信息</strong></td><td>增幅+12 / 强化+13</td><td><strong style="color:#7c3aed">无（或展示装备等级）</strong></td></tr>
+<tr><td><strong>角色信息</strong></td><td>区服 | 角色名 | 转职名(性别)</td><td>同左</td></tr>
+<tr><td><strong>时间</strong></td><td>日期</td><td>同左</td></tr>
+<tr><td><strong>二维码</strong></td><td>有</td><td>有</td></tr>
+</table>
+
+<hr class="section-sep">
+
+<h3>2.4 分享功能</h3>
+
+<p>太初高光时刻卡片<strong>复用现有分享能力</strong>，支持以下渠道：</p>
+<ul>
+<li>保存到本地</li>
+<li>分享到动态</li>
+<li>分享到关注的人/群</li>
+<li>微信好友</li>
+<li>朋友圈</li>
+<li>QQ空间</li>
+</ul>
+
+<hr class="section-sep">
+
+<h2>三、埋点需求 <span class="tag-new">[新增]</span></h2>
+
+<blockquote>说明：高光时刻模块此前无埋点，本次需<strong>整体补全</strong>埋点方案，覆盖全部Tab类型（太初/增幅/强化/土罐）。</blockquote>
+
+<h3>3.1 页面访问（UV / PV）</h3>
+<table>
+<tr><th style="width:280px;">埋点事件</th><th>触发时机</th><th>关键参数</th><th>统计指标</th></tr>
+<tr><td><code>highlight_page_view</code></td><td>用户进入高光时刻详情页</td><td>-</td><td>页面 PV / UV</td></tr>
+</table>
+
+<h3>3.2 Tab切换</h3>
+<table>
+<tr><th style="width:280px;">埋点事件</th><th>触发时机</th><th>关键参数</th><th>统计指标</th></tr>
+<tr><td><code>highlight_tab_click</code></td><td>用户点击/切换Tab</td><td><code>tab_name</code>：全部 / 太初 / 增幅 / 强化 / 土罐</td><td>各Tab切换人数（UV）、次数（PV）</td></tr>
+</table>
+
+<h3>3.3 分享</h3>
+<table>
+<tr><th style="width:280px;">埋点事件</th><th>触发时机</th><th>关键参数</th><th>统计指标</th></tr>
+<tr><td><code>highlight_share_click</code></td><td>用户点击分享按钮</td><td><code>card_type</code>：太初 / 增幅 / 强化 / 土罐<br><code>share_channel</code>：保存本地 / 动态 / 关注 / 微信 / 朋友圈 / QQ空间</td><td>分享次数（按类型、渠道拆分）</td></tr>
+</table>
+
+<h3>3.4 埋点参数汇总</h3>
+<table>
+<tr><th style="width:160px;">参数名</th><th>类型</th><th>说明</th><th>枚举值</th></tr>
+<tr><td><code>tab_name</code></td><td>string</td><td>当前所在Tab</td><td>全部 / 太初 / 增幅 / 强化 / 土罐</td></tr>
+<tr><td><code>card_type</code></td><td>string</td><td>卡片类型（高光类型）</td><td>太初 / 增幅 / 强化 / 土罐</td></tr>
+<tr><td><code>share_channel</code></td><td>string</td><td>分享渠道</td><td>保存本地 / 动态 / 关注 / 微信 / 朋友圈 / QQ空间</td></tr>
+</table>
+
+<h3>3.5 数据看板需求</h3>
+<p>基于以上埋点，需要支持以下数据查看维度：</p>
+<table>
+<tr><th style="width:60px;">序号</th><th>看板指标</th><th>说明</th></tr>
+<tr><td>1</td><td>高光时刻页面 UV / PV</td><td>整体访问量趋势</td></tr>
+<tr><td>2</td><td>各Tab切换 UV / PV</td><td>按 <code>tab_name</code> 拆分，了解各类型受关注程度</td></tr>
+<tr><td>3</td><td>分享次数 - 按类型</td><td>按 <code>card_type</code> 拆分，了解哪类高光时刻分享意愿最高</td></tr>
+<tr><td>4</td><td>分享次数 - 按渠道</td><td>按 <code>share_channel</code> 拆分，了解用户偏好的分享渠道</td></tr>
+<tr><td>5</td><td>分享次数 - 类型×渠道交叉</td><td>交叉分析各类型在各渠道的分享分布</td></tr>
+</table>
+
+<hr class="section-sep">
+
+<h2>四、改动范围总结</h2>
+
+<pre>改动点：
+├── D助首页
+│   └── 高光时刻入口 → 新增红点提示逻辑
+├── 高光时刻详情页
+│   ├── Tab栏 → 新增「太初」Tab（位于全部之后）
+│   ├── 列表 → 全部Tab混排太初数据
+│   └── 卡片 → 新增太初类型卡片（复用模板，替换icon+名称）
+└── 分享图
+    └── 太初类型分享图（复用闪光时刻模板）</pre>
+
+</body>
+</html>
