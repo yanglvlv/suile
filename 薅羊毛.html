@@ -428,7 +428,7 @@
             <span class="title-icon">📋</span>
             <span>羊毛任务</span>
           </div>
-          <button class="history-link" id="historyBtn" onclick="showHistory()" style="display:none;">📋 领取记录</button>
+          <button class="history-link" id="historyBtn" onclick="showHistory()">📋 领取记录</button>
         </div>
 
         <div class="task-section" id="taskList"></div>
@@ -754,8 +754,7 @@
   }
 
   function renderHistory() {
-    const history = JSON.parse(localStorage.getItem('d_wool_history') || '[]');
-    document.getElementById('historyBtn').style.display = history.length > 0 ? 'flex' : 'none';
+    // 领取记录入口始终显示
   }
 
   function showHistory() {
