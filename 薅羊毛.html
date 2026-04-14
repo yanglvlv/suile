@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D助 - 薅羊毛</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: -apple-system, "PingFang SC", "SF Pro Display", "Microsoft YaHei", sans-serif;
+    background: #f0f0f3;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; padding: 20px;
+  }
+
+  .phone-frame {
+    width: 375px; height: 812px;
+    background: #000; border-radius: 50px; padding: 12px;
+    box-shadow: 0 0 0 2px #222, 0 0 0 4px #111, 0 20px 60px rgba(0,0,0,0.6);
+  }
+  .phone-screen {
+    width: 100%; height: 100%;
+    background: #0f1528 url('Dark_navy_blue_technology_back_2026-04-08T07-47-12.png') center/cover no-repeat;
+    border-radius: 40px; overflow: hidden; position: relative;
+  }
+  .phone-screen::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(10,15,30,0.72); pointer-events: none; z-index: 1;
+  }
+  .phone-screen > * { position: relative; z-index: 2; }
+  .phone-screen::-webkit-scrollbar { display: none; }
+
+  .notch {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 20; height: 50px;
+    background: linear-gradient(180deg, rgba(15,21,40,0.95) 60%, transparent);
+    display: flex; justify-content: center; padding-top: 8px;
+  }
+  .notch-bar { width: 120px; height: 28px; background: #000; border-radius: 0 0 18px 18px; }
+
+  .main-page {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    overflow-y: auto; padding: 50px 0 20px;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); z-index: 5;
+  }
+  .main-page.slide-out { transform: translateX(-30%); pointer-events: none; }
+  .main-page::-webkit-scrollbar { display: none; }
+  .page { padding: 0 16px; color: #fff; }
+
+  /* 顶部栏 */
+  .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 0 14px; }
+  .top-bar-left { display: flex; align-items: center; gap: 10px; }
+  .app-logo {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #e8a838, #c67a20);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; border: 1.5px solid rgba(232,168,56,0.4);
+  }
+  .app-name { font-size: 15px; font-weight: 700; color: #fff; }
+
+  /* 铃铛 */
+  .bell-btn {
+    width: 34px; height: 34px; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; position: relative;
+  }
+  .bell-btn svg { width: 18px; height: 18px; fill: #e8a838; }
+  .bell-dot {
+    position: absolute; top: 5px; right: 5px;
+    width: 7px; height: 7px; background: #ef4444; border-radius: 50%;
+    border: 1.5px solid #0f1528;
+  }
+  .bell-btn.on { background: rgba(232,168,56,0.12); border-color: rgba(232,168,56,0.3); }
+  .bell-btn.on .bell-dot { background: #4ade80; }
+  .bell-btn.off::after {
+    content: ''; position: absolute;
+    width: 24px; height: 2px; background: #ef4444;
+    transform: rotate(-45deg); border-radius: 1px;
+  }
+  .bell-btn.off .bell-dot { display: none; }
+
+  /* 进度卡 */
+  .glow-card {
+    background: rgba(15,25,50,0.65);
+    border: 1px solid rgba(232,168,56,0.2);
+    border-radius: 14px; position: relative; overflow: hidden;
+    box-shadow: 0 0 20px rgba(232,168,56,0.05);
+  }
+  .glow-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(232,168,56,0.4), rgba(230,57,70,0.3), transparent);
+  }
+  .progress-card { padding: 18px 20px 16px; margin-bottom: 12px; }
+  .progress-top { display: flex; justify-content: space-between; align-items: center; }
+  .progress-title { font-size: 15px; font-weight: 700; color: #fff; }
+  .progress-sub { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px; }
+  .progress-right { text-align: right; }
+  .pct-value {
+    font-size: 36px; font-weight: 800; line-height: 1;
+    background: linear-gradient(135deg, #e63946, #ff6b35, #e8a838);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 12px rgba(230,57,70,0.25));
+  }
+  .pct-value span { font-size: 16px; }
+  .progress-bar-outer {
+    margin-top: 12px; height: 4px;
+    background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden;
+  }
+  .progress-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, #e63946, #ff6b35, #e8a838);
+    border-radius: 2px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 0 10px rgba(230,57,70,0.35);
+  }
+
+  /* === 一周日历 === */
+  .week-calendar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 14px; padding: 0 4px;
+  }
+  .week-day {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .week-day .day-label {
+    font-size: 10px; color: rgba(255,255,255,0.3); font-weight: 600;
+  }
+  .week-day .day-circle {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.03);
+    border: 1.5px solid rgba(255,255,255,0.08);
+    transition: all 0.3s;
+  }
+  .week-day .day-circle.today {
+    border-color: rgba(232,168,56,0.4);
+    color: rgba(255,255,255,0.5);
+  }
+  .week-day .day-circle.lit {
+    background: linear-gradient(135deg, #e8a838, #f59e0b);
+    border-color: rgba(232,168,56,0.6);
+    color: #1a1a2e;
+    box-shadow: 0 0 12px rgba(232,168,56,0.3);
+  }
+  .week-day .day-circle.lit.today {
+    box-shadow: 0 0 16px rgba(232,168,56,0.45);
+  }
+
+  /* 周奖励提示 */
+  .week-reward-hint {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 12px; padding: 8px 12px;
+    background: rgba(232,168,56,0.06);
+    border: 1px dashed rgba(232,168,56,0.2);
+    border-radius: 8px; font-size: 11px; color: rgba(255,255,255,0.45);
+  }
+  .week-reward-hint .hint-icon { font-size: 16px; flex-shrink: 0; }
+  .week-reward-hint .hint-text b { color: #fbbf24; }
+  .week-reward-btn {
+    display: block; width: 100%; margin-top: 12px;
+    padding: 10px; border-radius: 8px;
+    font-size: 14px; font-weight: 700;
+    border: none; cursor: pointer;
+    background: linear-gradient(135deg, #e8a838, #f59e0b);
+    color: #1a1a2e;
+    box-shadow: 0 0 16px rgba(232,168,56,0.25);
+    animation: claimPulse 1.5s ease-in-out infinite;
+    position: relative; overflow: hidden;
+  }
+  .week-reward-btn::after {
+    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    animation: btnShine 2s ease-in-out infinite;
+  }
+  .week-reward-btn:active { transform: scale(0.97); }
+  .week-reward-btn.claimed {
+    background: rgba(74,222,128,0.15); color: #4ade80;
+    box-shadow: none; animation: none; cursor: default;
+  }
+  .week-reward-btn.claimed::after { display: none; }
+
+  /* 100%完成彩蛋 */
+  .progress-card.complete { border-color: rgba(74,222,128,0.3); }
+  .progress-card.complete::before {
+    background: linear-gradient(90deg, transparent, rgba(74,222,128,0.4), transparent);
+  }
+  .progress-card.complete .pct-value {
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    -webkit-background-clip: text;
+    filter: drop-shadow(0 0 12px rgba(74,222,128,0.3));
+  }
+  .progress-card.complete .progress-bar-inner {
+    background: linear-gradient(90deg, #4ade80, #22c55e);
+    box-shadow: 0 0 10px rgba(74,222,128,0.4);
+  }
+  .complete-msg {
+    text-align: center; margin-top: 10px;
+    font-size: 12px; color: #4ade80; font-weight: 600;
+  }
+
+  @keyframes claimPulse {
+    0%,100% { box-shadow: 0 0 12px rgba(232,168,56,0.2); }
+    50% { box-shadow: 0 0 24px rgba(232,168,56,0.4); }
+  }
+
+  /* 羊毛任务标题 */
+  .section-title {
+    font-size: 15px; font-weight: 700; color: #fff;
+    margin: 16px 0 10px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .section-title-left { display: flex; align-items: center; gap: 6px; }
+  .section-title .title-icon { font-size: 16px; }
+  .history-link {
+    background: none; border: none; cursor: pointer;
+    font-size: 12px; color: rgba(255,255,255,0.35);
+    display: flex; align-items: center; gap: 4px;
+    padding: 4px 0; transition: color 0.15s;
+  }
+  .history-link:active { color: rgba(255,255,255,0.6); }
+
+  .history-list { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; }
+  .history-list::-webkit-scrollbar { display: none; }
+  .history-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; font-size: 12px;
+  }
+  .history-item .h-reward { color: #fbbf24; font-weight: 600; }
+  .history-item .h-time { color: rgba(255,255,255,0.25); font-size: 11px; }
+  .history-empty { text-align: center; padding: 30px; font-size: 13px; color: rgba(255,255,255,0.25); }
+
+  /* 任务列表 */
+  .task-section { display: flex; flex-direction: column; gap: 10px; }
+  .task-card {
+    padding: 14px 14px 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .task-card:active { transform: scale(0.985); }
+  .task-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+  }
+  .task-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+  .task-icon.glow-red { border-color: rgba(230,57,70,0.3); box-shadow: 0 0 10px rgba(230,57,70,0.12); }
+  .task-icon.glow-gold { border-color: rgba(232,168,56,0.3); box-shadow: 0 0 10px rgba(232,168,56,0.12); }
+  .task-icon.glow-purple { border-color: rgba(168,85,247,0.3); box-shadow: 0 0 10px rgba(168,85,247,0.12); }
+  .task-body { flex: 1; min-width: 0; }
+  .task-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .task-name { font-size: 14px; font-weight: 600; color: #fff; }
+  .task-tag {
+    font-size: 9px; font-weight: 700; padding: 2px 6px;
+    border-radius: 3px; letter-spacing: 0.3px;
+  }
+  .task-tag.red { background: rgba(230,57,70,0.2); color: #f87171; border: 1px solid rgba(230,57,70,0.3); }
+  .task-tag.orange { background: rgba(232,168,56,0.2); color: #fbbf24; border: 1px solid rgba(232,168,56,0.25); }
+  .task-tag.purple { background: rgba(168,85,247,0.2); color: #c084fc; border: 1px solid rgba(168,85,247,0.25); }
+  .task-reward-text { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 3px; }
+
+  /* 任务右侧操作区 */
+  .task-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+  .task-btn {
+    padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700;
+    border: none; cursor: pointer; flex-shrink: 0;
+    transition: all 0.15s; letter-spacing: 0.3px;
+    position: relative; overflow: hidden;
+  }
+  .task-btn:active { transform: scale(0.95); }
+  .task-btn.primary {
+    background: linear-gradient(135deg, #e63946, #ff6b35); color: #fff;
+    box-shadow: 0 0 14px rgba(230,57,70,0.25);
+  }
+  .task-btn.primary::after {
+    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+    animation: btnShine 3s ease-in-out infinite;
+  }
+  @keyframes btnShine { 0%,100%{left:-100%} 50%{left:100%} }
+  .task-btn.done {
+    background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.45);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .copy-link-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 10px; color: rgba(255,255,255,0.3);
+    padding: 2px 4px; transition: color 0.15s;
+    display: flex; align-items: center; gap: 3px;
+  }
+  .copy-link-btn:hover { color: rgba(255,255,255,0.6); }
+  .copy-link-btn svg { width: 12px; height: 12px; fill: currentColor; }
+
+  /* 空状态 */
+  .empty-state { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.3); font-size: 14px; }
+  .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+
+  /* 详情页 */
+  .detail-page {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: #0f1528; z-index: 15;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    overflow-y: auto; padding-top: 50px;
+  }
+  .detail-page.show { transform: translateX(0); }
+  .detail-page::-webkit-scrollbar { display: none; }
+  .detail-nav { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #fff; }
+  .back-btn {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .back-btn svg { width: 18px; height: 18px; fill: #fff; }
+  .detail-title { font-size: 16px; font-weight: 700; }
+  .detail-body {
+    padding: 0 16px; color: #fff;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: calc(100% - 80px); text-align: center;
+  }
+  .detail-complete-btn {
+    margin-top: 30px; padding: 14px 48px; border-radius: 10px;
+    font-size: 14px; font-weight: 700; border: none; cursor: pointer;
+    background: linear-gradient(135deg, #e63946, #ff6b35); color: #fff;
+    box-shadow: 0 0 20px rgba(230,57,70,0.3); transition: all 0.15s;
+  }
+  .detail-complete-btn:active { transform: scale(0.95); }
+
+  /* Toast */
+  .toast {
+    position: fixed; top: 45%; left: 50%; transform: translate(-50%,-50%);
+    background: rgba(15,21,40,0.92); color: #fff;
+    padding: 12px 28px; border-radius: 10px; font-size: 13px;
+    z-index: 300; opacity: 0; transition: opacity 0.3s;
+    pointer-events: none; text-align: center;
+    border: 1px solid rgba(232,168,56,0.15);
+    backdrop-filter: blur(10px);
+  }
+  .toast.show { opacity: 1; }
+
+  /* 弹窗 */
+  .modal-mask {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6); z-index: 50;
+    display: none; justify-content: center; align-items: center; padding: 30px;
+  }
+  .modal-mask.show { display: flex; }
+  .modal-box {
+    background: #1a1f35; border: 1px solid rgba(232,168,56,0.15);
+    border-radius: 16px; padding: 24px 20px 20px;
+    width: 100%; max-width: 310px; position: relative; overflow: hidden;
+  }
+  .modal-box::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(232,168,56,0.4), transparent);
+  }
+  .modal-icon { font-size: 36px; text-align: center; margin-bottom: 12px; }
+  .modal-title { font-size: 16px; font-weight: 700; color: #fff; text-align: center; margin-bottom: 8px; }
+  .modal-desc { font-size: 13px; color: rgba(255,255,255,0.5); text-align: center; line-height: 1.6; margin-bottom: 18px; }
+  .modal-check { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; cursor: pointer; font-size: 12px; color: rgba(255,255,255,0.4); }
+  .modal-check input { accent-color: #e8a838; width: 14px; height: 14px; cursor: pointer; }
+  .modal-btns { display: flex; gap: 10px; }
+  .modal-btn {
+    flex: 1; padding: 11px; border-radius: 10px; font-size: 14px;
+    font-weight: 600; border: none; cursor: pointer; transition: all 0.15s;
+  }
+  .modal-btn:active { transform: scale(0.97); }
+  .modal-btn.cancel { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.08); }
+  .modal-btn.confirm { background: linear-gradient(135deg, #e8a838, #f59e0b); color: #1a1a2e; }
+
+  @media (max-width: 420px) {
+    body { background: #0f1528; padding: 0; }
+    .phone-frame { width: 100%; height: 100vh; border-radius: 0; padding: 0; box-shadow: none; }
+    .phone-screen { border-radius: 0; }
+    .notch { display: none; }
+    .main-page,.detail-page { padding-top: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"><div class="notch-bar"></div></div>
+
+    <div class="main-page" id="mainPage">
+      <div class="page">
+        <div class="top-bar">
+          <div class="top-bar-left">
+            <div class="app-logo">🐉</div>
+            <span class="app-name">薅羊毛小助手</span>
+          </div>
+          <button class="bell-btn" id="bellBtn" onclick="toggleSubscribe()">
+            <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+            <span class="bell-dot" id="bellDot"></span>
+          </button>
+        </div>
+
+        <!-- 进度卡 -->
+        <div class="glow-card progress-card" id="progressCard">
+          <div class="progress-top">
+            <div>
+              <div class="progress-title">今日羊毛进度</div>
+              <div class="progress-sub">薅到就是赚到</div>
+            </div>
+            <div class="progress-right">
+              <div class="pct-value" id="progressPct">0<span>%</span></div>
+            </div>
+          </div>
+          <div class="progress-bar-outer">
+            <div class="progress-bar-inner" id="progressBar" style="width:0%"></div>
+          </div>
+          <div class="complete-msg" id="completeMsg" style="display:none;">🎉 今日羊毛已全部薅完！</div>
+
+          <!-- 一周日历 -->
+          <div class="week-calendar" id="weekCalendar"></div>
+
+          <!-- 周奖励区域 -->
+          <div id="weekRewardArea"></div>
+        </div>
+
+        <!-- 羊毛任务标题 + 领取记录 -->
+        <div class="section-title">
+          <div class="section-title-left">
+            <span class="title-icon">📋</span>
+            <span>羊毛任务</span>
+          </div>
+          <button class="history-link" id="historyBtn" onclick="showHistory()" style="display:none;">📋 领取记录</button>
+        </div>
+
+        <div class="task-section" id="taskList"></div>
+      </div>
+    </div>
+
+    <div class="detail-page" id="detailPage">
+      <div class="detail-nav">
+        <button class="back-btn" onclick="goBack()">
+          <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </button>
+        <div class="detail-title" id="detailTitle"></div>
+      </div>
+      <div class="detail-body" id="detailBody"></div>
+    </div>
+
+    <!-- 历史记录弹窗 -->
+    <div class="modal-mask" id="historyModal">
+      <div class="modal-box">
+        <div class="modal-icon">📋</div>
+        <div class="modal-title">领取记录</div>
+        <div id="historyList"></div>
+        <div class="modal-btns" style="margin-top:16px;">
+          <button class="modal-btn cancel" style="flex:1;" onclick="document.getElementById('historyModal').classList.remove('show')">关闭</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 领取奖励弹窗 -->
+    <div class="modal-mask" id="rewardModal">
+      <div class="modal-box">
+        <div class="modal-icon">🎉</div>
+        <div class="modal-title">恭喜你！</div>
+        <div class="modal-desc" id="rewardModalDesc">本周薅羊毛达标，获得以下奖励：</div>
+        <div style="text-align:center;margin-bottom:16px;">
+          <div style="display:inline-block;background:rgba(232,168,56,0.12);border:1px solid rgba(232,168,56,0.25);border-radius:10px;padding:10px 20px;">
+            <span style="font-size:20px;">🏆</span>
+            <span style="color:#fbbf24;font-size:15px;font-weight:700;margin-left:6px;" id="rewardContent">羊毛达人礼包 x1</span>
+          </div>
+        </div>
+        <div class="modal-btns">
+          <button class="modal-btn confirm" style="flex:1;" onclick="confirmClaim()">确认领取</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 订阅弹窗 -->
+    <div class="modal-mask" id="subModal">
+      <div class="modal-box">
+        <div class="modal-icon">🔔</div>
+        <div class="modal-title">开启任务更新提醒</div>
+        <div class="modal-desc">开启后，每当后台更新薅羊毛任务时，会通过「活动小助手」订阅号推送提醒（每日最多 1 条），帮你第一时间知道新任务！</div>
+        <label class="modal-check">
+          <input type="checkbox" id="noShowAgain"> 下次不再提示
+        </label>
+        <div class="modal-btns">
+          <button class="modal-btn cancel" onclick="closeSubModal(false)">暂不开启</button>
+          <button class="modal-btn confirm" onclick="closeSubModal(true)">立即开启</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const GLOW_MAP = { sign:'glow-red', cafe:'glow-purple', code:'glow-gold', gold:'glow-gold' };
+
+  const TASK_DATA = [
+    { id:1, name:'助手每日签到', tags:[{text:'每日',color:'red'},{text:'签到',color:'orange'}], reward:'深渊票 x100, 疲劳药 x1', link:'https://example.com/sign', banner:'', type:'sign', done:false },
+    { id:2, name:'特权网吧打卡', tags:[{text:'每日',color:'red'}], reward:'装备提升礼盒 x2', link:'https://example.com/cafe', banner:'https://picsum.photos/seed/dnf1/100/100', type:'cafe', done:false },
+    { id:3, name:'版本专属口令码', tags:[{text:'限时',color:'purple'}], reward:'神秘罐子 x1', link:'https://example.com/code', banner:'', type:'code', done:false },
+    { id:4, name:'冒险团贡献签到', tags:[{text:'每日',color:'red'}], reward:'冒险团贡献 x200', link:'https://example.com/team', banner:'', type:'sign', done:false },
+    { id:5, name:'决斗场每日对战', tags:[{text:'每日',color:'red'},{text:'PVP',color:'purple'}], reward:'决斗印章 x5', link:'https://example.com/pvp', banner:'https://picsum.photos/seed/dnf2/100/100', type:'cafe', done:false },
+    { id:6, name:'疲劳值消耗奖励', tags:[{text:'每日',color:'red'}], reward:'疲劳药(8点) x1', link:'https://example.com/fatigue', banner:'', type:'gold', done:false },
+    { id:7, name:'助手专属福利码', tags:[{text:'限时',color:'purple'},{text:'新',color:'orange'}], reward:'随机史诗罐子 x1', link:'https://example.com/welfare', banner:'', type:'code', done:false }
+  ];
+
+  // 后台配置：本周需要完成几天才能领取周奖励
+  const WEEK_CONFIG = {
+    requiredDays: 5,         // 本周需完成5天
+    rewardName: '羊毛达人礼包 x1',
+    rewardContent: '深渊票 x50 + 疲劳药 x2'
+  };
+
+  let doneSet = new Set();
+
+  function loadDone() {
+    const s = localStorage.getItem('d_wool_done');
+    doneSet = s ? new Set(JSON.parse(s)) : new Set();
+    TASK_DATA.forEach(t => { if(t.done) doneSet.add(t.id); });
+    saveDone();
+  }
+  function saveDone() { localStorage.setItem('d_wool_done', JSON.stringify([...doneSet])); }
+
+  // === 一周日历逻辑 ===
+  function getWeekDays() {
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0=周日
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+    monday.setHours(0,0,0,0);
+
+    const days = [];
+    const labels = ['一','二','三','四','五','六','日'];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      days.push({
+        label: labels[i],
+        date: d.getDate(),
+        dateStr: d.toISOString().slice(0,10),
+        isToday: d.toISOString().slice(0,10) === now.toISOString().slice(0,10),
+        isPast: d <= now
+      });
+    }
+    return days;
+  }
+
+  function getLitDays() {
+    const saved = localStorage.getItem('d_wool_lit_days');
+    return saved ? new Set(JSON.parse(saved)) : new Set();
+  }
+  function saveLitDays(litSet) {
+    localStorage.setItem('d_wool_lit_days', JSON.stringify([...litSet]));
+  }
+
+  // 今日是否已点亮（已完成至少1个任务）
+  function lightTodayIfNeeded() {
+    const today = new Date().toISOString().slice(0,10);
+    const litDays = getLitDays();
+    const hasDoneToday = doneSet.size > 0;
+    if (hasDoneToday && !litDays.has(today)) {
+      litDays.add(today);
+      saveLitDays(litDays);
+    }
+  }
+
+  function renderWeekCalendar() {
+    const days = getWeekDays();
+    const litDays = getLitDays();
+    const el = document.getElementById('weekCalendar');
+
+    el.innerHTML = days.map(d => {
+      const isLit = litDays.has(d.dateStr);
+      let cls = '';
+      if (d.isToday) cls += ' today';
+      if (isLit) cls += ' lit';
+      return `
+        <div class="week-day">
+          <span class="day-label">周${d.label}</span>
+          <span class="day-circle${cls}">${isLit ? '✓' : d.date}</span>
+        </div>`;
+    }).join('');
+
+    // 渲染周奖励
+    renderWeekReward(litDays);
+  }
+
+  function renderWeekReward(litDays) {
+    const area = document.getElementById('weekRewardArea');
+    const litCount = litDays.size;
+    const required = WEEK_CONFIG.requiredDays;
+    const hasClaimed = localStorage.getItem('d_wool_week_claimed') === getWeekKey();
+
+    if (hasClaimed) {
+      area.innerHTML = `<button class="week-reward-btn claimed">✅ 本周奖励已领取</button>`;
+    } else if (litCount >= required) {
+      area.innerHTML = `<button class="week-reward-btn" onclick="claimReward()">🎁 领取羊毛奖励</button>`;
+    } else {
+      const diff = required - litCount;
+      area.innerHTML = `
+        <div class="week-reward-hint">
+          <span class="hint-icon">🎁</span>
+          <span class="hint-text">还需薅 <b>${diff} 天</b> 解锁 <b>${WEEK_CONFIG.rewardName}</b></span>
+        </div>`;
+    }
+  }
+
+  function getWeekKey() {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+    return 'week_' + monday.toISOString().slice(0,10);
+  }
+
+  function render() {
+    const total = TASK_DATA.length;
+    const done = TASK_DATA.filter(t => doneSet.has(t.id)).length;
+    const pct = total > 0 ? Math.round(done/total*100) : 0;
+    const isComplete = pct === 100;
+
+    document.getElementById('progressPct').innerHTML = pct + '<span>%</span>';
+    document.getElementById('progressBar').style.width = pct + '%';
+
+    const card = document.getElementById('progressCard');
+    const msg = document.getElementById('completeMsg');
+
+    if (isComplete) {
+      card.classList.add('complete');
+      msg.style.display = 'block';
+    } else {
+      card.classList.remove('complete');
+      msg.style.display = 'none';
+    }
+
+    // 点亮今日 & 渲染日历
+    lightTodayIfNeeded();
+    renderWeekCalendar();
+
+    // 任务列表
+    const container = document.getElementById('taskList');
+    if (TASK_DATA.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div>暂无薅羊毛任务<br>稍后再来看看吧</div>';
+      return;
+    }
+    container.innerHTML = TASK_DATA.map(task => {
+      const isDone = doneSet.has(task.id);
+      const icon = task.banner ? `<img src="${task.banner}" alt="">` : '🎁';
+      const glow = GLOW_MAP[task.type] || '';
+      return `
+        <div class="glow-card task-card" onclick="openDetail(${task.id})">
+          <div class="task-icon ${glow}">${icon}</div>
+          <div class="task-body">
+            <div class="task-name-row">
+              <span class="task-name">${esc(task.name)}</span>
+              ${task.tags.map(t => `<span class="task-tag ${t.color}">${esc(t.text)}</span>`).join('')}
+            </div>
+            <div class="task-reward-text">${esc(task.reward)}</div>
+          </div>
+          <div class="task-actions">
+            <button class="task-btn ${isDone ? 'done' : 'primary'}" onclick="event.stopPropagation();openDetail(${task.id})">
+              ${isDone ? '已薅' : '马上去薅'}
+            </button>
+            <button class="copy-link-btn" onclick="event.stopPropagation();copyLink(${task.id})">
+              <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+              复制链接
+            </button>
+          </div>
+        </div>`;
+    }).join('');
+    renderHistory();
+  }
+
+  function copyLink(id) {
+    const task = TASK_DATA.find(t => t.id === id);
+    if (!task || !task.link) { showToast('暂无链接'); return; }
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(task.link).then(() => {
+        showToast('✅ 链接已复制');
+      }).catch(() => {
+        fallbackCopy(task.link);
+      });
+    } else {
+      fallbackCopy(task.link);
+    }
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;left:-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      showToast('✅ 链接已复制');
+    } catch(e) {
+      showToast('复制失败');
+    }
+    document.body.removeChild(ta);
+  }
+
+  function openDetail(id) {
+    const task = TASK_DATA.find(t => t.id === id);
+    if (!task) return;
+    const isDone = doneSet.has(task.id);
+    document.getElementById('detailTitle').textContent = task.name;
+    document.getElementById('detailBody').innerHTML = `
+      <div style="font-size:56px;margin-bottom:20px;">🌐</div>
+      <div style="font-size:16px;font-weight:700;">已跳转到任务页面</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:10px;line-height:1.6;">模拟外部页面跳转<br>实际链接：</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.2);margin-top:8px;word-break:break-all;">${esc(task.link)}</div>
+      ${isDone
+        ? '<div style="margin-top:30px;color:#4ade80;font-size:14px;font-weight:600;">✅ 今日已完成</div>'
+        : `<button class="detail-complete-btn" onclick="doTask(${task.id})">模拟完成任务</button>`}`;
+    document.getElementById('mainPage').classList.add('slide-out');
+    document.getElementById('detailPage').classList.add('show');
+  }
+
+  function goBack() {
+    document.getElementById('detailPage').classList.remove('show');
+    document.getElementById('mainPage').classList.remove('slide-out');
+    render();
+  }
+
+  function doTask(id) {
+    doneSet.add(id);
+    saveDone();
+    showToast('✅ 任务完成！奖励已发放');
+    setTimeout(() => goBack(), 800);
+  }
+
+  function claimReward() {
+    document.getElementById('rewardContent').textContent = WEEK_CONFIG.rewardContent;
+    document.getElementById('rewardModal').classList.add('show');
+  }
+
+  function confirmClaim() {
+    document.getElementById('rewardModal').classList.remove('show');
+    localStorage.setItem('d_wool_week_claimed', getWeekKey());
+    const history = JSON.parse(localStorage.getItem('d_wool_history') || '[]');
+    history.unshift({
+      reward: WEEK_CONFIG.rewardName,
+      time: new Date().toLocaleString('zh-CN', {month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})
+    });
+    if (history.length > 20) history.length = 20;
+    localStorage.setItem('d_wool_history', JSON.stringify(history));
+    showToast('🎉 奖励已领取！');
+    render();
+  }
+
+  function renderHistory() {
+    const history = JSON.parse(localStorage.getItem('d_wool_history') || '[]');
+    document.getElementById('historyBtn').style.display = history.length > 0 ? 'flex' : 'none';
+  }
+
+  function showHistory() {
+    const history = JSON.parse(localStorage.getItem('d_wool_history') || '[]');
+    const el = document.getElementById('historyList');
+    if (history.length === 0) {
+      el.innerHTML = '<div class="history-empty">暂无领取记录</div>';
+    } else {
+      el.innerHTML = '<div class="history-list">' + history.map(h => `
+        <div class="history-item">
+          <span class="h-reward">🎁 ${esc(h.reward)}</span>
+          <span class="h-time">${esc(h.time)}</span>
+        </div>`).join('') + '</div>';
+    }
+    document.getElementById('historyModal').classList.add('show');
+  }
+
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._timer);
+    el._timer = setTimeout(() => el.classList.remove('show'), 1800);
+  }
+
+  function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  // ===== 订阅 =====
+  let subscribed = localStorage.getItem('d_wool_sub') === '1';
+  const noPrompt = localStorage.getItem('d_wool_no_prompt') === '1';
+
+  function updateBellUI() {
+    const btn = document.getElementById('bellBtn');
+    btn.classList.remove('on', 'off');
+    btn.classList.add(subscribed ? 'on' : 'off');
+  }
+
+  function toggleSubscribe() {
+    if (subscribed) {
+      subscribed = false;
+      localStorage.setItem('d_wool_sub', '0');
+      updateBellUI();
+      showToast('已关闭任务更新提醒');
+    } else {
+      if (noPrompt) {
+        subscribed = true;
+        localStorage.setItem('d_wool_sub', '1');
+        updateBellUI();
+        showToast('已开启任务更新提醒');
+      } else {
+        document.getElementById('subModal').classList.add('show');
+      }
+    }
+  }
+
+  function closeSubModal(confirm) {
+    document.getElementById('subModal').classList.remove('show');
+    if (document.getElementById('noShowAgain').checked) {
+      localStorage.setItem('d_wool_no_prompt', '1');
+    }
+    if (confirm) {
+      subscribed = true;
+      localStorage.setItem('d_wool_sub', '1');
+      updateBellUI();
+      showToast('已开启任务更新提醒');
+    }
+  }
+
+  // 刷新清除今日任务缓存，方便演示（周日历不清除）
+  localStorage.removeItem('d_wool_done');
+  localStorage.removeItem('d_wool_reward_claimed');
+
+  updateBellUI();
+  loadDone();
+  render();
+</script>
+</body>
+</html>
