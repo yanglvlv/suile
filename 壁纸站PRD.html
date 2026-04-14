@@ -131,7 +131,7 @@
 
 <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap">
   <h1 style="margin:0;border:none;padding:0">DNF 官方壁纸站 - 产品需求文档 (PRD)</h1>
-  <a href="index-masonry.html" target="_blank" style="display:inline-flex;align-items:center;gap:4px;padding:5px 14px;border-radius:6px;background:#3b7ddd;color:#fff;font-size:11.5px;text-decoration:none;font-weight:600">🖥 前台展示页</a>
+  <a href="index.html" target="_blank" style="display:inline-flex;align-items:center;gap:4px;padding:5px 14px;border-radius:6px;background:#3b7ddd;color:#fff;font-size:11.5px;text-decoration:none;font-weight:600">🖥 前台展示页</a>
   <a href="admin.html" target="_blank" style="display:inline-flex;align-items:center;gap:4px;padding:5px 14px;border-radius:6px;background:#1e2235;color:#fff;font-size:11.5px;text-decoration:none;font-weight:600">⚙ 后台管理页</a>
 </div>
 
@@ -204,8 +204,8 @@
 <h4>分类类型差异</h4>
 <table>
 <tr><th>类型</th><th>行为差异</th></tr>
-<tr><td>官方壁纸 (normal)</td><td>下方展示二级分类 Tab 栏；壁纸使用瀑布流布局（横竖混排）；每页20条分页</td></tr>
-<tr><td>同人作品 (ugc)</td><td>不展示二级分类 Tab；显示投稿入口横幅+公告活动区；壁纸使用瀑布流布局（横竖混排）；每页20条分页</td></tr>
+<tr><td>官方壁纸 (normal)</td><td>下方展示二级分类 Tab 栏；壁纸使用分组 Grid 布局（每5张一组，1大+4小交替）；每页20条分页</td></tr>
+<tr><td>同人作品 (ugc)</td><td>不展示二级分类 Tab；显示投稿入口横幅+公告活动区；壁纸使用瀑布流布局（column-count:4，横竖混排）；不分页全展示</td></tr>
 </table>
 </div>
 
@@ -345,25 +345,27 @@
 </div>
 
 
-<!-- ==================== 2.5 壁纸列表（统一瀑布流） ==================== -->
-<h3>2.5 壁纸列表（统一瀑布流布局）</h3>
+<!-- ==================== 2.5 壁纸列表（双布局） ==================== -->
+<h3>2.5 壁纸列表（双布局模式）</h3>
 
 <div class="feat-row">
 <div class="feat-desc">
-<h4>布局方式</h4>
+<h4>布局模式一：官方壁纸（type='normal'）— 分组 Grid 布局</h4>
 <ul>
-<li>所有分类（官方壁纸 + 同人作品）<strong>统一使用 CSS 瀑布流</strong>布局（<code>column-count:4</code>，平板 3 列，手机 2 列，<code>column-gap:12px</code>）</li>
-<li>壁纸含 <code>orient</code> 字段区分横版(<code>h</code>，缩略图 400×225)和竖版(<code>v</code>，缩略图 400×700)，两种比例在瀑布流中自然错落排列</li>
-<li>渲染时按<strong>"2横+1竖+1横"</strong>节奏交替插入，保证横竖图均匀分布不会某列全是竖图</li>
+<li>每 <strong>5 张壁纸</strong>为一组，渲染为一个 <code>.grid-row</code>（<code>display:grid; grid-template-columns:repeat(4,1fr); height:280px</code>）</li>
+<li>每组第 1 张为<strong>大图</strong>（占 2 列 × 2 行），第 2~5 张为<strong>小图</strong>（各占 1 格）</li>
+<li><strong>大图左右交替</strong>：奇数组大图在左侧（grid-column 1~2），偶数组大图在右侧（grid-column 3~4），形成视觉节奏感</li>
+<li>不足 5 张时全部等大排列，4 列单行（高度 150px）</li>
+<li>每页 <strong>20 条</strong>（PAGE_SIZE=20），底部显示分页器（页码按钮 + 前后翻页 + 范围提示）</li>
+</ul>
+<h4>布局模式二：同人作品（type='ugc'）— CSS 瀑布流</h4>
+<ul>
+<li><code>column-count:4</code> 多列瀑布流（平板 3 列，手机 2 列），<code>column-gap:12px</code></li>
+<li>壁纸含 <code>orient</code> 字段区分横版(h，缩略图 400×225)和竖版(v，缩略图 400×700)，渲染时按<strong>"2横+1竖+1横"</strong>节奏交替插入，保证横竖图均匀分布</li>
 <li>竖版图 <code>max-height:360px; object-fit:cover</code> 防止过长</li>
+<li><strong>不分页</strong>，全部展示。底部显示"海量作品"提示卡片（蓝紫渐变背景，内容"✨ 海量作品 持续更新中 + 共收录 XX 幅同人佳作"）</li>
 </ul>
-<h4>分页</h4>
-<ul>
-<li>所有分类<strong>统一分页</strong>，每页 20 条（<code>PAGE_SIZE=20</code>）</li>
-<li>底部分页器：上一页/下一页按钮 + 页码按钮（超过 7 页时中间用 <code>…</code> 省略）+ 当前范围提示（如"1-20 / 36"）</li>
-<li>点击页码后平滑滚动到壁纸列表顶部</li>
-</ul>
-<h4>搜索结果</h4>
+<h4>搜索结果布局</h4>
 <ul>
 <li>按 Enter 触发全局搜索，匹配标题/日期/扩展字段值（大小写不敏感子串匹配）</li>
 <li>搜索结果按<strong>一级分类分组</strong>显示，每组有独立标题头（分类图标 + 分类名 + 结果计数标签）+ 底部分割线</li>
@@ -381,23 +383,29 @@
 
 <div class="feat-mock">
 <div style="border:1px solid #e0e4ea;border-radius:8px;overflow:hidden">
-  <div style="padding:6px 12px;font-size:10px;color:#666;font-weight:600;background:#fff">统一瀑布流布局（column-count:4，横版400×225 + 竖版400×700 混排）</div>
+  <div style="padding:6px 12px;font-size:10px;color:#666;font-weight:600;background:#fff">官方壁纸 — 分组 Grid 布局（每5张一组，1大+4小，大图左右交替）</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:4px;height:120px;padding:6px 10px;background:#fafbfd">
+    <div style="grid-row:1/3;grid-column:span 2;background:linear-gradient(135deg,#1a1a2e,#3b7ddd);border-radius:6px;display:flex;align-items:flex-end;padding:6px;position:relative;overflow:hidden"><span style="position:absolute;top:3px;left:3px;padding:1px 5px;border-radius:2px;font-size:7px;font-weight:700;background:#3b7ddd;color:#fff">NEW</span><span style="color:rgba(255,255,255,.8);font-size:9px;font-weight:600">大图（2列×2行）</span></div>
+    <div style="background:linear-gradient(135deg,#2c3e50,#e74c3c);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图1</span></div>
+    <div style="background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图2</span></div>
+    <div style="background:linear-gradient(135deg,#11998e,#38ef7d);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图3</span></div>
+    <div style="background:linear-gradient(135deg,#667eea,#764ba2);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图4</span></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:4px;height:120px;padding:0 10px 6px;background:#fafbfd">
+    <div style="background:linear-gradient(135deg,#0f0c29,#302b63);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图5</span></div>
+    <div style="background:linear-gradient(135deg,#4facfe,#00f2fe);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图6</span></div>
+    <div style="grid-row:1/3;grid-column:3/5;background:linear-gradient(135deg,#e74c3c,#f39c12);border-radius:6px;display:flex;align-items:flex-end;padding:6px;position:relative;overflow:hidden"><span style="position:absolute;top:3px;left:3px;padding:1px 5px;border-radius:2px;font-size:7px;font-weight:700;background:#e74c3c;color:#fff">HOT</span><span style="color:rgba(255,255,255,.8);font-size:9px;font-weight:600">大图（右侧交替）</span></div>
+    <div style="background:linear-gradient(135deg,#1a1a2e,#3b7ddd);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图7</span></div>
+    <div style="background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图8</span></div>
+  </div>
+  <div style="padding:4px 12px;font-size:10px;color:#666;font-weight:600;background:#fff;border-top:1px solid #eee">同人作品 — CSS 瀑布流（column-count:4，横竖混排，不分页）</div>
   <div style="column-count:4;column-gap:4px;padding:6px 10px 10px;background:#fafbfd">
-    <div style="break-inside:avoid;margin-bottom:4px;height:50px;background:linear-gradient(135deg,#1a1a2e,#3b7ddd);border-radius:4px;display:flex;align-items:flex-end;padding:3px;position:relative"><span style="position:absolute;top:2px;left:2px;padding:0 4px;border-radius:2px;font-size:6px;font-weight:700;background:#3b7ddd;color:#fff">NEW</span><span style="color:rgba(255,255,255,.7);font-size:7px">横版</span></div>
+    <div style="break-inside:avoid;margin-bottom:4px;height:50px;background:linear-gradient(135deg,#1a1a2e,#3b7ddd);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">横版</span></div>
     <div style="break-inside:avoid;margin-bottom:4px;height:80px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">竖版</span></div>
     <div style="break-inside:avoid;margin-bottom:4px;height:50px;background:linear-gradient(135deg,#2c3e50,#e74c3c);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">横版</span></div>
-    <div style="break-inside:avoid;margin-bottom:4px;height:50px;background:linear-gradient(135deg,#11998e,#38ef7d);border-radius:4px;display:flex;align-items:flex-end;padding:3px;position:relative"><span style="position:absolute;top:2px;left:2px;padding:0 4px;border-radius:2px;font-size:6px;font-weight:700;background:#e74c3c;color:#fff">HOT</span><span style="color:rgba(255,255,255,.7);font-size:7px">横版</span></div>
+    <div style="break-inside:avoid;margin-bottom:4px;height:50px;background:linear-gradient(135deg,#11998e,#38ef7d);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">横版</span></div>
     <div style="break-inside:avoid;margin-bottom:4px;height:80px;background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">竖版</span></div>
     <div style="break-inside:avoid;margin-bottom:4px;height:50px;background:linear-gradient(135deg,#4facfe,#00f2fe);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">横版</span></div>
-    <div style="break-inside:avoid;margin-bottom:4px;height:50px;background:linear-gradient(135deg,#0f0c29,#302b63);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">横版</span></div>
-    <div style="break-inside:avoid;margin-bottom:4px;height:80px;background:linear-gradient(135deg,#f39c12,#e74c3c);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">竖版</span></div>
-  </div>
-  <div style="display:flex;align-items:center;justify-content:center;gap:3px;padding:8px 0;background:#fff;border-top:1px solid #eee">
-    <div style="min-width:22px;height:22px;border-radius:4px;font-size:9px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e4ea;color:#6a7a90">‹</div>
-    <div style="min-width:22px;height:22px;border-radius:4px;font-size:9px;display:flex;align-items:center;justify-content:center;background:#3b7ddd;color:#fff;font-weight:600">1</div>
-    <div style="min-width:22px;height:22px;border-radius:4px;font-size:9px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e4ea;color:#6a7a90">2</div>
-    <div style="min-width:22px;height:22px;border-radius:4px;font-size:9px;display:flex;align-items:center;justify-content:center;border:1px solid #e0e4ea;color:#6a7a90">›</div>
-    <span style="font-size:8px;color:#a0a8b8;margin-left:4px">1-20 / 36</span>
   </div>
   <div style="padding:4px 12px;font-size:10px;color:#666;font-weight:600;background:#fff;border-top:1px solid #eee">搜索结果 — 按一级分类分组 + 4列Grid平铺</div>
   <div style="padding:6px 10px 10px;background:#fafbfd">
@@ -880,7 +888,7 @@
 <tr><td>Banner 轮播</td><td><b>3 条</b></td><td>使用 picsum.photos 占位图，标签分别为版本KV / 精选同人 / 周年庆典</td></tr>
 <tr><td>一级分类</td><td><b>2 个</b></td><td>官方壁纸（type='normal'）+ 同人作品（type='ugc'）</td></tr>
 <tr><td>二级分类</td><td><b>2 个</b></td><td>版本KV（id=11）+ 活动/节日壁纸（id=13），均属官方壁纸下</td></tr>
-<tr><td>壁纸总数</td><td><b>108 张</b></td><td>版本KV 36张（横竖混排）+ 活动/节日 36张（横竖混排）+ 同人 36张（横竖混排），各约1/3竖版</td></tr>
+<tr><td>壁纸总数</td><td><b>108 张</b></td><td>版本KV 36张（全横版）+ 活动/节日 36张（全横版）+ 同人 36张（横竖混排，每3张中1张竖版）</td></tr>
 <tr><td>公告</td><td><b>3 条</b></td><td>同人作品公告信息，前后台 content 字段完整一致</td></tr>
 <tr><td>活动</td><td><b>3 条</b></td><td>同人作品活动信息，前后台 content 字段完整一致</td></tr>
 </table>
