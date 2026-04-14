@@ -25,7 +25,7 @@ img{display:block}
 .logo-text{font-size:16px;font-weight:800;letter-spacing:2px;background:linear-gradient(135deg,#3b7ddd,#6c5ce7);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .logo-sub{font-size:10px;color:#a0a8b8;margin-left:4px;letter-spacing:1px}
 .main-nav{display:flex;align-items:center;gap:4px}
-.main-nav-item{position:relative;padding:8px 22px;font-size:14px;font-weight:500;color:#8090a8;border-radius:8px;transition:all .25s;letter-spacing:0.5px}
+.main-nav-item{position:relative;display:inline-flex;align-items:center;gap:2px;padding:8px 22px;font-size:14px;font-weight:500;color:#8090a8;border-radius:8px;transition:all .25s;letter-spacing:0.5px;text-decoration:none;font-family:inherit}
 .main-nav-item:hover{color:#3b7ddd;background:rgba(59,125,221,0.05)}
 .main-nav-item.active{color:#3b7ddd;font-weight:600}
 .main-nav-item.active::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:2.5px;border-radius:2px;background:#3b7ddd}
@@ -84,7 +84,7 @@ img{display:block}
 /* Filter */
 .filter-bar{max-width:1320px;margin:0 auto;padding:24px 32px 0;display:flex;align-items:center;justify-content:space-between}
 .category-tabs{display:flex;gap:6px;flex-wrap:wrap}
-.cat-tab{padding:7px 20px;border-radius:20px;font-size:13px;font-weight:500;color:#8090a8;transition:all .25s;letter-spacing:0.5px;border:1px solid transparent}
+.cat-tab{display:inline-flex;align-items:center;gap:4px;padding:7px 20px;border-radius:20px;font-size:13px;font-weight:500;color:#8090a8;transition:all .25s;letter-spacing:0.5px;border:1px solid transparent;text-decoration:none;font-family:inherit}
 .cat-tab:hover{color:#3b7ddd;background:rgba(59,125,221,0.04)}
 .cat-tab.active{color:#fff;background:#3b7ddd;border-color:#3b7ddd;font-weight:600}
 
@@ -613,7 +613,7 @@ function renderCatTabs(){
   tabs.innerHTML = `<button class="cat-tab ${activeSubCatId===null?'active':''}" onclick="switchSubCat(null)">全部</button>`
     + subs.map(s=>{
       if(s.link){
-        return `<a class="cat-tab" href="${s.link}" target="_blank">${s.name}</a>`;
+        return `<a class="cat-tab" href="${s.link}" target="_blank">${s.name} <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="opacity:.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg></a>`;
       }
       return `<button class="cat-tab ${activeSubCatId===s.id?'active':''}" onclick="switchSubCat(${s.id})">${s.name}</button>`;
     }).join('');
