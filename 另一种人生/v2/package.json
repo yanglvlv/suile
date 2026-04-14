@@ -1,0 +1,1 @@
+{"name":"another-life","version":"2.0.0","description":"另一种人生 - 沙盒人生模拟器 v2","type":"module","scripts":{"dev":"vite --host","build":"vite build","preview":"vite preview"},"dependencies":{"dexie":"^4.0.11","phaser":"^3.80.1"},"devDependencies":{"vite":"^5.4.21"}}

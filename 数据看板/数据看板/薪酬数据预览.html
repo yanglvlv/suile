@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>薪酬数据看板 - 字段来源与逻辑分析</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #4f6ef7;
+      --primary-dark: #3b57d9;
+      --primary-light: #eef1fe;
+      --sidebar-width: 220px;
+      --text-primary: #1a1a2e;
+      --text-secondary: #555;
+      --text-muted: #999;
+      --border: #e5e7eb;
+      --bg: #f5f6fa;
+      --white: #fff;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+      --purple: #8b5cf6;
+      --cyan: #06b6d4;
+      --orange: #f97316;
+      --radius: 8px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow: 0 2px 8px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      display: flex;
+      min-height: 100vh;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ============ 左侧导航 ============ */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow-y: auto;
+      color: #e0e0e0;
+    }
+
+    .sidebar-logo {
+      padding: 24px 20px 20px;
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar-logo .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--primary);
+      border-radius: 8px;
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 700;
+    }
+
+    .nav-group { padding: 12px 0; }
+
+    .nav-group-title {
+      padding: 8px 20px 6px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-item {
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255,255,255,0.6);
+      font-size: 13px;
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.9);
+    }
+
+    .nav-item.active {
+      background: rgba(79,110,247,0.15);
+      color: #fff;
+      font-weight: 600;
+      border-left-color: var(--primary);
+    }
+
+    .nav-item .nav-icon { font-size: 15px; width: 20px; text-align: center; }
+
+    /* ============ 右侧主区域 ============ */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    /* 顶部 */
+    .top-header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .top-header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .top-header .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* ============ 筛选区域 ============ */
+    .filter-section {
+      background: var(--white);
+      padding: 16px 28px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .filter-item label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .filter-input, .filter-select {
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      min-width: 150px;
+      background: var(--white);
+      color: var(--text-primary);
+      transition: all 0.15s;
+    }
+
+    .filter-input:focus, .filter-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79,110,247,0.1);
+    }
+
+    .filter-select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23999' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+    }
+
+    /* Tag输入框 */
+    .filter-item-tag {
+      min-width: 200px;
+      flex: 1;
+      max-width: 320px;
+    }
+
+    .tag-input-wrapper {
+      position: relative;
+    }
+
+    .tag-input-area {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--white);
+      min-height: 34px;
+      cursor: text;
+      transition: all 0.15s;
+    }
+
+    .tag-input-area:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79,110,247,0.1);
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .tag-list .platform-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      animation: tagIn 0.15s ease;
+    }
+
+    @keyframes tagIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .tag-list .platform-tag .tag-remove {
+      cursor: pointer;
+      font-size: 10px;
+      opacity: 0.6;
+      line-height: 1;
+      padding: 1px;
+      border-radius: 50%;
+      transition: all 0.1s;
+    }
+
+    .tag-list .platform-tag .tag-remove:hover {
+      opacity: 1;
+      background: rgba(0,0,0,0.1);
+    }
+
+    .tag-text-input {
+      border: none;
+      outline: none;
+      font-size: 13px;
+      background: transparent;
+      min-width: 120px;
+      flex: 1;
+      padding: 3px 0;
+      color: var(--text-primary);
+    }
+
+    .tag-text-input::placeholder {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .tag-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      margin-top: 4px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      z-index: 100;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .tag-suggestions.show {
+      display: block;
+    }
+
+    .tag-suggestions .suggestion-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.1s;
+    }
+
+    .tag-suggestions .suggestion-item:hover,
+    .tag-suggestions .suggestion-item.active {
+      background: var(--primary-light);
+    }
+
+    .tag-suggestions .suggestion-item.already-selected {
+      color: var(--text-muted);
+      background: #f9fafb;
+    }
+
+    .tag-suggestions .suggestion-item.already-selected::after {
+      content: '✓';
+      margin-left: auto;
+      color: var(--primary);
+      font-size: 11px;
+    }
+
+    .tag-suggestions .suggestion-hint {
+      padding: 8px 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .filter-toggle {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--primary);
+      cursor: pointer;
+      padding: 8px 0;
+      font-weight: 500;
+    }
+
+    .filter-toggle:hover { text-decoration: underline; }
+
+    .filter-row-extra {
+      display: none;
+      margin-top: 12px;
+    }
+
+    .filter-row-extra.show {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    /* 已选筛选标签 */
+    .active-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 8px 28px;
+      background: var(--white);
+    }
+
+    .active-filters:empty { display: none; padding: 0; }
+
+    .filter-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-radius: 14px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .filter-tag .remove-tag {
+      cursor: pointer;
+      font-size: 12px;
+      opacity: 0.6;
+      margin-left: 2px;
+      line-height: 1;
+    }
+
+    .filter-tag .remove-tag:hover { opacity: 1; }
+
+    /* ============ 工具栏 ============ */
+    .toolbar-bar {
+      background: var(--white);
+      padding: 10px 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .btn {
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .btn:hover { border-color: #ccc; background: #fafafa; }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--white);
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover { background: var(--primary-dark); }
+
+    .btn-outline {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover { background: var(--primary-light); }
+
+    .btn-success {
+      background: var(--success);
+      color: var(--white);
+      border-color: var(--success);
+    }
+
+    .btn-success:hover { background: #059669; }
+
+    .btn-sm {
+      padding: 5px 12px;
+      font-size: 12px;
+    }
+
+    .toolbar-spacer { flex: 1; }
+
+    .search-box {
+      padding: 6px 12px 6px 32px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      width: 220px;
+      outline: none;
+      transition: all 0.15s;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%23999' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 10-1.397 1.398h-.001l3.85 3.85a1 1 0 001.415-1.414l-3.85-3.85zm-5.242.156a5 5 0 110-10 5 5 0 010 10z'/%3E%3C/svg%3E") 10px center no-repeat;
+    }
+
+    .search-box:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79,110,247,0.1);
+    }
+
+    .data-summary {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .summary-num {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 15px;
+    }
+
+    .page-size-select {
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    /* ============ 数据表格 ============ */
+    .table-container {
+      flex: 1;
+      overflow: auto;
+      position: relative;
+    }
+
+    .data-table {
+      width: max-content;
+      min-width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .data-table th {
+      background: #f8f9fb;
+      padding: 11px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--text-secondary);
+      border-bottom: 2px solid var(--border);
+      border-right: 1px solid #f0f0f0;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+
+    .data-table th:hover { background: #eef0f4; }
+    .data-table th:last-child { border-right: none; }
+
+    .data-table th .sort-arrow {
+      font-size: 9px;
+      margin-left: 3px;
+      opacity: 0.3;
+    }
+
+    .data-table th.sorted .sort-arrow { opacity: 1; color: var(--primary); }
+
+    /* 数据来源行 */
+    .data-table .source-row td {
+      background: #fffbeb;
+      color: #92400e;
+      font-size: 11px;
+      font-weight: 500;
+      border-bottom: 2px solid #fcd34d;
+      padding: 8px 14px;
+      white-space: normal;
+      max-width: 200px;
+    }
+
+    .data-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f5f5f5;
+      border-right: 1px solid #fafafa;
+      white-space: nowrap;
+      max-width: 280px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+
+    .data-table td:last-child { border-right: none; }
+    .data-table tbody tr:hover td { background: #f0f4ff; }
+    .data-table tbody tr:nth-child(even) td { background: #fcfcfd; }
+    .data-table tbody tr:nth-child(even):hover td { background: #f0f4ff; }
+
+    .data-table .col-index {
+      width: 50px;
+      min-width: 50px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    /* 标签 */
+    .status-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .status-tag.tag-green { background: #dcfce7; color: #166534; }
+    .status-tag.tag-yellow { background: #fef3c7; color: #92400e; }
+    .status-tag.tag-red { background: #fee2e2; color: #991b1b; }
+    .status-tag.tag-blue { background: #dbeafe; color: #1e40af; }
+    .status-tag.tag-gray { background: #f3f4f6; color: #6b7280; }
+    .status-tag.tag-purple { background: #f3e8ff; color: #6b21a8; }
+
+    /* 分页 */
+    .pagination-bar {
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      padding: 10px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .page-btns { display: flex; gap: 4px; align-items: center; }
+
+    .page-btn {
+      min-width: 30px; height: 30px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-secondary);
+      padding: 0 8px;
+      transition: all 0.15s;
+    }
+
+    .page-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .page-btn:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
+
+    /* 空状态 */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state .empty-icon { font-size: 56px; margin-bottom: 16px; opacity: 0.3; }
+    .empty-state p { font-size: 14px; margin-bottom: 4px; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 200;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      box-shadow: var(--shadow-lg);
+      transform: translateX(140%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .toast.show { transform: translateX(0); }
+    .toast.success { background: #166534; }
+    .toast.warning { background: #92400e; }
+    .toast.error { background: #991b1b; }
+
+    /* 滚动条 */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #bbb; }
+
+    /* 可折叠表头来源指示器 */
+    .th-source-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 左侧导航 -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">S</div>
+    薪酬结算系统
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-title">薪酬列表</div>
+    <div class="nav-item active">
+      <span class="nav-icon">📊</span> 薪酬数据总览
+    </div>
+  </div>
+</aside>
+
+<!-- 右侧主区域 -->
+<div class="main">
+  <!-- 顶部 -->
+  <div class="top-header">
+    <h1>📊 薪酬数据总览</h1>
+  </div>
+
+  <!-- 搜索筛选区域 -->
+  <div class="filter-section">
+    <div class="filter-row">
+      <div class="filter-item filter-item-tag">
+        <label>订单创建月份</label>
+        <div class="tag-input-wrapper" data-filter-key="订单创建月份">
+          <div class="tag-input-area">
+            <div class="tag-list"></div>
+            <input type="text" class="tag-text-input" placeholder="输入月份如2025-03，回车添加" autocomplete="off" />
+          </div>
+          <div class="tag-suggestions"></div>
+        </div>
+      </div>
+      <div class="filter-item filter-item-tag">
+        <label>平台</label>
+        <div class="tag-input-wrapper" data-filter-key="平台">
+          <div class="tag-input-area">
+            <div class="tag-list"></div>
+            <input type="text" class="tag-text-input" placeholder="输入平台名称，回车添加" autocomplete="off" />
+          </div>
+          <div class="tag-suggestions"></div>
+        </div>
+      </div>
+      <div class="filter-item filter-item-tag">
+        <label>COA_ID</label>
+        <div class="tag-input-wrapper" data-filter-key="COA_ID">
+          <div class="tag-input-area">
+            <div class="tag-list"></div>
+            <input type="text" class="tag-text-input" placeholder="输入COA_ID，回车添加" autocomplete="off" />
+          </div>
+          <div class="tag-suggestions"></div>
+        </div>
+      </div>
+      <div class="filter-item filter-item-tag">
+        <label>COA名称</label>
+        <div class="tag-input-wrapper" data-filter-key="COA名称">
+          <div class="tag-input-area">
+            <div class="tag-list"></div>
+            <input type="text" class="tag-text-input" placeholder="输入COA名称，回车添加" autocomplete="off" />
+          </div>
+          <div class="tag-suggestions"></div>
+        </div>
+      </div>
+      <div class="filter-item filter-item-tag">
+        <label>账号名称</label>
+        <div class="tag-input-wrapper" data-filter-key="账号名称">
+          <div class="tag-input-area">
+            <div class="tag-list"></div>
+            <input type="text" class="tag-text-input" placeholder="输入账号名称，回车添加" autocomplete="off" />
+          </div>
+          <div class="tag-suggestions"></div>
+        </div>
+      </div>
+      <div class="filter-item filter-item-tag">
+        <label>订单号</label>
+        <div class="tag-input-wrapper" data-filter-key="订单号">
+          <div class="tag-input-area">
+            <div class="tag-list"></div>
+            <input type="text" class="tag-text-input" placeholder="输入订单号，回车添加" autocomplete="off" />
+          </div>
+          <div class="tag-suggestions"></div>
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button class="btn btn-sm btn-primary" onclick="applyFilters()">🔍 查询</button>
+        <button class="btn btn-sm" onclick="resetFilters()">↺ 重置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 已选筛选标签 -->
+  <div class="active-filters" id="activeFilters"></div>
+
+  <!-- 工具栏 -->
+  <div class="toolbar-bar">
+    <div class="data-summary">
+      <span>共 <span class="summary-num" id="totalCount">0</span> 条</span>
+      <span id="filterCountWrap" style="display:none;">
+        筛选结果 <span class="summary-num" id="filterCount">0</span> 条
+      </span>
+    </div>
+    <div class="toolbar-spacer"></div>
+    <input class="search-box" id="searchInput" placeholder="全局搜索..." oninput="handleGlobalSearch()" />
+    <button class="btn btn-sm btn-success" onclick="exportAllData()">📤 导出全部(Excel)</button>
+    <button class="btn btn-outline btn-sm" onclick="exportCurrentPage()">导出本页</button>
+    <select class="page-size-select" id="pageSizeSelect" onchange="changePageSize()">
+      <option value="20">20条/页</option>
+      <option value="50">50条/页</option>
+      <option value="100">100条/页</option>
+    </select>
+  </div>
+
+  <!-- 数据表格 -->
+  <div class="table-container" id="tableContainer">
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <div class="empty-icon">📊</div>
+      <p>暂无数据</p>
+      <p style="font-size:12px;">请导入薪酬数据或调整筛选条件</p>
+    </div>
+    <table class="data-table" id="dataTable">
+      <thead id="dataTableHead"></thead>
+      <tbody id="dataTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- 分页 -->
+  <div class="pagination-bar" id="paginationBar">
+    <span id="pageInfo">共 0 条</span>
+    <div class="page-btns" id="pageBtns"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== 完整的51个字段定义 ====================
+const STANDARD_HEADERS = [
+  '订单创建月份', '系统来源', '产品ID', '产品名称', 'COA_ID', 'COA名称',
+  'SG', '产品类型', '订单号', '订单事项开始月份', '订单事项结束月份',
+  '验收状态', '验收单号', '立项单号', '立项名称', '采购类别', '采买类型',
+  '场景', '合作模式', '采买方式', '平台', '原平台', '数据版本',
+  '游可爱id', '账号ID', '账号名称', '账号分级', '账号圈层', '账号粉丝数',
+  '已执行总价（不含服垫税减）', '已执行总价（含服垫税减）',
+  '有效阅读量', '有效播放量', '总互动量', '点赞量', '转发量', '评论量', '弹幕量',
+  '总观看人数', '峰值在线人数', '直播间点击次数', '直播间点击人数',
+  '直播总时长（min）', '平均在线人数ACU（min)', 'CPE', 'CPM', 'CPC',
+  '单人观看成本', '单人点击成本', '单次点击成本', '互动成本'
+];
+
+// ==================== 字段数据来源定义（基于Excel最后一行） ====================
+// type: direct=直接获取, import=薪酬导入, system=系统接入, calc=公式计算, match=匹配关联, none=无
+const FIELD_SOURCES = {
+  '订单创建月份':       { type: 'import', source: '薪酬月份', desc: '取自薪酬导入的"薪酬月份"字段' },
+  '系统来源':           { type: 'none',   source: '无', desc: '无直接来源，默认值或系统写入（如BFC）' },
+  '产品ID':             { type: 'none',   source: '', desc: '暂无独立来源，关联产品库' },
+  '产品名称':           { type: 'none',   source: '', desc: '暂无独立来源，关联产品库' },
+  'COA_ID':             { type: 'match',  source: '根据所选产品名称映射', desc: '根据所选产品名称映射对应的COA_ID' },
+  'COA名称':            { type: 'create', source: '活动创建-产品名称', desc: '从活动创建时选择的产品名称获取' },
+  'SG':                 { type: 'none',   source: '无', desc: '暂无来源' },
+  '产品类型':           { type: 'none',   source: '无', desc: '暂无来源' },
+  '订单号':             { type: 'import', source: '活动创建-上游订单号', desc: '来自活动创建模块的"上游订单号"字段' },
+  '订单事项开始月份':   { type: 'import', source: '活动创建-开始时间', desc: '活动创建时填写的"开始时间"' },
+  '订单事项结束月份':   { type: 'import', source: '活动创建-结束时间', desc: '活动创建时填写的"结束时间"' },
+  '验收状态':           { type: 'none',   source: '无', desc: '系统流程状态，验收流程驱动' },
+  '验收单号':           { type: 'none',   source: '无', desc: '系统自动生成' },
+  '立项单号':           { type: 'none',   source: '无', desc: '关联立项系统' },
+  '立项名称':           { type: 'none',   source: '无', desc: '关联立项系统' },
+  '采购类别':           { type: 'none',   source: '无', desc: '暂无来源' },
+  '采买类型':           { type: 'none',   source: '无', desc: '暂无来源' },
+  '场景':               { type: 'none',   source: '无', desc: '暂无来源' },
+  '合作模式':           { type: 'none',   source: '无', desc: '暂无来源' },
+  '采买方式':           { type: 'none',   source: '无', desc: '暂无来源' },
+  '平台':               { type: 'import', source: '薪酬导入-平台', desc: '从薪酬导入Excel的"平台"字段获取' },
+  '原平台':             { type: 'none',   source: '', desc: '与平台关联或由导入时带入' },
+  '数据版本':           { type: 'system', source: '系统接入', desc: '由系统自动标记数据版本' },
+  '游可爱id':           { type: 'none',   source: '无', desc: '无直接来源，薪酬导入时备注信息区域（含刊例价等描述）' },
+  '账号ID':             { type: 'import', source: '薪酬导入-平台账号ID', desc: '从薪酬导入的"平台账号ID"字段获取' },
+  '账号名称':           { type: 'match',  source: '对应账号-昵称', desc: '通过账号ID匹配账号库中的昵称，非直接导入' },
+  '账号分级':           { type: 'none',   source: '无', desc: '暂无来源' },
+  '账号圈层':           { type: 'none',   source: '无', desc: '暂无来源' },
+  '账号粉丝数':         { type: 'none',   source: '无', desc: '暂无来源' },
+  '已执行总价（不含服垫税减）': { type: 'none', source: '无', desc: '暂无来源' },
+  '已执行总价（含服垫税减）':   { type: 'import', source: '薪酬导入-薪酬金额', desc: '从薪酬导入的"薪酬金额"字段获取' },
+  '有效阅读量':         { type: 'match',  source: '导入数据匹配', desc: '查看导入数据中是否有相符字段，通过字段名近似匹配（如"阅读量"≈"有效阅读量"）' },
+  '有效播放量':         { type: 'match',  source: '导入数据匹配', desc: '查看导入数据中是否有相符字段，播放量/播放次数等近似匹配' },
+  '总互动量':           { type: 'match',  source: '导入数据匹配', desc: '查看导入数据中是否有相符字段，或由 点赞+转发+评论+弹幕 计算' },
+  '点赞量':             { type: 'match',  source: '导入数据匹配', desc: '查看导入数据中是否有"点赞"相关字段' },
+  '转发量':             { type: 'match',  source: '导入数据匹配', desc: '查看导入数据中是否有"转发/分享"相关字段' },
+  '评论量':             { type: 'match',  source: '导入数据匹配', desc: '查看导入数据中是否有"评论"相关字段' },
+  '弹幕量':             { type: 'match',  source: '导入数据匹配', desc: '查看导入数据中是否有"弹幕"相关字段（B站特有）' },
+  '总观看人数':         { type: 'match',  source: '导入数据匹配', desc: '匹配导入中"访问人数/UV/观看UV"等近似字段' },
+  '峰值在线人数':       { type: 'match',  source: '导入数据匹配', desc: '匹配导入中"峰值/在线峰值"等近似字段' },
+  '直播间点击次数':     { type: 'match',  source: '导入数据匹配', desc: '匹配导入中"点击次数/PV"等近似字段' },
+  '直播间点击人数':     { type: 'match',  source: '导入数据匹配', desc: '匹配导入中"点击人数/点击UV"等近似字段' },
+  '直播总时长（min）':  { type: 'match',  source: '导入数据匹配', desc: '匹配导入中"直播时长"相关字段' },
+  '平均在线人数ACU（min)': { type: 'match', source: '导入数据匹配', desc: '匹配导入中"ACU/平均在线"相关字段' },
+  'CPE':                { type: 'calc',   source: '薪酬金额/(点赞+评论+转发)', desc: '= 薪酬金额 ÷ (点赞量 + 评论量 + 转发量)' },
+  'CPM':                { type: 'calc',   source: '薪酬金额/有效播放量×1000', desc: '= 薪酬金额 ÷ 有效播放量 × 1000' },
+  'CPC':                { type: 'calc',   source: '薪酬金额/有效播放量', desc: '= 薪酬金额 ÷ 有效播放量' },
+  '单人观看成本':       { type: 'calc',   source: '薪酬金额/总观看人数', desc: '= 薪酬金额 ÷ 总观看人数' },
+  '单人点击成本':       { type: 'calc',   source: '薪酬金额/直播间点击人数', desc: '= 薪酬金额 ÷ 直播间点击人数' },
+  '单次点击成本':       { type: 'calc',   source: '薪酬金额/直播间点击次数', desc: '= 薪酬金额 ÷ 直播间点击次数' },
+  '互动成本':           { type: 'calc',   source: '薪酬金额/(点赞+评论+转发+弹幕)', desc: '= 薪酬金额 ÷ (点赞量 + 评论量 + 转发量 + 弹幕量)' }
+};
+
+// 来源类型中文名和颜色
+const SOURCE_TYPE_MAP = {
+  'import':  { label: '薪酬导入', cls: 'import',  color: '#1e40af', dotColor: '#3b82f6' },
+  'system':  { label: '系统接入', cls: 'system',  color: '#4338ca', dotColor: '#6366f1' },
+  'calc':    { label: '公式计算', cls: 'calc',    color: '#92400e', dotColor: '#f59e0b' },
+  'match':   { label: '匹配关联', cls: 'match',   color: '#9d174d', dotColor: '#ec4899' },
+  'direct':  { label: '直接获取', cls: 'direct',  color: '#166534', dotColor: '#22c55e' },
+  'none':    { label: '无',       cls: 'none',    color: '#6b7280', dotColor: '#9ca3af' }
+};
+
+// 所有Tag筛选器配置
+const TAG_FILTERS = ['订单创建月份', '平台', 'COA_ID', 'COA名称', '账号名称', '订单号'];
+
+// 每个筛选器的已选Tag值
+const filterTags = {};
+TAG_FILTERS.forEach(k => filterTags[k] = []);
+
+// 每个筛选器的所有可选值（从数据中提取）
+const filterKnownValues = {};
+TAG_FILTERS.forEach(k => filterKnownValues[k] = []);
+
+const SELECT_FILTER_IDS = [];
+
+// 通用Tag组件状态
+let activeSuggestionIdx = -1;
+let activeSuggestionWrapper = null;
+
+// ==================== 全局状态 ====================
+let allData = [];
+let filteredData = [];
+let currentPage = 1;
+let pageSize = 20;
+let sortCol = -1;
+let sortDir = 'asc';
+let showSourceRow = false;
+
+// ==================== 基于Excel的真实示例数据 ====================
+function generateSampleData() {
+  const realData = [
+    // ===== DNF手游 - B站 =====
+    ['2025-01', 'BFC', '9768', 'DNF手游', 'C02238', 'DNF-手游APP', '国内发行及二方', '次新品',
+      'TSPO250113301000098', '2025-01', '2025-02', '已验收', 'RCVO-250314301000003',
+      'MBA-2024122307005', '2025《DNF手游》春节版本整合营销立项', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '购买', 'B站', 'B站', '系统接入',
+      '刊例价：5000，实际合作价：6000', '29881527', '古城亲亲', '', '', '',
+      5428.08, 6698.76, 0, 71703, 74163, 2324, 37, 67, 32, 0, 0, 0, 0, 0, 0,
+      0.09, '', 0.09, '', '', '', 0.09],
+    ['2025-01', 'BFC', '9768', 'DNF手游', 'C02238', 'DNF-手游APP', '国内发行及二方', '次新品',
+      'TSPO250113301000098', '2025-01', '2025-02', '已验收', 'RCVO-250314301000003',
+      'MBA-2024122307005', '2025《DNF手游》春节版本整合营销立项', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '购买', 'B站', 'B站', '系统接入',
+      '刊例价：90000，实际合作价：60000', '8993635', '一只树奈奈啊', '', '', '',
+      54280.88, 66987.65, 0, 1126977, 26223, 23197, 1280, 404, 1342, 0, 0, 0, 0, 0, 0,
+      2.55, '', 0.06, '', '', '', 2.55],
+    ['2025-01', 'BFC', '9768', 'DNF手游', 'C02238', 'DNF-手游APP', '国内发行及二方', '次新品',
+      'TSPO250115301000027', '2025-01', '2025-01', '已验收', 'RCVO-250228301000084',
+      'MBA-2024122006938', 'DNF手游新春版本内容运营费用', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '配送', 'B站', 'B站', '系统接入',
+      'B站平台粉丝1.6w，无刊例价，该平台内容为赠送', '503712645', '一只拉面猪', '', '', '',
+      0, 0, 3187956, 3187956, 2848, 2680, 108, 60, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, '', '', '', 0],
+    ['2025-01', 'BFC', '9768', 'DNF手游', 'C02238', 'DNF-手游APP', '国内发行及二方', '次新品',
+      'TSPO250115301000027', '2025-01', '2025-01', '已验收', 'RCVO-250228301000084',
+      'MBA-2024122006938', 'DNF手游新春版本内容运营费用', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '配送', 'B站', 'B站', '系统接入',
+      'B站平台定制视频刊例价5000，该平台内容为赠送', '3461562077547431', '大伟老三', '', '', '',
+      0, 0, 107000, 107000, 7298, 6855, 375, 68, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, '', '', '', 0],
+
+    // ===== DNF手游 - 小红书 =====
+    ['2025-01', 'BFC', '9768', 'DNF手游', 'C02238', 'DNF-手游APP', '国内发行及二方', '次新品',
+      'TSPO250115301000027', '2025-01', '2025-01', '已验收', 'RCVO-250228301000084',
+      'MBA-2024122006938', 'DNF手游新春版本内容运营费用', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '配送', '小红书', '小红书', '系统接入',
+      '小红书平台视频笔记刊例价6000，该平台内容为赠送', 'xcxy1204', '小陈鱼鱼', '', '', '',
+      0, 0, 5312, 5312, 148, 127, 19, 2, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, '', '', '', 0],
+    ['2025-01', 'BFC', '9768', 'DNF手游', 'C02238', 'DNF-手游APP', '国内发行及二方', '次新品',
+      'TSPO250115301000027', '2025-01', '2025-01', '已验收', 'RCVO-250228301000084',
+      'MBA-2024122006938', 'DNF手游新春版本内容运营费用', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '配送', '小红书', '小红书', '系统接入',
+      '小红书平台粉丝0.4w，无刊例价，该平台内容为赠送', '42959253301', '大伟老三', '', '', '',
+      0, 0, 1647, 1647, 47, 37, 4, 6, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, '', '', '', 0],
+    ['2025-01', 'BFC', '9768', 'DNF手游', 'C02238', 'DNF-手游APP', '国内发行及二方', '次新品',
+      'TSPO250115301000027', '2025-01', '2025-01', '已验收', 'RCVO-250228301000084',
+      'MBA-2024122006938', 'DNF手游新春版本内容运营费用', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '配送', '小红书', '小红书', '系统接入',
+      '小红书平台粉丝0.5w，无刊例价，该平台内容为赠送', '634905872', '刘裕同学', '', '', '',
+      0, 0, 1990, 1990, 104, 72, 1, 31, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, '', '', '', 0],
+
+    // ===== 王者荣耀 - 抖音 =====
+    ['2025-02', 'BFC', '10234', '王者荣耀', 'C03456', '王者荣耀-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250210301000156', '2025-02', '2025-03', '已验收', 'RCVO-250405301000012',
+      'MBA-2025011507012', '2025《王者荣耀》情人节活动推广立项', '内容营销', '短视频',
+      'KOL采买', '商单采买', '购买', '抖音', '抖音', '系统接入',
+      '刊例价：120000，实际合作价：95000', '88712345', '张大仙', '', '', '',
+      86500.00, 106715.00, 0, 5823410, 189230, 156890, 18920, 3410, 0, 0, 0, 0, 0, 0, 0,
+      0.57, 18.33, 0.02, '', '', '', 0.57],
+    ['2025-02', 'BFC', '10234', '王者荣耀', 'C03456', '王者荣耀-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250210301000156', '2025-02', '2025-03', '已验收', 'RCVO-250405301000012',
+      'MBA-2025011507012', '2025《王者荣耀》情人节活动推广立项', '内容营销', '短视频',
+      'KOL采买', '商单采买', '购买', '抖音', '抖音', '系统接入',
+      '刊例价：80000，实际合作价：65000', '99182736', '梦泪', '', '', '',
+      59150.00, 72991.50, 0, 3456780, 98760, 87650, 6230, 1890, 0, 0, 0, 0, 0, 0, 0,
+      0.76, 21.12, 0.02, '', '', '', 0.76],
+    ['2025-02', 'BFC', '10234', '王者荣耀', 'C03456', '王者荣耀-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250210301000157', '2025-02', '2025-02', '未验收', '',
+      'MBA-2025011507012', '2025《王者荣耀》情人节活动推广立项', '内容营销', '短视频',
+      'KOL采买', '商单采买', '购买', '抖音', '抖音', '系统接入',
+      '刊例价：30000，实际合作价：25000', '77654321', '小月月解说', '', '', '',
+      22750.00, 28065.50, 0, 1234560, 45670, 38920, 3450, 1230, 0, 0, 0, 0, 0, 0, 0,
+      0.64, 22.72, 0.02, '', '', '', 0.64],
+
+    // ===== 王者荣耀 - 快手 =====
+    ['2025-02', 'BFC', '10234', '王者荣耀', 'C03456', '王者荣耀-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250212301000089', '2025-02', '2025-03', '验收中', '',
+      'MBA-2025011507013', '2025《王者荣耀》赛事推广合作', '内容营销', '直播',
+      'KOL采买', '商单采买', '购买', '快手', '快手', '系统接入',
+      '刊例价：50000，实际合作价：42000', 'KS8812390', '秋日传说', '', '', '',
+      38220.00, 47139.36, 0, 0, 12560, 9870, 1560, 890, 0, 234560, 89230, 156780, 78900,
+      180, 45, 2.40, '', 0.30, 0.60, 0.27, 0.54, 2.40],
+    ['2025-02', 'BFC', '10234', '王者荣耀', 'C03456', '王者荣耀-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250212301000089', '2025-02', '2025-03', '验收中', '',
+      'MBA-2025011507013', '2025《王者荣耀》赛事推广合作', '内容营销', '直播',
+      'KOL采买', '商单采买', '购买', '快手', '快手', '系统接入',
+      '刊例价：35000，实际合作价：28000', 'KS7723456', '老帅比', '', '', '',
+      25480.00, 31417.04, 0, 0, 8900, 7230, 980, 560, 0, 187650, 56780, 98760, 54320,
+      150, 38, 1.97, '', 0.32, 0.58, 0.26, 0.57, 1.97],
+
+    // ===== 原神 - 微博 =====
+    ['2025-03', 'BFC', '11567', '原神', 'C04567', '原神-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250305301000234', '2025-03', '2025-04', '未验收', '',
+      'MBA-2025022108901', '2025《原神》5.0版本全平台推广', '内容营销', '图文',
+      'KOL采买', '商单采买', '购买', '微博', '微博', '系统接入',
+      '刊例价：200000，实际合作价：160000', 'WB112233', '原神官方搬运工', '', '', '',
+      145600.00, 179588.80, 0, 0, 234560, 198760, 23450, 5670, 0, 0, 0, 0, 0, 0, 0,
+      0.79, '', '', '', '', '', 0.79],
+    ['2025-03', 'BFC', '11567', '原神', 'C04567', '原神-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250305301000234', '2025-03', '2025-04', '未验收', '',
+      'MBA-2025022108901', '2025《原神》5.0版本全平台推广', '内容营销', '图文',
+      'KOL采买', '商单采买', '购买', '微博', '微博', '系统接入',
+      '刊例价：50000，实际合作价：38000', 'WB445566', '纳西妲的小粉丝', '', '', '',
+      34580.00, 42659.48, 0, 0, 56780, 45670, 5670, 2340, 0, 0, 0, 0, 0, 0, 0,
+      0.79, '', '', '', '', '', 0.79],
+
+    // ===== 原神 - B站 =====
+    ['2025-03', 'BFC', '11567', '原神', 'C04567', '原神-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250306301000078', '2025-03', '2025-04', '部分验收', 'RCVO-250420301000045',
+      'MBA-2025022108901', '2025《原神》5.0版本全平台推广', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '购买', 'B站', 'B站', '系统接入',
+      '刊例价：150000，实际合作价：120000', '23456789', '我是云堇', '', '', '',
+      109200.00, 134748.00, 0, 8934560, 345670, 287650, 34560, 12340, 11120, 0, 0, 0, 0, 0, 0,
+      0.39, 15.08, 0.02, '', '', '', 0.39],
+    ['2025-03', 'BFC', '11567', '原神', 'C04567', '原神-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250306301000078', '2025-03', '2025-04', '部分验收', 'RCVO-250420301000045',
+      'MBA-2025022108901', '2025《原神》5.0版本全平台推广', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '购买', 'B站', 'B站', '系统接入',
+      '刊例价：80000，实际合作价：62000', '67890123', '芙宁娜今天喝水了吗', '', '', '',
+      56420.00, 69622.28, 0, 4567890, 178900, 156780, 12340, 5670, 4110, 0, 0, 0, 0, 0, 0,
+      0.40, 15.25, 0.02, '', '', '', 0.40],
+
+    // ===== 原神 - 抖音 =====
+    ['2025-03', 'BFC', '11567', '原神', 'C04567', '原神-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250308301000190', '2025-03', '2025-03', '未验收', '',
+      'MBA-2025022108901', '2025《原神》5.0版本全平台推广', '内容营销', '短视频',
+      'KOL采买', '商单采买', '购买', '抖音', '抖音', '系统接入',
+      '刊例价：60000，实际合作价：48000', '55667788', '原神大魔王', '', '', '',
+      43680.00, 53890.08, 0, 3245670, 98760, 78650, 12340, 3450, 0, 0, 0, 0, 0, 0, 0,
+      0.57, 16.60, 0.02, '', '', '', 0.57],
+
+    // ===== 和平精英 - 抖音 =====
+    ['2025-01', 'BFC', '12345', '和平精英', 'C05678', '和平精英-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250108301000045', '2025-01', '2025-02', '已验收', 'RCVO-250310301000067',
+      'MBA-2024121806789', '2025《和平精英》新年版本KOL推广', '内容营销', '短视频',
+      'KOL采买', '商单采买', '购买', '抖音', '抖音', '系统接入',
+      '刊例价：100000，实际合作价：82000', 'DY88901234', '不求人', '', '', '',
+      74620.00, 92031.08, 0, 7856230, 234560, 198760, 21340, 7890, 0, 0, 0, 0, 0, 0, 0,
+      0.40, 11.72, 0.01, '', '', '', 0.40],
+    ['2025-01', 'BFC', '12345', '和平精英', 'C05678', '和平精英-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250108301000045', '2025-01', '2025-02', '已验收', 'RCVO-250310301000067',
+      'MBA-2024121806789', '2025《和平精英》新年版本KOL推广', '内容营销', '短视频',
+      'KOL采买', '商单采买', '购买', '抖音', '抖音', '系统接入',
+      '刊例价：45000，实际合作价：38000', 'DY77654321', '小抠脚', 'A级', '游戏圈', '1230万',
+      34580.00, 42659.48, 0, 2345670, 78900, 67890, 6780, 2340, 0, 0, 0, 0, 0, 0, 0,
+      0.45, 18.17, 0.02, '', '', '', 0.45],
+
+    // ===== 和平精英 - 快手 =====
+    ['2025-01', 'BFC', '12345', '和平精英', 'C05678', '和平精英-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250110301000112', '2025-01', '2025-01', '已验收', 'RCVO-250225301000034',
+      'MBA-2024121806789', '2025《和平精英》新年版本KOL推广', '内容营销', '直播',
+      'KOL采买', '商单采买', '购买', '快手', '快手', '系统接入',
+      '刊例价：70000，实际合作价：58000', 'KS6654321', '难言', 'S级', '游戏圈', '2350万',
+      52780.00, 65110.12, 0, 0, 56780, 45670, 6780, 2340, 0, 567890, 234560, 345670, 178900,
+      240, 68, 1.16, '', 0.12, 0.37, 0.18, 0.36, 1.16],
+
+    // ===== 英雄联盟手游 - B站 =====
+    ['2025-02', 'BFC', '13456', '英雄联盟手游', 'C06789', '英雄联盟手游APP', '国内发行及二方', '次新品',
+      'TSPO250218301000089', '2025-02', '2025-03', '验收中', '',
+      'MBA-2025012309876', '2025《英雄联盟手游》赛季推广计划', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '购买', 'B站', 'B站', '系统接入',
+      '刊例价：70000，实际合作价：55000', '34567890', '小小苍', 'S级', '游戏圈', '780万',
+      50050.00, 61741.65, 0, 4567890, 156780, 134560, 13450, 5670, 3110, 0, 0, 0, 0, 0, 0,
+      0.39, 13.52, 0.01, '', '', '', 0.39],
+    ['2025-02', 'BFC', '13456', '英雄联盟手游', 'C06789', '英雄联盟手游APP', '国内发行及二方', '次新品',
+      'TSPO250218301000089', '2025-02', '2025-03', '验收中', '',
+      'MBA-2025012309876', '2025《英雄联盟手游》赛季推广计划', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '购买', 'B站', 'B站', '系统接入',
+      '刊例价：40000，实际合作价：32000', '78901234', '德云色', 'A级', '游戏圈', '450万',
+      29120.00, 35921.44, 0, 2345670, 89760, 76540, 7890, 3210, 2120, 0, 0, 0, 0, 0, 0,
+      0.43, 15.32, 0.02, '', '', '', 0.43],
+
+    // ===== 英雄联盟手游 - 视频号 =====
+    ['2025-02', 'BFC', '13456', '英雄联盟手游', 'C06789', '英雄联盟手游APP', '国内发行及二方', '次新品',
+      'TSPO250220301000045', '2025-02', '2025-02', '未验收', '',
+      'MBA-2025012309876', '2025《英雄联盟手游》赛季推广计划', '内容营销', '图文',
+      'KOL采买', '商单采买', '购买', '视频号', '视频号', '系统接入',
+      '刊例价：25000，实际合作价：20000', 'WB667788', '英雄联盟解说小苍', 'A级', '游戏圈', '320万',
+      18200.00, 22454.80, 0, 0, 67890, 56780, 6780, 2340, 0, 0, 0, 0, 0, 0, 0,
+      0.34, '', '', '', '', '', 0.34],
+
+    // ===== 元梦之星 - 小红书 =====
+    ['2025-03', 'BFC', '14567', '元梦之星', 'C07890', '元梦之星-手游APP', '国内发行及二方', '新品',
+      'TSPO250301301000067', '2025-03', '2025-04', '未验收', '',
+      'MBA-2025021510234', '2025《元梦之星》春季联动推广', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '购买', '小红书', '小红书', '系统接入',
+      '刊例价：15000，实际合作价：12000', 'XHS112233', '可爱的兔叽', 'A级', '生活圈', '180万',
+      10920.00, 13475.28, 0, 23456, 45670, 38920, 3450, 1230, 0, 0, 0, 0, 0, 0, 0,
+      0.28, '', '', '', '', '', 0.28],
+    ['2025-03', 'BFC', '14567', '元梦之星', 'C07890', '元梦之星-手游APP', '国内发行及二方', '新品',
+      'TSPO250301301000067', '2025-03', '2025-04', '未验收', '',
+      'MBA-2025021510234', '2025《元梦之星》春季联动推广', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '购买', '小红书', '小红书', '系统接入',
+      '刊例价：8000，实际合作价：6500', 'XHS445566', '软萌酱紫呀', 'B级', '生活圈', '56万',
+      5915.00, 7299.11, 0, 12340, 23450, 19870, 1890, 890, 0, 0, 0, 0, 0, 0, 0,
+      0.32, '', '', '', '', '', 0.32],
+
+    // ===== 元梦之星 - 抖音 =====
+    ['2025-03', 'BFC', '14567', '元梦之星', 'C07890', '元梦之星-手游APP', '国内发行及二方', '新品',
+      'TSPO250303301000123', '2025-03', '2025-04', '未验收', '',
+      'MBA-2025021510234', '2025《元梦之星》春季联动推广', '内容营销', '短视频',
+      'KOL采买', '商单采买', '购买', '抖音', '抖音', '系统接入',
+      '刊例价：50000，实际合作价：40000', 'DY99112233', '是夏天鸭', 'A级', '生活圈', '520万',
+      36400.00, 44909.60, 0, 2345670, 67890, 56780, 6780, 2340, 0, 0, 0, 0, 0, 0, 0,
+      0.47, 19.14, 0.02, '', '', '', 0.47],
+
+    // ===== 穿越火线手游 - 快手 =====
+    ['2025-01', 'BFC', '15678', '穿越火线手游', 'C08901', '穿越火线-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250106301000034', '2025-01', '2025-02', '已验收', 'RCVO-250315301000089',
+      'MBA-2024121505678', '2025《穿越火线手游》新年版本推广', '内容营销', '直播',
+      'KOL采买', '商单采买', '购买', '快手', '快手', '系统接入',
+      '刊例价：40000，实际合作价：32000', 'KS4456789', '陈子豪', 'S级', '游戏圈', '1890万',
+      29120.00, 35921.44, 0, 0, 34560, 28950, 3450, 1230, 0, 456780, 178900, 267890, 134560,
+      200, 56, 0.92, '', 0.13, 0.27, 0.16, 0.27, 0.92],
+
+    // ===== 穿越火线手游 - B站 =====
+    ['2025-01', 'BFC', '15678', '穿越火线手游', 'C08901', '穿越火线-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250107301000056', '2025-01', '2025-01', '已验收', 'RCVO-250228301000112',
+      'MBA-2024121505678', '2025《穿越火线手游》新年版本推广', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '购买', 'B站', 'B站', '系统接入',
+      '刊例价：25000，实际合作价：20000', '45678901', 'CF一哥', 'A级', '游戏圈', '340万',
+      18200.00, 22454.80, 0, 1890560, 67890, 56780, 6780, 2340, 1990, 0, 0, 0, 0, 0, 0,
+      0.33, 11.89, 0.01, '', '', '', 0.33],
+
+    // ===== 金铲铲之战 - 抖音 =====
+    ['2025-02', 'BFC', '16789', '金铲铲之战', 'C09012', '金铲铲之战-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250215301000078', '2025-02', '2025-03', '部分验收', 'RCVO-250401301000023',
+      'MBA-2025011208765', '2025《金铲铲之战》S14赛季推广', '内容营销', '短视频',
+      'KOL采买', '商单采买', '购买', '抖音', '抖音', '系统接入',
+      '刊例价：35000，实际合作价：28000', 'DY11223344', '金铲铲之神', 'A级', '游戏圈', '450万',
+      25480.00, 31417.04, 0, 1567890, 56780, 45670, 5670, 2340, 0, 0, 0, 0, 0, 0, 0,
+      0.53, 20.04, 0.02, '', '', '', 0.53],
+
+    // ===== 金铲铲之战 - B站 =====
+    ['2025-02', 'BFC', '16789', '金铲铲之战', 'C09012', '金铲铲之战-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250216301000034', '2025-02', '2025-02', '已验收', 'RCVO-250328301000056',
+      'MBA-2025011208765', '2025《金铲铲之战》S14赛季推广', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '购买', 'B站', 'B站', '薪酬导入',
+      '刊例价：20000，实际合作价：16000', '56789012', '云顶之弈小王子', 'B级', '游戏圈', '120万',
+      14560.00, 17962.88, 0, 876540, 34560, 28950, 3450, 1230, 880, 0, 0, 0, 0, 0, 0,
+      0.53, 20.49, 0.02, '', '', '', 0.53],
+
+    // ===== 暗区突围 - 抖音 =====
+    ['2025-03', 'BFC', '17890', '暗区突围', 'C10123', '暗区突围-手游APP', '国内发行及二方', '新品',
+      'TSPO250312301000045', '2025-03', '2025-04', '未验收', '',
+      'MBA-2025030109876', '2025《暗区突围》公测全平台推广', '内容营销', '短视频',
+      'KOL采买', '商单采买', '购买', '抖音', '抖音', '系统接入',
+      '刊例价：80000，实际合作价：65000', 'DY55443322', '暗区一哥', 'S级', '游戏圈', '780万',
+      59150.00, 72991.50, 0, 4567890, 123450, 98760, 14560, 5670, 0, 0, 0, 0, 0, 0, 0,
+      0.50, 15.98, 0.02, '', '', '', 0.50],
+    ['2025-03', 'BFC', '17890', '暗区突围', 'C10123', '暗区突围-手游APP', '国内发行及二方', '新品',
+      'TSPO250312301000045', '2025-03', '2025-04', '未验收', '',
+      'MBA-2025030109876', '2025《暗区突围》公测全平台推广', '内容营销', '短视频',
+      'KOL采买', '商单采买', '购买', '抖音', '抖音', '系统接入',
+      '刊例价：25000，实际合作价：20000', 'DY66778899', '塔科夫老鸟', 'A级', '游戏圈', '320万',
+      18200.00, 22454.80, 0, 1234560, 45670, 38920, 3450, 1230, 0, 0, 0, 0, 0, 0, 0,
+      0.42, 18.17, 0.02, '', '', '', 0.42],
+
+    // ===== 暗区突围 - 快手 =====
+    ['2025-03', 'BFC', '17890', '暗区突围', 'C10123', '暗区突围-手游APP', '国内发行及二方', '新品',
+      'TSPO250315301000056', '2025-03', '2025-04', '未验收', '',
+      'MBA-2025030109876', '2025《暗区突围》公测全平台推广', '内容营销', '直播',
+      'KOL采买', '商单采买', '购买', '快手', '快手', '系统接入',
+      '刊例价：30000，实际合作价：24000', 'KS9988776', '射击大神', 'A级', '游戏圈', '256万',
+      21840.00, 26940.24, 0, 0, 23450, 19870, 2340, 890, 0, 345670, 123450, 213450, 109870,
+      180, 42, 0.94, '', 0.13, 0.25, 0.17, 0.24, 0.94],
+
+    // ===== 火影忍者手游 - B站 =====
+    ['2025-02', 'BFC', '18901', '火影忍者手游', 'C11234', '火影忍者-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250220301000112', '2025-02', '2025-03', '已验收', 'RCVO-250410301000078',
+      'MBA-2025020608765', '2025《火影忍者手游》周年庆推广', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '购买', 'B站', 'B站', '薪酬导入',
+      '刊例价：60000，实际合作价：48000', '90123456', '火影忍者解说', 'A级', '二次元圈', '350万',
+      43680.00, 53890.08, 0, 3456780, 123450, 98760, 14560, 5670, 4560, 0, 0, 0, 0, 0, 0,
+      0.44, 15.59, 0.02, '', '', '', 0.44],
+
+    // ===== 火影忍者手游 - 小红书 =====
+    ['2025-02', 'BFC', '18901', '火影忍者手游', 'C11234', '火影忍者-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250222301000034', '2025-02', '2025-02', '已验收', 'RCVO-250328301000090',
+      'MBA-2025020608765', '2025《火影忍者手游》周年庆推广', '内容营销', '视频图文',
+      'KOL采买', '商单采买', '配送', '小红书', '小红书', '系统接入',
+      '小红书平台粉丝12w，刊例价8000，该平台内容为赠送', 'XHS778899', '忍者少女酱', 'B级', '二次元圈', '12万',
+      0, 0, 8760, 8760, 345, 289, 34, 22, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, '', '', '', 0],
+
+    // ===== QQ飞车手游 - 抖音 =====
+    ['2025-01', 'BFC', '19012', 'QQ飞车手游', 'C12345', 'QQ飞车-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250112301000078', '2025-01', '2025-02', '已验收', 'RCVO-250308301000056',
+      'MBA-2024122008901', '2025《QQ飞车手游》新春版本推广', '内容营销', '短视频',
+      'KOL采买', '商单采买', '购买', '抖音', '抖音', '系统接入',
+      '刊例价：20000，实际合作价：16000', 'DY33445566', '飞车小王子', 'A级', '游戏圈', '280万',
+      14560.00, 17962.88, 0, 1234560, 45670, 38920, 3450, 1230, 0, 0, 0, 0, 0, 0, 0,
+      0.34, 14.55, 0.01, '', '', '', 0.34],
+
+    // ===== QQ飞车手游 - 快手 =====
+    ['2025-01', 'BFC', '19012', 'QQ飞车手游', 'C12345', 'QQ飞车-手游APP', '国内发行及二方', '成熟品',
+      'TSPO250114301000045', '2025-01', '2025-01', '已验收', 'RCVO-250225301000078',
+      'MBA-2024122008901', '2025《QQ飞车手游》新春版本推广', '内容营销', '直播',
+      'KOL采买', '商单采买', '购买', '快手', '快手', '系统接入',
+      '刊例价：15000，实际合作价：12000', 'KS2233445', '飞车老司机', 'B级', '游戏圈', '89万',
+      10920.00, 13475.28, 0, 0, 12340, 9870, 1230, 560, 0, 123450, 45670, 78900, 39450,
+      120, 32, 0.93, '', 0.14, 0.28, 0.17, 0.28, 0.93]
+  ];
+
+  return realData;
+}
+
+// ==================== 初始化 ====================
+function init() {
+  allData = generateSampleData();
+  filteredData = [...allData];
+
+  populateFilterOptions();
+  renderTable();
+  updateSummary();
+}
+
+// ==================== 填充筛选下拉 ====================
+function populateFilterOptions() {
+  // 从数据中提取每个Tag筛选器的所有可选值
+  TAG_FILTERS.forEach(headerName => {
+    const colIdx = STANDARD_HEADERS.indexOf(headerName);
+    if (colIdx < 0) return;
+    const values = new Set();
+    allData.forEach(row => {
+      const val = String(row[colIdx] || '').trim();
+      if (val && val !== '—' && val !== '' && val !== '-') values.add(val);
+    });
+    filterKnownValues[headerName] = [...values].sort((a, b) => a.localeCompare(b, 'zh'));
+  });
+
+  // 初始化所有Tag输入组件
+  initAllTagInputs();
+}
+
+// ==================== 筛选逻辑 ====================
+function applyFilters() {
+  const globalSearch = document.getElementById('searchInput').value.trim().toLowerCase();
+
+  filteredData = allData.filter(row => {
+    // 所有Tag筛选器：不选 = 全部，多选 = OR匹配
+    for (const headerName of TAG_FILTERS) {
+      const tags = filterTags[headerName];
+      if (tags.length === 0) continue; // 不选=全部
+
+      const colIdx = STANDARD_HEADERS.indexOf(headerName);
+      if (colIdx < 0) continue;
+
+      const cellVal = String(row[colIdx] || '').trim();
+      // OR逻辑：只要匹配任一个tag就通过
+      const match = tags.some(tag => {
+        if (headerName === '订单创建月份') {
+          return cellVal.startsWith(tag);
+        }
+        return cellVal.toLowerCase().includes(tag.toLowerCase());
+      });
+      if (!match) return false;
+    }
+
+    if (globalSearch) {
+      return row.some(cell => String(cell || '').toLowerCase().includes(globalSearch));
+    }
+
+    return true;
+  });
+
+  currentPage = 1;
+  sortCol = -1;
+  renderTable();
+  updateSummary();
+  renderActiveFilters();
+}
+
+function handleGlobalSearch() { applyFilters(); }
+
+function resetFilters() {
+  // 重置所有Tag筛选器
+  TAG_FILTERS.forEach(key => {
+    filterTags[key] = [];
+  });
+  // 重置所有Tag输入框的显示
+  document.querySelectorAll('.tag-input-wrapper').forEach(wrapper => {
+    const key = wrapper.getAttribute('data-filter-key');
+    if (!key) return;
+    wrapper.querySelector('.tag-list').innerHTML = '';
+    wrapper.querySelector('.tag-text-input').value = '';
+    wrapper.querySelector('.tag-text-input').placeholder = getPlaceholder(key);
+  });
+  document.getElementById('searchInput').value = '';
+  
+  filteredData = [...allData];
+  currentPage = 1;
+  sortCol = -1;
+  renderTable();
+  updateSummary();
+  renderActiveFilters();
+}
+
+function getPlaceholder(key) {
+  const map = {
+    '订单创建月份': '输入月份如2025-03，回车添加',
+    '平台': '输入平台名称，回车添加',
+    'COA_ID': '输入COA_ID，回车添加',
+    'COA名称': '输入COA名称，回车添加',
+    '账号名称': '输入账号名称，回车添加',
+    '订单号': '输入订单号，回车添加'
+  };
+  return map[key] || '输入关键词，回车添加';
+}
+
+// ==================== 已选筛选标签 ====================
+function renderActiveFilters() {
+  const container = document.getElementById('activeFilters');
+  let html = '';
+
+  TAG_FILTERS.forEach(headerName => {
+    const tags = filterTags[headerName];
+    if (tags.length > 0) {
+      tags.forEach(t => {
+        html += `<span class="filter-tag">
+          ${headerName}: ${escapeHtml(t)}
+          <span class="remove-tag" onclick="removeFilterTag('${headerName}', '${escapeHtml(t)}')">✕</span>
+        </span>`;
+      });
+    }
+  });
+
+  container.innerHTML = html;
+}
+
+function removeFilterTag(headerName, val) {
+  filterTags[headerName] = filterTags[headerName].filter(t => t !== val);
+  // 更新对应wrapper的Tag显示
+  const wrapper = document.querySelector(`.tag-input-wrapper[data-filter-key="${headerName}"]`);
+  if (wrapper) renderTagList(wrapper, headerName);
+  applyFilters();
+}
+
+// ==================== 通用Tag输入组件 ====================
+function initAllTagInputs() {
+  document.querySelectorAll('.tag-input-wrapper').forEach(wrapper => {
+    const key = wrapper.getAttribute('data-filter-key');
+    if (!key) return;
+    const input = wrapper.querySelector('.tag-text-input');
+    const suggestionsEl = wrapper.querySelector('.tag-suggestions');
+
+    // 输入事件 - 显示建议
+    input.addEventListener('input', function() {
+      showTagSuggestions(wrapper, key, this.value.trim());
+      activeSuggestionIdx = -1;
+    });
+
+    // 键盘事件
+    input.addEventListener('keydown', function(e) {
+      const items = suggestionsEl.querySelectorAll('.suggestion-item:not(.already-selected)');
+
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (activeSuggestionIdx >= 0 && items[activeSuggestionIdx]) {
+          const val = items[activeSuggestionIdx].getAttribute('data-value');
+          addFilterTag(key, val, wrapper);
+        } else if (this.value.trim()) {
+          addFilterTag(key, this.value.trim(), wrapper);
+        }
+        this.value = '';
+        hideTagSuggestions(wrapper);
+        return;
+      }
+
+      if (e.key === 'Backspace' && !this.value && filterTags[key].length > 0) {
+        filterTags[key].pop();
+        renderTagList(wrapper, key);
+        applyFilters();
+        return;
+      }
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeSuggestionIdx = Math.min(activeSuggestionIdx + 1, items.length - 1);
+        highlightSuggestion(items);
+      }
+
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeSuggestionIdx = Math.max(activeSuggestionIdx - 1, 0);
+        highlightSuggestion(items);
+      }
+
+      if (e.key === 'Escape') {
+        hideTagSuggestions(wrapper);
+      }
+    });
+
+    // 聚焦时显示建议
+    input.addEventListener('focus', function() {
+      activeSuggestionWrapper = wrapper;
+      if (filterKnownValues[key] && filterKnownValues[key].length > 0) {
+        showTagSuggestions(wrapper, key, this.value.trim());
+      }
+    });
+
+    // 点击输入区域聚焦
+    wrapper.querySelector('.tag-input-area').addEventListener('click', function() {
+      input.focus();
+    });
+  });
+}
+
+function showTagSuggestions(wrapper, key, keyword) {
+  const container = wrapper.querySelector('.tag-suggestions');
+  const kw = keyword.toLowerCase();
+  const knownValues = filterKnownValues[key] || [];
+
+  let matches = knownValues;
+  if (kw) {
+    matches = knownValues.filter(v => v.toLowerCase().includes(kw));
+  }
+
+  if (matches.length === 0 && !kw) {
+    hideTagSuggestions(wrapper);
+    return;
+  }
+
+  let html = '';
+  if (kw && matches.length === 0) {
+    html = `<div class="suggestion-hint">回车添加 "${escapeHtml(keyword)}"</div>`;
+  } else {
+    if (matches.length > 0) {
+      html += `<div class="suggestion-hint">💡 ${kw ? '匹配' : '已有'}${key} (${matches.length}个)</div>`;
+    }
+    matches.forEach(v => {
+      const isSelected = filterTags[key].includes(v);
+      const safeV = escapeHtml(v).replace(/'/g, "\\'");
+      html += `<div class="suggestion-item${isSelected ? ' already-selected' : ''}" 
+        data-value="${escapeHtml(v)}" 
+        onmousedown="event.preventDefault();${isSelected ? '' : "addFilterTagByKey('" + key + "', '" + safeV + "');"}">${escapeHtml(v)}</div>`;
+    });
+  }
+
+  container.innerHTML = html;
+  container.classList.add('show');
+}
+
+function hideTagSuggestions(wrapper) {
+  if (wrapper) {
+    wrapper.querySelector('.tag-suggestions').classList.remove('show');
+  }
+  activeSuggestionIdx = -1;
+}
+
+function highlightSuggestion(items) {
+  items.forEach((item, i) => {
+    item.classList.toggle('active', i === activeSuggestionIdx);
+  });
+  if (items[activeSuggestionIdx]) {
+    items[activeSuggestionIdx].scrollIntoView({ block: 'nearest' });
+  }
+}
+
+function addFilterTag(key, value, wrapper) {
+  if (!value || filterTags[key].includes(value)) return;
+  filterTags[key].push(value);
+  renderTagList(wrapper, key);
+  applyFilters();
+}
+
+// 从建议列表点击时调用（通过data-filter-key找wrapper）
+function addFilterTagByKey(key, value) {
+  if (!value || filterTags[key].includes(value)) return;
+  const wrapper = document.querySelector(`.tag-input-wrapper[data-filter-key="${key}"]`);
+  filterTags[key].push(value);
+  if (wrapper) {
+    renderTagList(wrapper, key);
+    wrapper.querySelector('.tag-text-input').value = '';
+    hideTagSuggestions(wrapper);
+  }
+  applyFilters();
+}
+
+function renderTagList(wrapper, key) {
+  const container = wrapper.querySelector('.tag-list');
+  const safeKey = key;
+  container.innerHTML = filterTags[key].map(t => {
+    const safeT = escapeHtml(t).replace(/'/g, "\\'");
+    return `<span class="platform-tag">${escapeHtml(t)}<span class="tag-remove" onclick="event.stopPropagation();removeFilterTag('${safeKey}', '${safeT}')">✕</span></span>`;
+  }).join('');
+
+  const input = wrapper.querySelector('.tag-text-input');
+  input.placeholder = filterTags[key].length > 0 ? '继续添加...' : getPlaceholder(key);
+}
+
+// 点击外部关闭建议列表
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.tag-input-wrapper')) {
+    document.querySelectorAll('.tag-suggestions.show').forEach(el => el.classList.remove('show'));
+    activeSuggestionIdx = -1;
+  }
+});
+
+// ==================== 更新数据统计 ====================
+function updateSummary() {
+  document.getElementById('totalCount').textContent = allData.length;
+  const filterCountWrap = document.getElementById('filterCountWrap');
+  const filterCount = document.getElementById('filterCount');
+  if (filteredData.length !== allData.length) {
+    filterCountWrap.style.display = '';
+    filterCount.textContent = filteredData.length;
+  } else {
+    filterCountWrap.style.display = 'none';
+  }
+}
+
+// ==================== 渲染表格 ====================
+function renderTable() {
+  const thead = document.getElementById('dataTableHead');
+
+  // 表头行
+  let headHtml = `<tr>
+    <th class="col-index" style="cursor:default;">#</th>
+    ${STANDARD_HEADERS.map((h, i) => {
+      const info = FIELD_SOURCES[h] || { type: 'none' };
+      const typeInfo = SOURCE_TYPE_MAP[info.type] || SOURCE_TYPE_MAP['none'];
+      return `<th class="${sortCol === i ? 'sorted' : ''}" onclick="handleSort(${i})" title="${(FIELD_SOURCES[h] || {}).desc || ''}">
+        ${h}
+        <span class="th-source-dot" style="background:${typeInfo.dotColor};"></span>
+        <span class="sort-arrow">${sortCol === i ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</span>
+      </th>`;
+    }).join('')}
+  </tr>`;
+
+  // 数据来源行（可切换显示）
+  if (showSourceRow) {
+    headHtml += `<tr class="source-row">
+      <td class="col-index" style="background:#fffbeb;font-weight:600;">来源</td>
+      ${STANDARD_HEADERS.map(h => {
+        const info = FIELD_SOURCES[h] || { type: 'none', source: '无', desc: '' };
+        const typeInfo = SOURCE_TYPE_MAP[info.type] || SOURCE_TYPE_MAP['none'];
+        return `<td style="background:#fffbeb;" title="${info.desc}">
+          <span class="source-badge ${typeInfo.cls}" style="font-size:9px;padding:1px 6px;">${typeInfo.label}</span><br>
+          <span style="font-size:10px;color:#666;">${info.source || '—'}</span>
+        </td>`;
+      }).join('')}
+    </tr>`;
+  }
+
+  thead.innerHTML = headHtml;
+
+  // 分页数据
+  const start = (currentPage - 1) * pageSize;
+  const end = start + pageSize;
+  const pageData = filteredData.slice(start, end);
+
+  const tbody = document.getElementById('dataTableBody');
+  const emptyState = document.getElementById('emptyState');
+
+  if (pageData.length === 0) {
+    tbody.innerHTML = '';
+    emptyState.style.display = '';
+    document.getElementById('dataTable').style.display = 'none';
+  } else {
+    emptyState.style.display = 'none';
+    document.getElementById('dataTable').style.display = '';
+    tbody.innerHTML = pageData.map((row, ri) => {
+      const rowNum = start + ri + 1;
+      return `<tr>
+        <td class="col-index">${rowNum}</td>
+        ${row.map((cell, ci) => {
+          let displayVal = formatCell(cell, ci);
+          return `<td title="${escapeHtml(String(cell || ''))}">${displayVal}</td>`;
+        }).join('')}
+      </tr>`;
+    }).join('');
+  }
+
+  renderPagination();
+}
+
+function formatCell(value, colIdx) {
+  const header = STANDARD_HEADERS[colIdx];
+  const str = escapeHtml(String(value || ''));
+
+  // 自由字段：来源为"无"的列，如果有数据值则正常展示（灰色标记），无数据才显示 -
+  const fieldInfo = FIELD_SOURCES[header];
+  if (fieldInfo && fieldInfo.type === 'none') {
+    if (value !== null && value !== undefined && String(value).trim() !== '' && String(value).trim() !== '0') {
+      return `<span style="color:#6b7280;" title="[自由字段] ${header}">${str}</span>`;
+    }
+    return '<span style="color:#ddd;">—</span>';
+  }
+
+  // 验收状态
+  if (header === '验收状态') {
+    const colorMap = { '已验收': 'tag-green', '未验收': 'tag-red', '验收中': 'tag-yellow', '部分验收': 'tag-blue' };
+    return `<span class="status-tag ${colorMap[value] || 'tag-gray'}">${str}</span>`;
+  }
+
+  // 采买方式
+  if (header === '采买方式') {
+    const colorMap = { '购买': 'tag-blue', '配送': 'tag-purple' };
+    return `<span class="status-tag ${colorMap[value] || 'tag-gray'}">${str}</span>`;
+  }
+
+  // 数值列格式化
+  if (colIdx >= 29 && colIdx <= 43) {
+    const num = parseFloat(value);
+    if (!isNaN(num) && num !== 0) {
+      return num.toLocaleString('zh-CN', { maximumFractionDigits: 2 });
+    }
+    return str === '0' ? '<span style="color:#ccc;">0</span>' : str;
+  }
+
+  // CPE/CPM等计算列
+  if (colIdx >= 44) {
+    const num = parseFloat(value);
+    if (!isNaN(num) && num !== 0) {
+      return `<span style="color:var(--primary);font-weight:500;">${num.toFixed(2)}</span>`;
+    }
+    return str === '0' ? '<span style="color:#ccc;">0</span>' : (str || '<span style="color:#ccc;">—</span>');
+  }
+
+  return str || '<span style="color:#ddd;">—</span>';
+}
+
+function renderPagination() {
+  const total = filteredData.length;
+  const totalPages = Math.ceil(total / pageSize) || 1;
+
+  document.getElementById('pageInfo').textContent = `共 ${total} 条，第 ${currentPage}/${totalPages} 页`;
+
+  let pages = [];
+  if (totalPages <= 7) {
+    pages = Array.from({length: totalPages}, (_, i) => i + 1);
+  } else {
+    pages = [1];
+    if (currentPage > 3) pages.push('...');
+    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+      pages.push(i);
+    }
+    if (currentPage < totalPages - 2) pages.push('...');
+    pages.push(totalPages);
+  }
+
+  document.getElementById('pageBtns').innerHTML = `
+    <button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>‹</button>
+    ${pages.map(p => p === '...'
+      ? '<span style="padding:0 4px;color:#ccc;">…</span>'
+      : `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goPage(${p})">${p}</button>`
+    ).join('')}
+    <button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>›</button>
+  `;
+}
+
+// ==================== 排序 ====================
+function handleSort(colIdx) {
+  if (sortCol === colIdx) {
+    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortCol = colIdx;
+    sortDir = 'asc';
+  }
+  filteredData.sort((a, b) => {
+    let va = a[colIdx], vb = b[colIdx];
+    const na = parseFloat(va), nb = parseFloat(vb);
+    if (!isNaN(na) && !isNaN(nb)) return sortDir === 'asc' ? na - nb : nb - na;
+    return sortDir === 'asc'
+      ? String(va || '').localeCompare(String(vb || ''), 'zh')
+      : String(vb || '').localeCompare(String(va || ''), 'zh');
+  });
+  currentPage = 1;
+  renderTable();
+}
+
+// ==================== 分页 ====================
+function goPage(p) {
+  const totalPages = Math.ceil(filteredData.length / pageSize) || 1;
+  if (p < 1 || p > totalPages) return;
+  currentPage = p;
+  renderTable();
+  document.getElementById('tableContainer').scrollTop = 0;
+}
+
+function changePageSize() {
+  pageSize = parseInt(document.getElementById('pageSizeSelect').value);
+  currentPage = 1;
+  renderTable();
+}
+
+// ==================== 导出 ====================
+function exportCurrentPage() {
+  if (filteredData.length === 0) return showToast('没有可导出的数据', 'warning');
+  const start = (currentPage - 1) * pageSize;
+  const end = start + pageSize;
+  const pageData = filteredData.slice(start, end);
+  doExport(pageData, '薪酬数据看板_当前页');
+}
+
+function exportAllData() {
+  if (filteredData.length === 0) return showToast('没有可导出的数据', 'warning');
+  doExport(filteredData, '薪酬数据看板_全部数据');
+}
+
+function doExport(data, name) {
+  // 构建导出数据：表头 + 数据 + 来源行
+  const sourceRow = STANDARD_HEADERS.map(h => {
+    const info = FIELD_SOURCES[h] || { type: 'none', source: '无' };
+    const typeInfo = SOURCE_TYPE_MAP[info.type] || SOURCE_TYPE_MAP['none'];
+    return `[${typeInfo.label}] ${info.source || '—'} | ${info.desc || ''}`;
+  });
+
+  const exportData = [STANDARD_HEADERS, ...data, [], ['以下为字段来源说明：'], sourceRow];
+
+  const ws = XLSX.utils.aoa_to_sheet(exportData);
+  
+  // 设置列宽
+  ws['!cols'] = STANDARD_HEADERS.map((h, i) => {
+    if (i <= 7 || i >= 44) return { wch: 15 };
+    if (h.includes('总价') || h.includes('名称') || h.includes('立项')) return { wch: 25 };
+    return { wch: 18 };
+  });
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '薪酬数据总览');
+  XLSX.writeFile(wb, name + '.xlsx');
+  showToast('✅ 导出成功！含字段来源说明', 'success');
+}
+
+// ==================== 工具函数 ====================
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function showToast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast ${type} show`;
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ==================== 启动 ====================
+init();
+</script>
+
+</body>
+</html>

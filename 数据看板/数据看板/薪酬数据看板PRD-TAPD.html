@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>薪酬列表 - 薪酬数据总览 PRD</title>
+<style>
+  /* 这些样式仅用于浏览器预览，复制粘贴到TAPD时内联样式会生效 */
+  body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; color: #333; line-height: 1.8; max-width: 960px; margin: 0 auto; padding: 20px 40px; background: #fff; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 18px 0; }
+  th, td { border: 1px solid #d0d0d0; padding: 6px 10px; text-align: left; font-size: 13px; }
+  th { background-color: #f0f2f5; font-weight: bold; }
+  h1 { font-size: 22px; border-bottom: 2px solid #4f6ef7; padding-bottom: 8px; }
+  h2 { font-size: 18px; margin-top: 28px; border-left: 4px solid #4f6ef7; padding-left: 10px; }
+  h3 { font-size: 15px; margin-top: 20px; }
+  h4 { font-size: 14px; margin-top: 16px; }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 4px; }
+  code { background: #f3f4f6; padding: 1px 5px; border-radius: 3px; font-size: 12px; color: #c7254e; }
+  pre { background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 4px; padding: 12px 16px; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; font-family: "SF Mono", "Menlo", monospace; }
+  blockquote { border-left: 4px solid #f59e0b; background: #fffbeb; margin: 12px 0; padding: 10px 16px; color: #92400e; }
+  .tag-warn { color: #d97706; font-weight: bold; }
+  .section-sep { border: none; border-top: 1px solid #e5e7eb; margin: 24px 0; }
+  strong { color: #1a1a2e; }
+</style>
+</head>
+<body>
+
+<h1>薪酬列表 - 薪酬数据总览 产品需求文档（PRD）</h1>
+
+<table>
+<tr><th style="width:120px;">文档属性</th><th>内容</th></tr>
+<tr><td><strong>文档版本</strong></td><td>V1.0</td></tr>
+<tr><td><strong>产品名称</strong></td><td>直播激励结算中台</td></tr>
+<tr><td><strong>模块名称</strong></td><td>薪酬列表 - 薪酬数据总览</td></tr>
+<tr><td><strong>系统版本</strong></td><td>V10.1</td></tr>
+<tr><td><strong>优先级</strong></td><td>P0（核心功能）</td></tr>
+<tr><td><strong>文档状态</strong></td><td>初稿</td></tr>
+<tr><td><strong>创建日期</strong></td><td>2026-03-25</td></tr>
+</table>
+
+<hr class="section-sep">
+
+<h2>一、需求背景</h2>
+
+<h3>1.1 业务背景</h3>
+<p>在直播激励结算业务中，运营、财务等角色需要对已结算的薪酬数据进行多维度查看、筛选、分析和导出。当前薪酬数据分散在多个Excel文件中，存在以下痛点：</p>
+<ol>
+<li><strong>数据分散难查</strong>：薪酬数据、订单数据、账号数据、效果数据分散在不同系统和文件中，缺乏统一查看入口</li>
+<li><strong>筛选效率低下</strong>：需要人工在Excel中逐一筛选，无法快速定位特定月份、平台、账号的数据</li>
+<li><strong>数据指标难算</strong>：CPE、CPM、CPC等效果指标需要手动计算，容易出错</li>
+<li><strong>导出流程繁琐</strong>：多表数据合并导出需要多步手工操作</li>
+</ol>
+
+<h3>1.2 需求目标</h3>
+<p>在 <strong>薪酬列表</strong> 模块下新增 <strong>「薪酬数据总览」</strong> 页面，实现：</p>
+<ul>
+<li><strong>一站式查看</strong>：将薪酬导入数据、订单数据、账号数据、效果指标数据整合到一张表中，提供51个标准字段的完整视图</li>
+<li><strong>灵活多维筛选</strong>：支持按月份、平台、COA、账号、订单号等多维度组合筛选，Tag式输入支持多值OR查询</li>
+<li><strong>自动指标计算</strong>：CPE、CPM、CPC、观看成本、点击成本、互动成本等效果指标由系统自动计算，确保准确性</li>
+<li><strong>便捷数据导出</strong>：一键导出Excel，自动附带字段来源说明行</li>
+</ul>
+
+<h3>1.3 核心前提</h3>
+<blockquote>
+⚠️ <strong>大前提：薪酬数据总览中的所有数据，必须在薪酬审核通过后才可展示。</strong>
+</blockquote>
+<ul>
+<li>只有薪酬审核流程审核通过（状态为"已审核"）的数据才会进入薪酬数据总览</li>
+<li>薪酬审核未通过或审核中的数据不会在总览中出现</li>
+<li>薪酬数据总览不展示任何未经审核确认的薪酬数据，确保数据的准确性和合规性</li>
+<li>该前提贯穿整个薪酬数据总览的数据获取、展示、筛选、导出等所有环节</li>
+</ul>
+
+<h3>1.4 目标用户</h3>
+<table>
+<tr><th>用户角色</th><th>使用场景</th><th>核心诉求</th></tr>
+<tr><td><strong>运营人员</strong></td><td>查看已结算薪酬数据、按平台/月份筛选、导出对账单</td><td>快速定位、灵活筛选、一键导出</td></tr>
+<tr><td><strong>财务人员</strong></td><td>审核结算明细、对账、核查金额</td><td>数据准确、来源可追溯、导出完整</td></tr>
+<tr><td><strong>项目负责人</strong></td><td>查看各游戏/COA的投放效果指标</td><td>多维对比、指标直观、趋势分析</td></tr>
+</table>
+
+<hr class="section-sep">
+
+<h2>二、产品整体架构</h2>
+
+<h3>2.1 功能定位</h3>
+<p>本功能位于 <strong>薪酬列表</strong> 模块下的 <strong>「薪酬数据总览」</strong> 页面，用于将薪酬审核通过后的薪酬导入数据、订单数据、账号数据、效果指标数据整合展示。</p>
+<pre>薪酬列表
+└── 薪酬数据总览（本功能）
+    ├── 筛选区域（Tag式多值筛选）
+    ├── 已选筛选标签展示
+    ├── 工具栏（统计、搜索、导出、分页设置）
+    ├── 数据表格（51个字段）
+    └── 分页栏</pre>
+
+<h3>2.2 数据流向</h3>
+<pre>薪酬审核通过 → 数据进入薪酬数据总览 → 多源数据整合（薪酬+订单+账号+效果指标）→ 标准化为51字段 → 前端展示/筛选/导出</pre>
+
+<h3>2.3 数据准入规则（核心）</h3>
+<table>
+<tr><th>规则</th><th>说明</th></tr>
+<tr><td><strong>薪酬审核状态</strong></td><td>仅展示薪酬审核状态为"已审核"的数据</td></tr>
+<tr><td><strong>数据时效性</strong></td><td>薪酬审核通过后实时（或准实时，延迟≤5分钟）同步至薪酬数据总览</td></tr>
+<tr><td><strong>审核撤回处理</strong></td><td>若薪酬审核被撤回（从"已审核"变为其他状态），对应数据应从总览中移除</td></tr>
+<tr><td><strong>数据完整性</strong></td><td>审核通过的薪酬数据必须关联完整的订单信息和账号信息后才展示</td></tr>
+</table>
+
+<hr class="section-sep">
+
+<h2>三、功能详细描述</h2>
+
+<h3>3.1 数据源与字段定义</h3>
+
+<h4>3.1.1 标准字段表（51个字段）</h4>
+<p>数据总览展示的51个标准字段，来源覆盖薪酬导入、活动创建、系统接入、公式计算、匹配关联等多个来源：</p>
+
+<p><strong>基础信息字段（23个）</strong></p>
+<table>
+<tr><th>#</th><th>字段名</th><th>数据来源类型</th><th>来源说明</th><th>是否必填</th></tr>
+<tr><td>1</td><td>订单创建月份</td><td>薪酬导入</td><td>取自薪酬导入的"薪酬月份"字段</td><td>是</td></tr>
+<tr><td>2</td><td>系统来源</td><td>系统写入</td><td>默认值，如"BFC"</td><td>是</td></tr>
+<tr><td>3</td><td>产品ID</td><td>关联产品库</td><td>关联产品库获取</td><td>是</td></tr>
+<tr><td>4</td><td>产品名称</td><td>关联产品库</td><td>关联产品库获取</td><td>是</td></tr>
+<tr><td>5</td><td>COA_ID</td><td>匹配关联</td><td>根据所选产品名称映射对应的COA_ID</td><td>是</td></tr>
+<tr><td>6</td><td>COA名称</td><td>活动创建</td><td>从活动创建时选择的产品名称获取</td><td>是</td></tr>
+<tr><td>7</td><td>SG</td><td>—</td><td>暂无来源</td><td>否</td></tr>
+<tr><td>8</td><td>产品类型</td><td>—</td><td>暂无来源</td><td>否</td></tr>
+<tr><td>9</td><td>订单号</td><td>薪酬导入</td><td>来自活动创建模块的"上游订单号"字段</td><td>是</td></tr>
+<tr><td>10</td><td>订单事项开始月份</td><td>薪酬导入</td><td>活动创建时填写的"开始时间"</td><td>是</td></tr>
+<tr><td>11</td><td>订单事项结束月份</td><td>薪酬导入</td><td>活动创建时填写的"结束时间"</td><td>是</td></tr>
+<tr><td>12</td><td>验收状态</td><td>系统流程</td><td>验收流程驱动的状态值</td><td>是</td></tr>
+<tr><td>13</td><td>验收单号</td><td>系统生成</td><td>系统自动生成</td><td>否</td></tr>
+<tr><td>14</td><td>立项单号</td><td>关联立项系统</td><td>关联立项系统获取</td><td>否</td></tr>
+<tr><td>15</td><td>立项名称</td><td>关联立项系统</td><td>关联立项系统获取</td><td>否</td></tr>
+<tr><td>16</td><td>采购类别</td><td>—</td><td>暂无来源</td><td>否</td></tr>
+<tr><td>17</td><td>采买类型</td><td>—</td><td>暂无来源</td><td>否</td></tr>
+<tr><td>18</td><td>场景</td><td>—</td><td>暂无来源</td><td>否</td></tr>
+<tr><td>19</td><td>合作模式</td><td>—</td><td>暂无来源</td><td>否</td></tr>
+<tr><td>20</td><td>采买方式</td><td>—</td><td>暂无来源</td><td>否</td></tr>
+<tr><td>21</td><td>平台</td><td>薪酬导入</td><td>从薪酬导入Excel的"平台"字段获取</td><td>是</td></tr>
+<tr><td>22</td><td>原平台</td><td>关联/导入</td><td>与平台关联或由导入时带入</td><td>否</td></tr>
+<tr><td>23</td><td>数据版本</td><td>系统接入</td><td>由系统自动标记数据版本</td><td>是</td></tr>
+</table>
+
+<p><strong>账号信息字段（6个）</strong></p>
+<table>
+<tr><th>#</th><th>字段名</th><th>数据来源类型</th><th>来源说明</th><th>是否必填</th></tr>
+<tr><td>24</td><td>游可爱id</td><td>薪酬导入</td><td>薪酬导入时的备注信息区域</td><td>否</td></tr>
+<tr><td>25</td><td>账号ID</td><td>薪酬导入</td><td>从薪酬导入的"平台账号ID"字段获取</td><td>是</td></tr>
+<tr><td>26</td><td>账号名称</td><td>匹配关联</td><td>通过账号ID匹配账号库中的昵称</td><td>是</td></tr>
+<tr><td>27</td><td>账号分级</td><td>—</td><td>暂无来源</td><td>否</td></tr>
+<tr><td>28</td><td>账号圈层</td><td>—</td><td>暂无来源</td><td>否</td></tr>
+<tr><td>29</td><td>账号粉丝数</td><td>—</td><td>暂无来源</td><td>否</td></tr>
+</table>
+
+<p><strong>金额字段（2个）</strong></p>
+<table>
+<tr><th>#</th><th>字段名</th><th>数据来源类型</th><th>来源说明</th><th>是否必填</th></tr>
+<tr><td>30</td><td>已执行总价（不含服垫税减）</td><td>—</td><td>暂无来源</td><td>否</td></tr>
+<tr><td>31</td><td>已执行总价（含服垫税减）</td><td>薪酬导入</td><td>从薪酬导入的"薪酬金额"字段获取</td><td>是</td></tr>
+</table>
+
+<p><strong>效果数据字段（13个）</strong></p>
+<table>
+<tr><th>#</th><th>字段名</th><th>数据来源类型</th><th>来源说明</th><th>是否必填</th></tr>
+<tr><td>32</td><td>有效阅读量</td><td>匹配关联</td><td>导入数据中字段名近似匹配（"阅读量"≈"有效阅读量"）</td><td>否</td></tr>
+<tr><td>33</td><td>有效播放量</td><td>匹配关联</td><td>导入数据中"播放量/播放次数"等近似匹配</td><td>否</td></tr>
+<tr><td>34</td><td>总互动量</td><td>匹配关联</td><td>导入数据匹配，或由 点赞+转发+评论+弹幕 计算</td><td>否</td></tr>
+<tr><td>35</td><td>点赞量</td><td>匹配关联</td><td>导入数据中"点赞"相关字段匹配</td><td>否</td></tr>
+<tr><td>36</td><td>转发量</td><td>匹配关联</td><td>导入数据中"转发/分享"相关字段匹配</td><td>否</td></tr>
+<tr><td>37</td><td>评论量</td><td>匹配关联</td><td>导入数据中"评论"相关字段匹配</td><td>否</td></tr>
+<tr><td>38</td><td>弹幕量</td><td>匹配关联</td><td>导入数据中"弹幕"相关字段（B站特有）</td><td>否</td></tr>
+<tr><td>39</td><td>总观看人数</td><td>匹配关联</td><td>匹配"访问人数/UV/观看UV"等近似字段</td><td>否</td></tr>
+<tr><td>40</td><td>峰值在线人数</td><td>匹配关联</td><td>匹配"峰值/在线峰值"等近似字段</td><td>否</td></tr>
+<tr><td>41</td><td>直播间点击次数</td><td>匹配关联</td><td>匹配"点击次数/PV"等近似字段</td><td>否</td></tr>
+<tr><td>42</td><td>直播间点击人数</td><td>匹配关联</td><td>匹配"点击人数/点击UV"等近似字段</td><td>否</td></tr>
+<tr><td>43</td><td>直播总时长（min）</td><td>匹配关联</td><td>匹配"直播时长"相关字段</td><td>否</td></tr>
+<tr><td>44</td><td>平均在线人数ACU（min)</td><td>匹配关联</td><td>匹配"ACU/平均在线"相关字段</td><td>否</td></tr>
+</table>
+
+<p><strong>公式计算指标字段（7个）</strong></p>
+<table>
+<tr><th>#</th><th>字段名</th><th>计算公式</th><th>说明</th></tr>
+<tr><td>45</td><td>CPE</td><td>薪酬金额 ÷ (点赞量 + 评论量 + 转发量)</td><td>每次互动成本（Cost Per Engagement）</td></tr>
+<tr><td>46</td><td>CPM</td><td>薪酬金额 ÷ 有效播放量 × 1000</td><td>千次播放成本</td></tr>
+<tr><td>47</td><td>CPC</td><td>薪酬金额 ÷ 有效播放量</td><td>每次播放成本（Cost Per Click）</td></tr>
+<tr><td>48</td><td>单人观看成本</td><td>薪酬金额 ÷ 总观看人数</td><td>—</td></tr>
+<tr><td>49</td><td>单人点击成本</td><td>薪酬金额 ÷ 直播间点击人数</td><td>—</td></tr>
+<tr><td>50</td><td>单次点击成本</td><td>薪酬金额 ÷ 直播间点击次数</td><td>—</td></tr>
+<tr><td>51</td><td>互动成本</td><td>薪酬金额 ÷ (点赞量 + 评论量 + 转发量 + 弹幕量)</td><td>—</td></tr>
+</table>
+
+<h4>3.1.2 字段来源分类</h4>
+<table>
+<tr><th>来源类型</th><th>标识色</th><th>说明</th><th>涉及字段数</th></tr>
+<tr><td>薪酬导入</td><td>🔵 蓝色</td><td>从薪酬导入Excel中直接获取的字段</td><td>7个</td></tr>
+<tr><td>系统接入</td><td>🟣 靛色</td><td>由系统自动写入或标记的字段</td><td>2个</td></tr>
+<tr><td>公式计算</td><td>🟡 橙色</td><td>由其他字段通过公式计算得出的衍生指标</td><td>7个</td></tr>
+<tr><td>匹配关联</td><td>🩷 粉色</td><td>通过ID匹配或字段名近似匹配获取的字段</td><td>15个</td></tr>
+<tr><td>直接获取</td><td>🟢 绿色</td><td>从活动创建等模块直接获取</td><td>1个</td></tr>
+<tr><td>无/暂无</td><td>⚪ 灰色</td><td>暂无明确来源，待后续对接</td><td>19个</td></tr>
+</table>
+
+<h4>3.1.3 公式计算规则</h4>
+<ul>
+<li><strong>计算时机</strong>：数据进入总览后由系统自动计算，不需要用户手动操作</li>
+<li><strong>除零处理</strong>：当分母为0或空时，计算结果显示为 <code>—</code>（不显示0，避免误解）</li>
+<li><strong>精度规则</strong>：计算结果保留2位小数</li>
+<li><strong>依赖关系</strong>：公式计算字段依赖金额字段和效果数据字段，当依赖字段为空时不做计算</li>
+</ul>
+
+<hr class="section-sep">
+
+<h3>3.2 筛选功能</h3>
+
+<h4>3.2.1 功能说明</h4>
+<p>提供多维度的Tag式筛选输入，支持多值组合查询。所有筛选均基于薪酬审核通过后的数据集进行。</p>
+
+<h4>3.2.2 筛选维度</h4>
+<table>
+<tr><th>筛选项</th><th>输入方式</th><th>匹配逻辑</th><th>说明</th></tr>
+<tr><td>订单创建月份</td><td>Tag输入（回车添加）</td><td>前缀匹配，多值OR</td><td>输入如"2025-03"，支持同时筛选多个月份</td></tr>
+<tr><td>平台</td><td>Tag输入（回车添加）</td><td>包含匹配，多值OR</td><td>支持B站、抖音、快手、小红书等平台筛选</td></tr>
+<tr><td>COA_ID</td><td>Tag输入（回车添加）</td><td>包含匹配，多值OR</td><td>输入COA编号</td></tr>
+<tr><td>COA名称</td><td>Tag输入（回车添加）</td><td>包含匹配，多值OR</td><td>输入COA名称关键词</td></tr>
+<tr><td>账号名称</td><td>Tag输入（回车添加）</td><td>包含匹配，多值OR</td><td>输入主播/账号名称</td></tr>
+<tr><td>订单号</td><td>Tag输入（回车添加）</td><td>包含匹配，多值OR</td><td>输入订单号</td></tr>
+</table>
+
+<h4>3.2.3 筛选交互设计</h4>
+
+<p><strong>Tag式输入组件</strong></p>
+<ul>
+<li>输入框支持自由文本输入，按 <strong>回车</strong> 添加为Tag</li>
+<li>输入时实时展示<strong>建议下拉列表</strong>（从当前数据集中提取可选值）</li>
+<li>建议列表支持键盘 ↑↓ 导航，回车选中</li>
+<li>已选中的值在建议列表中标记 ✓，不可重复添加</li>
+<li>每个Tag右侧有 ✕ 删除按钮，支持单个移除</li>
+<li>输入框为空时按 <strong>Backspace</strong> 可删除最后一个Tag</li>
+<li>点击输入区域外自动关闭建议列表</li>
+</ul>
+
+<p><strong>筛选逻辑</strong></p>
+<table>
+<tr><th>规则</th><th>说明</th></tr>
+<tr><td>同一维度内</td><td>多个值之间为 <strong>OR</strong> 关系（任一匹配即通过）</td></tr>
+<tr><td>不同维度间</td><td>各维度之间为 <strong>AND</strong> 关系（所有维度都需满足）</td></tr>
+<tr><td>不选任何值</td><td>默认显示全部数据（薪酬审核通过后的全量数据）</td></tr>
+<tr><td>重置</td><td>清空所有筛选条件，回到全部数据</td></tr>
+</table>
+
+<p><strong>全局搜索</strong></p>
+<ul>
+<li>工具栏提供全局搜索框，支持在所有字段中模糊搜索</li>
+<li>搜索与Tag筛选同时生效（AND关系）</li>
+<li>实时搜索，输入即触发</li>
+</ul>
+
+<h4>3.2.4 已选筛选标签展示</h4>
+<ul>
+<li>筛选区域下方展示当前所有已选的筛选条件标签</li>
+<li>格式为：<code>维度名: 值</code>，如 <code>平台: B站</code>、<code>订单创建月份: 2025-03</code></li>
+<li>每个标签可单独点击 ✕ 移除，移除后自动刷新数据</li>
+<li>无筛选条件时该区域自动隐藏</li>
+</ul>
+
+<hr class="section-sep">
+
+<h3>3.3 数据表格</h3>
+
+<h4>3.3.1 功能说明</h4>
+<p>以标准数据表格展示经筛选后的薪酬数据，支持排序、分页、横向滚动。</p>
+
+<h4>3.3.2 表格特性</h4>
+<table>
+<tr><th>特性</th><th>说明</th></tr>
+<tr><td><strong>列数</strong></td><td>51列（标准字段） + 1列（行号）</td></tr>
+<tr><td><strong>表头固定</strong></td><td>表头置顶（sticky），滚动时不消失</td></tr>
+<tr><td><strong>列宽自适应</strong></td><td>根据字段类型设置合理的默认列宽</td></tr>
+<tr><td><strong>横向滚动</strong></td><td>宽度超出时支持横向滚动</td></tr>
+<tr><td><strong>行号列</strong></td><td>最左侧显示序号（#），不可排序</td></tr>
+<tr><td><strong>来源指示器</strong></td><td>表头字段名旁显示圆形来源标识色点，快速区分字段来源类型</td></tr>
+</table>
+
+<h4>3.3.3 排序功能</h4>
+<ul>
+<li>点击表头可按该列<strong>升序/降序</strong>切换排序</li>
+<li>排序后表头高亮显示当前排序列和方向（▲/▼）</li>
+<li>数值列按数值大小排序，文本列按中文拼音排序</li>
+<li>同一时间仅支持单列排序</li>
+</ul>
+
+<h4>3.3.4 单元格显示规则</h4>
+<table>
+<tr><th>情况</th><th>显示方式</th></tr>
+<tr><td>来源为"无/暂无"的字段</td><td>统一显示灰色 <code>-</code>，表示该字段暂无数据来源</td></tr>
+<tr><td>验收状态</td><td>彩色标签：已验收(绿)、未验收(红)、验收中(黄)、部分验收(蓝)</td></tr>
+<tr><td>采买方式</td><td>彩色标签：购买(蓝)、配送(紫)</td></tr>
+<tr><td>金额/效果指标列（数值列）</td><td>千分位格式化，如 <code>1,234,567.89</code></td></tr>
+<tr><td>计算指标列（CPE/CPM/CPC等）</td><td>蓝色加粗显示，保留2位小数</td></tr>
+<tr><td>数值为0</td><td>浅灰色显示 <code>0</code></td></tr>
+<tr><td>值为空</td><td>显示灰色 <code>—</code></td></tr>
+<tr><td>超长文本</td><td>单元格内文本溢出时省略号截断，悬浮(hover)显示完整内容</td></tr>
+</table>
+
+<h4>3.3.5 分页功能</h4>
+<table>
+<tr><th>功能项</th><th>说明</th></tr>
+<tr><td>每页条数</td><td>支持 20 / 50 / 100 条/页切换，默认20条</td></tr>
+<tr><td>分页导航</td><td>上一页/下一页 + 页码按钮，超过7页时省略中间页码显示 …</td></tr>
+<tr><td>页码信息</td><td>展示"共 X 条，第 Y/Z 页"</td></tr>
+<tr><td>翻页后自动回顶</td><td>点击翻页后表格滚动回顶部</td></tr>
+</table>
+
+<hr class="section-sep">
+
+<h3>3.4 工具栏</h3>
+
+<h4>3.4.1 数据统计</h4>
+<ul>
+<li>显示总数据条数（薪酬审核通过后的全量数据条数）</li>
+<li>筛选后显示筛选结果条数</li>
+<li>未筛选时仅显示总数</li>
+</ul>
+
+<h4>3.4.2 导出功能</h4>
+<table>
+<tr><th>功能</th><th>说明</th></tr>
+<tr><td><strong>导出全部(Excel)</strong></td><td>导出当前筛选结果的全部数据为 .xlsx 文件</td></tr>
+<tr><td><strong>导出本页</strong></td><td>仅导出当前页的数据为 .xlsx 文件</td></tr>
+<tr><td><strong>文件命名</strong></td><td>薪酬数据总览_全部数据.xlsx 或 薪酬数据总览_当前页.xlsx</td></tr>
+<tr><td><strong>导出内容</strong></td><td>第1行：51个标准字段表头；第2~N行：数据行；末尾附加字段来源说明行</td></tr>
+<tr><td><strong>来源说明行</strong></td><td>每个字段标注 [来源类型] 来源说明 | 详细描述，方便接收方理解数据含义</td></tr>
+<tr><td><strong>列宽设置</strong></td><td>自动设置合理列宽，确保导出文件可读性</td></tr>
+<tr><td><strong>空数据处理</strong></td><td>无数据时点击导出提示"没有可导出的数据"</td></tr>
+</table>
+
+<h4>3.4.3 全局搜索</h4>
+<ul>
+<li>在全部51个字段中进行模糊搜索</li>
+<li>支持输入即搜索（实时触发）</li>
+<li>与筛选条件叠加生效</li>
+</ul>
+
+<hr class="section-sep">
+
+<h2>四、数据准入与安全机制</h2>
+
+<h3>4.1 薪酬审核流程与数据总览的关系</h3>
+<pre>薪酬数据导入 → 薪酬审核流程 → 审核通过 → 数据进入总览可见范围
+                              → 审核未通过/审核中 → 数据不进入总览</pre>
+
+<h3>4.2 数据准入详细规则</h3>
+<table>
+<tr><th>#</th><th>规则</th><th>说明</th><th>异常处理</th></tr>
+<tr><td>1</td><td><strong>审核状态校验</strong></td><td>系统每次加载/刷新数据时，必须校验每条薪酬记录的审核状态，仅展示"已审核"状态的数据</td><td>审核状态为空或异常值的记录不展示</td></tr>
+<tr><td>2</td><td><strong>实时同步</strong></td><td>薪酬审核通过后，数据在≤5分钟内同步至薪酬数据总览</td><td>同步失败时记录日志并重试</td></tr>
+<tr><td>3</td><td><strong>审核撤回</strong></td><td>已审核的薪酬若被撤回审核（状态变更为非"已审核"），对应数据从总览中移除</td><td>撤回后用户刷新页面即不可见</td></tr>
+<tr><td>4</td><td><strong>数据完整性</strong></td><td>审核通过的薪酬数据必须完成与订单、账号的关联匹配后才在总览中展示</td><td>关联失败的记录暂不展示，记录异常日志</td></tr>
+<tr><td>5</td><td><strong>批量审核</strong></td><td>支持批量审核通过场景，批量通过后对应数据批量进入总览</td><td>—</td></tr>
+</table>
+
+<h3>4.3 数据安全</h3>
+<table>
+<tr><th>维度</th><th>要求</th></tr>
+<tr><td><strong>访问权限</strong></td><td>薪酬数据总览需登录后访问，不同角色可见的数据范围由权限控制</td></tr>
+<tr><td><strong>导出权限</strong></td><td>导出功能需额外权限控制，确保敏感数据（如金额、账号ID）不被未授权人员导出</td></tr>
+<tr><td><strong>操作日志</strong></td><td>所有查看、筛选、导出操作记录操作日志</td></tr>
+<tr><td><strong>数据脱敏</strong></td><td>如未来涉及身份证号等敏感字段，需进行脱敏显示（如：3201****1234）</td></tr>
+</table>
+
+<hr class="section-sep">
+
+<h2>五、交互与UI设计要求</h2>
+
+<h3>5.1 整体风格</h3>
+<ul>
+<li><strong>浅色主题</strong>：白色背景 + 柔和灰色边框 + 蓝色主题色</li>
+<li><strong>布局</strong>：左侧固定导航栏（深色） + 右侧主内容区（浅色）</li>
+<li><strong>字体</strong>：PingFang SC / Microsoft YaHei，正文13px，表头12px</li>
+<li><strong>间距</strong>：采用8px的倍数作为间距基准</li>
+</ul>
+
+<h3>5.2 色彩规范</h3>
+<table>
+<tr><th>用途</th><th>色值</th><th>说明</th></tr>
+<tr><td>主题色</td><td><code>#4f6ef7</code></td><td>按钮、链接、高亮</td></tr>
+<tr><td>成功/已验收</td><td><code>#10b981</code></td><td>导出成功、已验收标签</td></tr>
+<tr><td>警告/验收中</td><td><code>#f59e0b</code></td><td>验收中标签、警告提示</td></tr>
+<tr><td>危险/未验收</td><td><code>#ef4444</code></td><td>未验收标签、错误提示</td></tr>
+<tr><td>紫色</td><td><code>#8b5cf6</code></td><td>配送标签</td></tr>
+<tr><td>文本色</td><td><code>#1a1a2e</code></td><td>主文本</td></tr>
+<tr><td>次要文本</td><td><code>#555</code></td><td>次要文本</td></tr>
+<tr><td>边框色</td><td><code>#e5e7eb</code></td><td>表格边框、分割线</td></tr>
+<tr><td>背景色</td><td><code>#f5f6fa</code></td><td>页面背景</td></tr>
+</table>
+
+<h3>5.3 交互规范</h3>
+<table>
+<tr><th>交互场景</th><th>规范</th></tr>
+<tr><td><strong>按钮hover</strong></td><td>微妙的背景色变化，0.15s过渡</td></tr>
+<tr><td><strong>输入框focus</strong></td><td>边框变为主题色 + 外发光阴影</td></tr>
+<tr><td><strong>Tag添加</strong></td><td>0.15s的缩放+淡入动画</td></tr>
+<tr><td><strong>表格行hover</strong></td><td>行背景色变为浅蓝色 #f0f4ff</td></tr>
+<tr><td><strong>操作反馈</strong></td><td>Toast消息提示（右上角滑入，3秒自动消失）</td></tr>
+<tr><td><strong>空状态</strong></td><td>居中显示空状态图标 + 文案提示</td></tr>
+</table>
+
+<h3>5.4 响应式适配</h3>
+<table>
+<tr><th>分辨率</th><th>适配策略</th></tr>
+<tr><td>≥1920×1080</td><td>标准布局，导航栏220px</td></tr>
+<tr><td>1366×768 ~ 1920×1080</td><td>适当收窄间距</td></tr>
+<tr><td>&lt;1366</td><td>左侧导航可收起为图标模式</td></tr>
+</table>
+
+</body>
+</html>

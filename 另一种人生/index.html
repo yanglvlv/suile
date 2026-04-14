@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>另一种人生</title>
+<style>
+:root {
+  --vh: 1vh;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --bg: #F5F7FA; --card: #FFFFFF; --text: #1A1D26; --sub: #8B919E;
+  --accent: #6366F1; --accent2: #818CF8; --green: #10B981; --red: #EF4444;
+  --orange: #F59E0B; --pink: #EC4899; --cyan: #06B6D4;
+  --shadow: 0 2px 12px rgba(0,0,0,.08); --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
+  --radius: 16px; --radius-sm: 12px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif; background:var(--bg); color:var(--text); overflow:hidden; height:calc(var(--vh,1vh)*100); width:100vw; max-width:430px; margin:0 auto; position:relative; }
+
+/* === 启动页 === */
+#splash { position:fixed; inset:0; z-index:1000; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:linear-gradient(160deg,#667eea 0%,#764ba2 100%); color:#fff; transition:all .6s ease; }
+#splash.hide { opacity:0; pointer-events:none; transform:scale(1.05); }
+.splash-title { font-size:2.2rem; font-weight:800; letter-spacing:2px; margin-bottom:8px; text-shadow:0 4px 20px rgba(0,0,0,.3); }
+.splash-sub { font-size:.9rem; opacity:.8; margin-bottom:48px; }
+.splash-btn { padding:16px 48px; border-radius:50px; border:none; font-size:1rem; font-weight:600; cursor:pointer; margin:8px;
+  transition:all .2s; backdrop-filter:blur(10px); }
+.splash-btn.primary { background:rgba(255,255,255,.95); color:#6366F1; }
+.splash-btn.secondary { background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.3); }
+.splash-btn:active { transform:scale(.95); }
+
+/* === 主应用 === */
+#app { display:none; height:calc(var(--vh,1vh)*100); flex-direction:column; position:relative; }
+#app.show { display:flex; }
+
+/* === 场景区域 === */
+#scene { flex:1; position:relative; overflow:hidden; }
+#scene-bg { position:absolute; inset:0; background-size:cover; background-position:center; transition:opacity .5s ease; }
+#scene-overlay { position:absolute; inset:0; transition:background .5s ease; }
+
+/* 天气粒子容器 */
+#weather-particles { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:2; }
+.rain-drop { position:absolute; top:-20px; width:2px; background:linear-gradient(transparent,rgba(174,194,224,.6)); border-radius:0 0 2px 2px;
+  animation:rainFall linear infinite; }
+@keyframes rainFall { to { transform:translateY(calc(var(--vh,1vh)*100)); } }
+.snow-flake { position:absolute; top:-10px; background:rgba(255,255,255,.8); border-radius:50%;
+  animation:snowFall linear infinite; }
+@keyframes snowFall { to { transform:translateY(calc(var(--vh,1vh)*100)) rotate(360deg); } }
+
+/* === HUD 顶栏 === */
+#hud { position:absolute; top:0; left:0; right:0; z-index:10; padding:calc(var(--safe-top) + 8px) 16px 12px;
+  background:linear-gradient(180deg,rgba(245,247,250,.95) 0%,rgba(245,247,250,.85) 70%,transparent);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+.hud-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.hud-left { display:flex; align-items:center; gap:10px; }
+.hud-avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--pink));
+  display:flex; align-items:center; justify-content:center; font-size:1.2rem; box-shadow:0 2px 8px rgba(99,102,241,.3); }
+.hud-info { font-size:.75rem; }
+.hud-name { font-weight:700; font-size:.9rem; color:var(--text); }
+.hud-date { color:var(--sub); margin-top:2px; }
+.hud-right { display:flex; align-items:center; gap:12px; }
+.hud-weather { font-size:.75rem; color:var(--sub); text-align:right; }
+.hud-money { font-size:.95rem; font-weight:700; color:var(--accent); background:rgba(99,102,241,.08);
+  padding:4px 12px; border-radius:20px; }
+/* 状态条 */
+.hud-stats { display:flex; gap:6px; }
+.stat-mini { flex:1; background:var(--card); border-radius:10px; padding:6px 8px; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.stat-mini-label { font-size:.6rem; color:var(--sub); display:flex; align-items:center; gap:2px; }
+.stat-mini-bar { height:4px; border-radius:2px; background:#EEF0F4; margin-top:3px; overflow:hidden; }
+.stat-mini-fill { height:100%; border-radius:2px; transition:width .4s ease; }
+
+/* === 场景内容（悬浮在场景图上） === */
+#scene-content { position:absolute; bottom:0; left:0; right:0; z-index:5; padding:0 12px 12px; }
+.scene-location { background:var(--card); border-radius:var(--radius); padding:14px 16px;
+  box-shadow:var(--shadow); margin-bottom:8px; display:flex; align-items:center; gap:12px; }
+.loc-icon { font-size:2rem; width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(129,140,248,.1)); }
+.loc-name { font-weight:700; font-size:1rem; }
+.loc-desc { font-size:.75rem; color:var(--sub); margin-top:2px; }
+
+/* NPC气泡 */
+.scene-npcs { display:flex; gap:8px; margin-bottom:8px; overflow-x:auto; padding:2px; }
+.npc-chip { background:var(--card); border-radius:20px; padding:6px 14px 6px 8px; display:flex; align-items:center; gap:6px;
+  box-shadow:0 1px 6px rgba(0,0,0,.06); font-size:.8rem; white-space:nowrap; cursor:pointer; transition:all .2s; }
+.npc-chip:active { transform:scale(.95); background:rgba(99,102,241,.05); }
+.npc-chip .avatar { font-size:1.2rem; }
+
+/* 快捷行动 */
+.quick-actions { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.quick-btn { background:var(--card); border-radius:var(--radius-sm); padding:12px 8px; text-align:center;
+  box-shadow:0 1px 6px rgba(0,0,0,.05); cursor:pointer; transition:all .2s; }
+.quick-btn:active { transform:scale(.93); background:rgba(99,102,241,.05); }
+.quick-btn-icon { font-size:1.4rem; margin-bottom:4px; }
+.quick-btn-name { font-size:.7rem; color:var(--sub); }
+
+/* === 底部导航 === */
+#nav { display:flex; background:var(--card); border-top:1px solid #F0F1F5; padding:8px 0 calc(var(--safe-bottom) + 4px);
+  box-shadow:0 -2px 12px rgba(0,0,0,.04); z-index:20; position:relative; }
+.nav-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 0; cursor:pointer;
+  color:var(--sub); transition:color .2s; font-size:.65rem; }
+.nav-item.active { color:var(--accent); }
+.nav-item svg { width:24px; height:24px; }
+
+/* === 面板（底部弹出） === */
+.panel { position:fixed; inset:0; z-index:100; display:flex; flex-direction:column; justify-content:flex-end;
+  pointer-events:none; opacity:0; transition:opacity .3s; }
+.panel.show { pointer-events:auto; opacity:1; }
+.panel-mask { position:absolute; inset:0; background:rgba(0,0,0,.3); backdrop-filter:blur(4px); }
+.panel.show .panel-mask { animation:fadeIn .3s; }
+@keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+.panel-body { position:relative; z-index:1; background:var(--bg); border-radius:24px 24px 0 0;
+  max-height:85vh; overflow-y:auto; padding:20px 16px calc(var(--safe-bottom) + 16px);
+  transform:translateY(100%); transition:transform .35s cubic-bezier(.32,.72,0,1); }
+.panel.show .panel-body { transform:translateY(0); }
+.panel-handle { width:36px; height:4px; background:#D4D8E0; border-radius:2px; margin:0 auto 16px; }
+.panel-title { font-size:1.1rem; font-weight:700; margin-bottom:16px; }
+
+/* === 行动卡片 === */
+.action-card { display:flex; align-items:center; gap:12px; background:var(--card); border-radius:var(--radius-sm);
+  padding:14px 16px; margin-bottom:8px; box-shadow:0 1px 4px rgba(0,0,0,.04); cursor:pointer; transition:all .2s; }
+.action-card:active { transform:scale(.98); background:#F8F9FB; }
+.action-card.disabled { opacity:.4; pointer-events:none; }
+.a-icon { font-size:1.5rem; width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,#F0F1FF,#E8EAFF); flex-shrink:0; }
+.a-info { flex:1; min-width:0; }
+.a-name { font-weight:600; font-size:.9rem; }
+.a-desc { font-size:.72rem; color:var(--sub); margin-top:2px; }
+.a-tags { display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
+.a-tag { font-size:.65rem; padding:2px 8px; border-radius:10px; background:#F0F1F5; color:var(--sub); }
+.a-tag.cost { background:rgba(239,68,68,.08); color:var(--red); }
+.a-tag.earn { background:rgba(16,185,129,.08); color:var(--green); }
+
+/* === 地图 === */
+.map-section { margin-bottom:16px; }
+.map-section-title { font-size:.8rem; font-weight:600; color:var(--sub); margin-bottom:8px; padding-left:4px; }
+.map-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.map-tile { background:var(--card); border-radius:var(--radius-sm); padding:14px; box-shadow:0 1px 4px rgba(0,0,0,.04);
+  cursor:pointer; transition:all .2s; position:relative; overflow:hidden; }
+.map-tile:active { transform:scale(.96); }
+.map-tile.current { border:2px solid var(--accent); }
+.map-tile.current::after { content:'📍 在这里'; position:absolute; top:8px; right:8px; font-size:.6rem;
+  background:var(--accent); color:#fff; padding:2px 8px; border-radius:10px; }
+.map-tile.closed { opacity:.4; pointer-events:none; }
+.tile-icon { font-size:1.6rem; margin-bottom:6px; }
+.tile-name { font-weight:600; font-size:.85rem; }
+.tile-info { font-size:.65rem; color:var(--sub); margin-top:4px; }
+
+/* === NPC对话 === */
+#dialog { position:fixed; inset:0; z-index:200; display:flex; align-items:flex-end; justify-content:center;
+  pointer-events:none; opacity:0; transition:opacity .3s; }
+#dialog.show { pointer-events:auto; opacity:1; }
+#dialog .panel-mask { position:absolute; inset:0; background:rgba(0,0,0,.4); backdrop-filter:blur(6px); }
+#dialog-box { position:relative; z-index:1; background:var(--card); border-radius:24px 24px 0 0; width:100%;
+  max-height:75vh; overflow-y:auto; padding:24px 20px calc(var(--safe-bottom) + 20px);
+  transform:translateY(100%); transition:transform .35s cubic-bezier(.32,.72,0,1); }
+#dialog.show #dialog-box { transform:translateY(0); }
+.dialog-header { display:flex; align-items:center; gap:14px; margin-bottom:16px; }
+.d-avatar { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:1.8rem; background:linear-gradient(135deg,#F0F1FF,#E8EAFF); flex-shrink:0; }
+.d-name { font-weight:700; font-size:1.1rem; }
+.d-rel { font-size:.75rem; color:var(--sub); margin-top:2px; }
+.dialog-text { font-size:.9rem; line-height:1.7; color:#444; background:#F8F9FC; border-radius:var(--radius-sm);
+  padding:14px 16px; margin-bottom:16px; }
+.dialog-options { display:flex; flex-direction:column; gap:8px; }
+.dialog-opt { display:flex; align-items:center; gap:10px; padding:14px 16px; border-radius:var(--radius-sm);
+  background:#F5F6FA; cursor:pointer; transition:all .2s; font-size:.88rem; }
+.dialog-opt:active { background:rgba(99,102,241,.08); transform:scale(.98); }
+.opt-cost { margin-left:auto; font-size:.75rem; color:var(--red); font-weight:600; }
+
+/* === 投资面板 === */
+.fin-summary { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:16px; }
+.fin-card { background:var(--card); border-radius:var(--radius-sm); padding:14px; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.fin-label { font-size:.7rem; color:var(--sub); }
+.fin-value { font-size:1.1rem; font-weight:700; margin-top:4px; }
+.fin-value.up { color:var(--green); }
+.fin-value.down { color:var(--red); }
+
+.stock-card { display:flex; align-items:center; gap:12px; background:var(--card); border-radius:var(--radius-sm);
+  padding:12px 14px; margin-bottom:6px; box-shadow:0 1px 3px rgba(0,0,0,.03); cursor:pointer; transition:all .2s; }
+.stock-card:active { background:#F8F9FB; }
+.st-icon { font-size:1.3rem; width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#F5F6FA; }
+.st-info { flex:1; }
+.st-name { font-weight:600; font-size:.85rem; }
+.st-sector { font-size:.65rem; color:var(--sub); }
+.st-price { text-align:right; }
+.st-price .price { font-weight:700; font-size:.9rem; }
+.st-price .change { font-size:.72rem; margin-top:2px; }
+.st-price .change.up { color:var(--green); }
+.st-price .change.down { color:var(--red); }
+
+/* 股票详情 */
+.stock-actions { display:flex; gap:8px; margin-top:12px; }
+.stock-actions button { flex:1; padding:14px; border:none; border-radius:var(--radius-sm); font-size:.9rem; font-weight:600; cursor:pointer; transition:all .2s; }
+.stock-actions button:active { transform:scale(.96); }
+.btn-buy { background:var(--green); color:#fff; }
+.btn-sell { background:var(--red); color:#fff; }
+.btn-sell:disabled { opacity:.3; pointer-events:none; }
+
+/* === 我的面板 === */
+.status-section { margin-bottom:20px; }
+.status-section h3 { font-size:.9rem; font-weight:700; margin-bottom:10px; color:var(--text); }
+.stat-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.s-icon { font-size:1.1rem; width:28px; text-align:center; }
+.s-info { flex:1; }
+.s-name { font-size:.75rem; color:var(--sub); margin-bottom:3px; }
+.stat-bar { height:6px; border-radius:3px; background:#EEF0F4; overflow:hidden; }
+.stat-bar-fill { height:100%; border-radius:3px; transition:width .4s ease; }
+.s-val { font-size:.8rem; font-weight:600; width:28px; text-align:right; }
+.skill-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.skill-card { background:var(--card); border-radius:var(--radius-sm); padding:10px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+.sk-icon { font-size:1.3rem; }
+.sk-name { font-size:.65rem; color:var(--sub); margin-top:2px; }
+.sk-lv { font-size:.75rem; font-weight:700; color:var(--accent); margin-top:2px; }
+
+/* === 消息浮层 === */
+#float-msgs { position:fixed; top:calc(var(--safe-top) + 100px); left:16px; right:16px; z-index:300; display:flex; flex-direction:column; gap:6px; pointer-events:none; }
+.float-msg { background:var(--card); border-radius:var(--radius-sm); padding:10px 16px; font-size:.82rem;
+  box-shadow:var(--shadow-lg); animation:msgIn .4s ease; pointer-events:none; border-left:3px solid var(--accent); }
+.float-msg.warning { border-left-color:var(--red); }
+.float-msg.event { border-left-color:var(--orange); }
+.float-msg.social { border-left-color:var(--pink); }
+.float-msg.economy { border-left-color:var(--green); }
+@keyframes msgIn { from { opacity:0; transform:translateY(-20px) scale(.95); } to { opacity:1; transform:translateY(0) scale(1); } }
+@keyframes msgOut { to { opacity:0; transform:translateY(-20px) scale(.95); } }
+
+/* === 浮动数值 === */
+.float-num { position:fixed; z-index:400; font-size:1.1rem; font-weight:800; pointer-events:none; animation:floatUp 1.2s ease forwards; }
+.float-num.positive { color:var(--green); }
+.float-num.negative { color:var(--red); }
+@keyframes floatUp { 0%{opacity:1;transform:translateY(0)} 100%{opacity:0;transform:translateY(-60px)} }
+
+/* 保存按钮 */
+.save-btn { width:100%; padding:16px; border:none; border-radius:var(--radius-sm); background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff; font-size:1rem; font-weight:700; cursor:pointer; transition:all .2s; box-shadow:0 4px 16px rgba(99,102,241,.3); }
+.save-btn:active { transform:scale(.97); }
+
+/* === 场景动效层 === */
+#scene-effects { position:absolute; inset:0; pointer-events:none; z-index:3; overflow:hidden; }
+.cloud { position:absolute; background:rgba(255,255,255,.15); border-radius:50%; filter:blur(20px); animation:cloudDrift linear infinite; }
+@keyframes cloudDrift { from{transform:translateX(-100px)} to{transform:translateX(calc(100vw + 100px))} }
+.sunbeam { position:absolute; top:-50px; left:50%; width:200px; height:300px;
+  background:radial-gradient(ellipse,rgba(255,220,100,.12) 0%,transparent 70%); animation:sunPulse 4s ease-in-out infinite; }
+@keyframes sunPulse { 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:.6;transform:scale(1.1)} }
+.firefly { position:absolute; width:4px; height:4px; background:rgba(255,220,100,.8); border-radius:50%;
+  box-shadow:0 0 6px rgba(255,220,100,.6); animation:fireflyFloat 5s ease-in-out infinite; }
+@keyframes fireflyFloat { 0%,100%{transform:translate(0,0);opacity:.3} 25%{transform:translate(20px,-15px);opacity:.8} 50%{transform:translate(-10px,-25px);opacity:.5} 75%{transform:translate(15px,-10px);opacity:.9} }
+
+/* === 转场动画 === */
+#transition { position:fixed; inset:0; z-index:500; background:var(--bg); display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity .3s; }
+#transition.show { opacity:1; pointer-events:auto; }
+#transition .trans-icon { font-size:3rem; animation:transAnim .6s ease; }
+@keyframes transAnim { 0%{transform:scale(.5) rotate(-10deg);opacity:0} 50%{transform:scale(1.2) rotate(5deg);opacity:1} 100%{transform:scale(1) rotate(0);opacity:1} }
+
+/* === 成就弹窗 === */
+#achievement-popup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0); z-index:600;
+  background:linear-gradient(135deg,#FFD700,#FFA500); border-radius:24px; padding:32px 40px; text-align:center;
+  box-shadow:0 20px 60px rgba(255,165,0,.4); transition:transform .5s cubic-bezier(.34,1.56,.64,1); color:#fff; }
+#achievement-popup.show { transform:translate(-50%,-50%) scale(1); }
+.ach-icon { font-size:3rem; animation:achBounce .6s ease; }
+@keyframes achBounce { 0%{transform:scale(0)} 50%{transform:scale(1.3)} 100%{transform:scale(1)} }
+.ach-title { font-size:1.2rem; font-weight:800; margin-top:8px; }
+.ach-desc { font-size:.8rem; opacity:.9; margin-top:4px; }
+.ach-particles { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.ach-star { position:absolute; font-size:1rem; animation:starBurst 1s ease forwards; }
+@keyframes starBurst { 0%{opacity:1;transform:translate(0,0) scale(1)} 100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)} }
+
+/* === 点击涟漪 === */
+.ripple { position:absolute; width:40px; height:40px; border-radius:50%; background:rgba(99,102,241,.2);
+  transform:scale(0); animation:rippleAnim .5s ease forwards; pointer-events:none; z-index:10; }
+@keyframes rippleAnim { to{transform:scale(3);opacity:0} }
+
+/* === NPC状态气泡增强 === */
+.npc-chip { position:relative; }
+.npc-chip .npc-mood { position:absolute; top:-4px; right:-4px; font-size:.6rem; }
+.npc-chip .npc-rel-dot { position:absolute; bottom:-2px; right:-2px; width:8px; height:8px; border-radius:50%; border:1.5px solid #fff; }
+
+/* === 成就徽章 === */
+.ach-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+.ach-badge { text-align:center; padding:10px 4px; border-radius:12px; background:var(--card); box-shadow:0 1px 3px rgba(0,0,0,.04); }
+.ach-badge.locked { opacity:.3; filter:grayscale(1); }
+.ach-badge-icon { font-size:1.5rem; }
+.ach-badge-name { font-size:.55rem; color:var(--sub); margin-top:4px; }
+
+/* === 消息日志面板 === */
+.msg-log { max-height:300px; overflow-y:auto; }
+.msg-item { padding:8px 12px; border-radius:8px; margin-bottom:4px; font-size:.78rem; line-height:1.5; }
+.msg-item.action { background:rgba(99,102,241,.05); }
+.msg-item.event { background:rgba(245,158,11,.05); }
+.msg-item.social { background:rgba(236,72,153,.05); }
+.msg-item.warning { background:rgba(239,68,68,.05); }
+.msg-item.achievement { background:rgba(255,215,0,.1); font-weight:600; }
+.msg-item .msg-time { font-size:.65rem; color:var(--sub); }
+</style>
+</head>
+<body>
+
+<!-- 启动页 -->
+<div id="splash">
+  <div class="splash-title">另一种人生</div>
+  <div class="splash-sub">在别人的城市里，过自己的日子</div>
+  <button class="splash-btn primary" onclick="startNew()">🌅 开始新人生</button>
+  <button class="splash-btn secondary" id="btn-load" onclick="loadGame()">📂 继续游戏</button>
+</div>
+
+<!-- 主应用 -->
+<div id="app">
+  <!-- 场景 -->
+  <div id="scene">
+    <div id="scene-bg"></div>
+    <div id="scene-overlay"></div>
+    <div id="weather-particles"></div>
+    <div id="scene-effects"></div>
+    <!-- HUD -->
+    <div id="hud">
+      <div class="hud-top">
+        <div class="hud-left">
+          <div class="hud-avatar">🙂</div>
+          <div class="hud-info"><div class="hud-name" id="hud-name">你</div><div class="hud-date" id="hud-date"></div></div>
+        </div>
+        <div class="hud-right">
+          <div class="hud-weather" id="hud-weather"></div>
+          <div class="hud-money" id="hud-money">💰 $0</div>
+        </div>
+      </div>
+      <div class="hud-stats" id="hud-stats"></div>
+    </div>
+    <!-- 场景内容 -->
+    <div id="scene-content">
+      <div class="scene-npcs" id="scene-npcs"></div>
+      <div class="scene-location" id="scene-location"></div>
+      <div class="quick-actions" id="quick-actions"></div>
+    </div>
+  </div>
+
+  <!-- 底部导航 -->
+  <div id="nav">
+    <div class="nav-item active" data-tab="scene" onclick="navTo('scene')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>场景</span>
+    </div>
+    <div class="nav-item" data-tab="map" onclick="navTo('map')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      <span>地图</span>
+    </div>
+    <div class="nav-item" data-tab="social" onclick="navTo('social')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>社交</span>
+    </div>
+    <div class="nav-item" data-tab="finance" onclick="navTo('finance')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <span>投资</span>
+    </div>
+    <div class="nav-item" data-tab="me" onclick="navTo('me')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>我的</span>
+    </div>
+  </div>
+</div>
+
+<!-- 转场动画层 -->
+<div id="transition"><div class="trans-icon"></div></div>
+
+<!-- 成就弹窗 -->
+<div id="achievement-popup">
+  <div class="ach-particles" id="ach-particles"></div>
+  <div class="ach-icon" id="ach-popup-icon"></div>
+  <div class="ach-title" id="ach-popup-title"></div>
+  <div class="ach-desc" id="ach-popup-desc"></div>
+</div>
+
+<!-- 浮动消息 -->
+<div id="float-msgs"></div>
+
+<!-- 面板：行动 -->
+<div class="panel" id="panel-actions"><div class="panel-mask" onclick="closePanel('actions')"></div>
+  <div class="panel-body"><div class="panel-handle"></div><div class="panel-title">🎯 可用行动</div><div id="actions-list"></div></div></div>
+
+<!-- 面板：地图 -->
+<div class="panel" id="panel-map"><div class="panel-mask" onclick="closePanel('map')"></div>
+  <div class="panel-body"><div class="panel-handle"></div><div class="panel-title">🗺️ 城市地图</div><div id="map-container"></div></div></div>
+
+<!-- 面板：社交 -->
+<div class="panel" id="panel-social"><div class="panel-mask" onclick="closePanel('social')"></div>
+  <div class="panel-body"><div class="panel-handle"></div><div class="panel-title">👥 社交关系</div><div id="social-list"></div></div></div>
+
+<!-- 面板：投资 -->
+<div class="panel" id="panel-finance"><div class="panel-mask" onclick="closePanel('finance')"></div>
+  <div class="panel-body"><div class="panel-handle"></div><div class="panel-title">📊 投资理财</div><div id="finance-content"></div></div></div>
+
+<!-- 面板：股票详情 -->
+<div class="panel" id="panel-stock-detail"><div class="panel-mask" onclick="closePanel('stock-detail')"></div>
+  <div class="panel-body"><div class="panel-handle"></div><div class="panel-title" id="stock-detail-title"></div><div id="stock-detail-content"></div></div></div>
+
+<!-- 面板：我的 -->
+<div class="panel" id="panel-me"><div class="panel-mask" onclick="closePanel('me')"></div>
+  <div class="panel-body"><div class="panel-handle"></div><div class="panel-title">📋 个人状态</div><div id="me-content"></div></div></div>
+
+<!-- 面板：消息日志 -->
+<div class="panel" id="panel-log"><div class="panel-mask" onclick="closePanel('log')"></div>
+  <div class="panel-body"><div class="panel-handle"></div><div class="panel-title">📜 消息日志</div><div id="log-content" class="msg-log"></div></div></div>
+
+<!-- NPC对话 -->
+<div id="dialog"><div class="panel-mask" onclick="closeDialog()"></div><div id="dialog-box"></div></div>
+
+<!-- 引擎脚本 -->
+<script src="engine/time.js"></script>
+<script src="engine/character.js"></script>
+<script src="engine/npc.js"></script>
+<script src="engine/events.js"></script>
+<script src="engine/locations.js"></script>
+<script src="engine/economy.js"></script>
+<script src="engine/game.js"></script>
+
+<script>
+// ============================================================
+// UI 渲染 & 交互逻辑 v2
+// ============================================================
+let game = null;
+const $ = id => document.getElementById(id);
+
+const sceneBgs = {
+  home:'assets/home.png', office:'assets/office.png', cafe:'assets/cafe.png',
+  gym:'assets/gym.png', park:'assets/park.png', library:'assets/library.png',
+  restaurant:'assets/cafe2.png', mall:'assets/store.png', bar:'assets/cafe2.png',
+  market:'assets/office.png', school:'assets/library.png', hospital:'assets/office.png',
+  bank:'assets/office.png', convenience:'assets/store.png'
+};
+
+// === 点击涟漪 ===
+document.addEventListener('click', e => {
+  const r = document.createElement('div');
+  r.className = 'ripple';
+  r.style.left = (e.clientX - 20) + 'px';
+  r.style.top = (e.clientY - 20) + 'px';
+  document.body.appendChild(r);
+  setTimeout(() => r.remove(), 500);
+});
+
+// === 浮动消息 ===
+function showFloatMsg(text, type = 'info') {
+  const el = document.createElement('div');
+  el.className = `float-msg ${type}`;
+  el.textContent = text;
+  $('float-msgs').appendChild(el);
+  setTimeout(() => { el.style.animation = 'msgOut .4s ease forwards'; setTimeout(() => el.remove(), 400); }, 3000);
+  while ($('float-msgs').children.length > 4) $('float-msgs').firstChild.remove();
+}
+
+// === 浮动数值 ===
+function showFloatNum(text, positive) {
+  const el = document.createElement('div');
+  el.className = `float-num ${positive ? 'positive' : 'negative'}`;
+  el.textContent = text;
+  el.style.left = (80 + Math.random() * 200) + 'px';
+  el.style.top = (180 + Math.random() * 100) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1200);
+}
+
+// === 成就弹窗 ===
+function showAchievement(ach) {
+  $('ach-popup-icon').textContent = ach.icon;
+  $('ach-popup-title').textContent = ach.name;
+  $('ach-popup-desc').textContent = ach.desc;
+  // 粒子效果
+  const pc = $('ach-particles');
+  pc.innerHTML = '';
+  for (let i = 0; i < 12; i++) {
+    const star = document.createElement('div');
+    star.className = 'ach-star';
+    star.textContent = ['✨','⭐','🌟','💫'][Math.floor(Math.random()*4)];
+    star.style.left = '50%'; star.style.top = '50%';
+    star.style.setProperty('--tx', (Math.random()*200-100)+'px');
+    star.style.setProperty('--ty', (Math.random()*200-100)+'px');
+    star.style.animationDelay = (Math.random()*.3)+'s';
+    pc.appendChild(star);
+  }
+  $('achievement-popup').classList.add('show');
+  setTimeout(() => $('achievement-popup').classList.remove('show'), 2500);
+}
+
+// === 转场动画 ===
+function showTransition(icon, callback) {
+  const t = $('transition');
+  t.querySelector('.trans-icon').textContent = icon;
+  t.classList.add('show');
+  setTimeout(() => {
+    if (callback) callback();
+    setTimeout(() => t.classList.remove('show'), 300);
+  }, 400);
+}
+
+// === 场景动效 ===
+function updateSceneEffects() {
+  const fx = $('scene-effects');
+  fx.innerHTML = '';
+  if (!game) return;
+  const h = game.time.hour;
+  const w = game.time.weather;
+
+  // 白天阳光
+  if (w === 'sunny' && h >= 8 && h <= 17) {
+    const sun = document.createElement('div');
+    sun.className = 'sunbeam';
+    fx.appendChild(sun);
+  }
+
+  // 漂浮云朵
+  if (w === 'cloudy' || w === 'sunny') {
+    for (let i = 0; i < 3; i++) {
+      const cloud = document.createElement('div');
+      cloud.className = 'cloud';
+      cloud.style.top = (10 + Math.random() * 30) + '%';
+      cloud.style.width = (80 + Math.random() * 120) + 'px';
+      cloud.style.height = (30 + Math.random() * 40) + 'px';
+      cloud.style.animationDuration = (20 + Math.random() * 30) + 's';
+      cloud.style.animationDelay = (-Math.random() * 20) + 's';
+      fx.appendChild(cloud);
+    }
+  }
+
+  // 夜晚萤火虫
+  if (h >= 20 || h < 5) {
+    for (let i = 0; i < 6; i++) {
+      const ff = document.createElement('div');
+      ff.className = 'firefly';
+      ff.style.left = (10 + Math.random() * 80) + '%';
+      ff.style.top = (20 + Math.random() * 50) + '%';
+      ff.style.animationDelay = (-Math.random() * 5) + 's';
+      ff.style.animationDuration = (4 + Math.random() * 4) + 's';
+      fx.appendChild(ff);
+    }
+  }
+}
+
+// === 天气粒子 ===
+function updateWeatherParticles() {
+  const c = $('weather-particles');
+  c.innerHTML = '';
+  if (!game) return;
+  const w = game.time.weather;
+  if (w === 'rainy' || w === 'stormy') {
+    for (let i = 0; i < (w === 'stormy' ? 60 : 30); i++) {
+      const d = document.createElement('div');
+      d.className = 'rain-drop';
+      d.style.left = Math.random()*100+'%';
+      d.style.height = (12+Math.random()*16)+'px';
+      d.style.animationDuration = (.3+Math.random()*.3)+'s';
+      d.style.animationDelay = Math.random()*2+'s';
+      c.appendChild(d);
+    }
+  } else if (w === 'snowy') {
+    for (let i = 0; i < 25; i++) {
+      const f = document.createElement('div');
+      f.className = 'snow-flake';
+      f.style.left = Math.random()*100+'%';
+      f.style.width = f.style.height = (2+Math.random()*4)+'px';
+      f.style.animationDuration = (3+Math.random()*4)+'s';
+      f.style.animationDelay = Math.random()*3+'s';
+      c.appendChild(f);
+    }
+  }
+}
+
+// === 更新场景背景 ===
+let _lastLoc = null;
+function updateSceneBg() {
+  const bg = $('scene-bg');
+  const loc = game.locations.currentLocation;
+  if (loc !== _lastLoc) {
+    bg.style.opacity = '0';
+    setTimeout(() => {
+      bg.style.backgroundImage = `url(${sceneBgs[loc] || sceneBgs.home})`;
+      bg.style.opacity = '1';
+    }, 200);
+    _lastLoc = loc;
+  }
+  const overlay = $('scene-overlay');
+  const h = game.time.hour;
+  if (h >= 21 || h < 5) overlay.style.background = 'rgba(10,15,30,.55)';
+  else if (h >= 19) overlay.style.background = 'rgba(40,20,60,.25)';
+  else if (h >= 17) overlay.style.background = 'rgba(80,40,20,.1)';
+  else if (h < 7) overlay.style.background = 'rgba(20,30,60,.3)';
+  else overlay.style.background = 'transparent';
+}
+
+// === 更新HUD ===
+function updateHUD() {
+  const t = game.time, p = game.player;
+  $('hud-date').textContent = `${t.dateString} ${t.timeString}`;
+  $('hud-weather').innerHTML = `${t.weatherNames[t.weather]}<br>${t.temperature}°C`;
+  $('hud-money').textContent = `💰 $${p.finance.cash.toLocaleString()}`;
+  const moods = { ecstatic:'😆', happy:'😊', normal:'🙂', sad:'😢', depressed:'😞', anxious:'😰' };
+  document.querySelector('.hud-avatar').textContent = moods[p.mind.mood] || '🙂';
+
+  const stats = [
+    { icon:'💪', name:'体力', val:p.body.energy, color:getBarColor(p.body.energy,false) },
+    { icon:'🍔', name:'饱腹', val:100-p.body.hunger, color:getBarColor(100-p.body.hunger,false) },
+    { icon:'😊', name:'心情', val:p.mind.happiness, color:getBarColor(p.mind.happiness,false) },
+    { icon:'❤️', name:'健康', val:p.body.health, color:getBarColor(p.body.health,false) },
+    { icon:'😫', name:'压力', val:p.mind.stress, color:getBarColor(p.mind.stress,true) },
+  ];
+  $('hud-stats').innerHTML = stats.map(s => `
+    <div class="stat-mini"><div class="stat-mini-label">${s.icon} ${s.name}</div>
+    <div class="stat-mini-bar"><div class="stat-mini-fill" style="width:${s.val}%;background:${s.color}"></div></div></div>`).join('');
+}
+
+function getBarColor(val, invert) {
+  const v = invert ? 100-val : val;
+  return v > 60 ? 'var(--green)' : v > 30 ? 'var(--orange)' : 'var(--red)';
+}
+
+// === 更新场景信息 ===
+function updateSceneInfo() {
+  const loc = game.locations.locations[game.locations.currentLocation];
+  if (!loc) return;
+  $('scene-location').innerHTML = `<div class="loc-icon">${loc.icon}</div>
+    <div><div class="loc-name">${loc.name}</div><div class="loc-desc">${loc.desc}</div></div>`;
+
+  const npcs = game.npcs.getNPCsAtLocation(game.locations.currentLocation, game.time);
+  $('scene-npcs').innerHTML = npcs.map(n => {
+    const relColors = { stranger:'#ccc', acquaintance:'#F59E0B', friend:'#10B981', closeFriend:'#EC4899' };
+    const moodEmojis = { happy:'😊', normal:'', sad:'😢' };
+    return `<div class="npc-chip" onclick="openDialog('${n.id}')">
+      <span class="avatar">${n.avatar}</span>${n.name}
+      ${n.mood && n.mood !== 'normal' ? `<span class="npc-mood">${moodEmojis[n.mood]||''}</span>` : ''}
+      <span class="npc-rel-dot" style="background:${relColors[n.relationLevel]||'#ccc'}"></span>
+    </div>`;
+  }).join('');
+
+  const actions = game.locations.getActions(game.locations.currentLocation, game.player, game.time);
+  const top = actions.slice(0, 3);
+  $('quick-actions').innerHTML = top.map(a =>
+    `<div class="quick-btn" onclick="doAction('${a.id}')"><div class="quick-btn-icon">${a.icon}</div><div class="quick-btn-name">${a.name}</div></div>`
+  ).join('') + `<div class="quick-btn" onclick="openActionsPanel()"><div class="quick-btn-icon">📋</div><div class="quick-btn-name">更多</div></div>`;
+}
+
+// === 主更新 ===
+let _lastMsgCount = 0;
+function updateUI() {
+  if (!game || !game.started) return;
+  updateHUD();
+  updateSceneBg();
+  updateSceneInfo();
+  updateWeatherParticles();
+  updateSceneEffects();
+  if (game.messages.length > _lastMsgCount) {
+    for (let i = _lastMsgCount; i < game.messages.length; i++) {
+      const m = game.messages[i];
+      showFloatMsg(m.text, m.type);
+    }
+    _lastMsgCount = game.messages.length;
+  }
+}
+
+// === 导航 ===
+function navTo(tab) {
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
+  closeAllPanels();
+  if (tab === 'scene') return;
+  if (tab === 'map') openMapPanel();
+  else if (tab === 'social') openSocialPanel();
+  else if (tab === 'finance') openFinancePanel();
+  else if (tab === 'me') openMePanel();
+}
+
+function openPanel(name) { $(`panel-${name}`).classList.add('show'); }
+function closePanel(name) { $(`panel-${name}`).classList.remove('show'); }
+function closeAllPanels() { document.querySelectorAll('.panel.show').forEach(p => p.classList.remove('show')); closeDialog(); }
+
+// === 行动面板 ===
+function openActionsPanel() {
+  closeAllPanels();
+  const actions = game.locations.getActions(game.locations.currentLocation, game.player, game.time);
+  $('actions-list').innerHTML = actions.map(a => {
+    const canAfford = !a.cost || game.player.finance.cash >= a.cost;
+    const hrs = Math.floor((a.duration||60)/60), mins = (a.duration||60)%60;
+    const timeStr = hrs > 0 ? `${hrs}h${mins>0?mins+'m':''}` : `${mins}m`;
+    return `<div class="action-card ${canAfford?'':'disabled'}" onclick="doAction('${a.id}')">
+      <div class="a-icon">${a.icon}</div><div class="a-info"><div class="a-name">${a.name}</div><div class="a-desc">${a.desc}</div>
+      <div class="a-tags"><span class="a-tag">⏱ ${timeStr}</span>
+      ${a.cost?`<span class="a-tag cost">💰 $${a.cost}</span>`:''}
+      ${a.earn?`<span class="a-tag earn">💵 +$${a.earn}</span>`:''}
+      ${a.skillGain?Object.entries(a.skillGain).map(([s,v])=>`<span class="a-tag">${game.player.skills[s]?.icon||'⬆'} +${v}</span>`).join(''):''}</div></div></div>`;
+  }).join('') || '<div style="text-align:center;color:var(--sub);padding:40px">当前没有可执行的行动</div>';
+  openPanel('actions');
+}
+
+function doAction(actionId) {
+  closeAllPanels();
+  // 转场动画
+  const loc = game.locations.locations[game.locations.currentLocation];
+  const action = loc?.actions?.find(a => a.id === actionId);
+  if (action && (action.duration || 0) >= 120) {
+    showTransition(action.icon, () => {
+      game.doAction(actionId, game.locations.currentLocation);
+      updateUI();
+    });
+  } else {
+    game.doAction(actionId, game.locations.currentLocation);
+    updateUI();
+  }
+}
+
+// === 地图面板 ===
+function openMapPanel() {
+  const available = game.locations.getAvailable(game.time);
+  const avIds = new Set(available.map(l => l.id));
+  const areas = { oldtown:'🏚️ 老城区', cbd:'🏢 CBD商务区', downtown:'🏙️ 市中心', artdistrict:'🎨 文创区' };
+  let html = '';
+  for (const [areaId, areaName] of Object.entries(areas)) {
+    const locs = Object.values(game.locations.locations).filter(l => l.area === areaId);
+    if (!locs.length) continue;
+    html += `<div class="map-section"><div class="map-section-title">${areaName}</div><div class="map-grid">`;
+    html += locs.map(l => {
+      const cur = l.id === game.locations.currentLocation;
+      const open = avIds.has(l.id);
+      const npcs = game.npcs.getNPCsAtLocation(l.id, game.time);
+      const tt = game.locations.getTravelTime(game.locations.currentLocation, l.id);
+      return `<div class="map-tile ${cur?'current':''} ${open?'':'closed'}" onclick="goTo('${l.id}')">
+        <div class="tile-icon">${l.icon}</div><div class="tile-name">${l.name}</div>
+        <div class="tile-info">${cur?'📍在这里':open?`🚶${tt}分钟`:'🔒关门了'}</div>
+        ${npcs.length?`<div class="tile-info">${npcs.map(n=>n.avatar).join(' ')}</div>`:''}
+      </div>`;
+    }).join('');
+    html += '</div></div>';
+  }
+  $('map-container').innerHTML = html;
+  openPanel('map');
+}
+
+function goTo(locId) {
+  closeAllPanels();
+  const loc = game.locations.locations[locId];
+  showTransition(loc?.icon || '🚶', () => {
+    game.goTo(locId);
+    updateUI();
+  });
+}
+
+// === 社交面板 ===
+function openSocialPanel() {
+  const npcs = Object.values(game.npcs.npcs);
+  $('social-list').innerHTML = npcs.map(n => {
+    const loc = game.npcs.getNPCLocation(n.id, game.time);
+    const locName = game.locations.locations[loc]?.name || '未知';
+    const rel = game.npcs.getRelationLabel(n.id);
+    const total = (n.relation.trust + n.relation.like + n.relation.intimacy);
+    const relPct = Math.min(100, Math.round(total / 3));
+    const relColors = { stranger:'var(--sub)', acquaintance:'var(--orange)', friend:'var(--green)', closeFriend:'var(--pink)' };
+    return `<div class="action-card" onclick="openDialog('${n.id}')">
+      <div class="a-icon" style="font-size:1.8rem">${n.avatar}</div>
+      <div class="a-info"><div class="a-name">${n.name} <span style="font-size:.7rem;color:var(--sub)">${n.age}岁 ${n.job}</span></div>
+      <div class="a-desc" style="display:flex;align-items:center;gap:8px">
+        <span style="color:${relColors[n.relationLevel]||'var(--sub)'}">💕 ${rel}</span>
+        <span style="flex:1"><div class="stat-bar"><div class="stat-bar-fill" style="width:${relPct}%;background:${relColors[n.relationLevel]||'#ccc'}"></div></div></span>
+      </div>
+      <div class="a-desc">📍 ${locName} ${n.mood==='happy'?'😊':n.mood==='sad'?'😢':''}</div></div></div>`;
+  }).join('');
+  openPanel('social');
+}
+
+// === NPC对话（动态版）===
+function openDialog(npcId) {
+  closeAllPanels();
+  const npc = game.npcs.npcs[npcId];
+  if (!npc) return;
+  const rel = game.npcs.getRelationLabel(npcId);
+  const isHere = game.npcs.getNPCLocation(npcId, game.time) === game.locations.currentLocation;
+  const greeting = game.npcs.getDynamicGreeting(npcId, game.player, game.time);
+
+  const opts = [
+    { id:'chat', icon:'💬', name:'闲聊', desc:'聊聊最近的事', cost:'' },
+    { id:'deepTalk', icon:'🗣️', name:'深聊', desc:'推心置腹', cost:'' },
+    { id:'treat', icon:'🍽️', name:'请吃饭', desc:'一起吃个饭', cost:'$80' },
+    { id:'gift', icon:'🎁', name:'送礼物', desc:'表达心意', cost:'$50' },
+    { id:'hangout', icon:'🎮', name:'一起玩', desc:'出去逛逛', cost:'' },
+    { id:'askHelp', icon:'🆘', name:'求助', desc:'请求帮忙', cost:'' }
+  ];
+
+  const relColors = { stranger:'var(--sub)', acquaintance:'var(--orange)', friend:'var(--green)', closeFriend:'var(--pink)' };
+  const total = (npc.relation.trust + npc.relation.like + npc.relation.intimacy);
+
+  $('dialog-box').innerHTML = `
+    <div class="dialog-header"><div class="d-avatar">${npc.avatar}</div>
+      <div style="flex:1"><div class="d-name">${npc.name}</div>
+      <div class="d-rel">${npc.job} · <span style="color:${relColors[npc.relationLevel]||'var(--sub)'}">${rel}</span> · 好感${total}</div></div></div>
+    <div class="dialog-text">${greeting.replace(/\n/g,'<br>')}</div>
+    ${!isHere?'<div style="color:var(--orange);font-size:.78rem;margin-bottom:12px;background:rgba(245,158,11,.05);padding:8px 12px;border-radius:8px">⚠️ 对方不在这里，效果减半</div>':''}
+    <div class="dialog-options">${opts.map(o =>
+      `<div class="dialog-opt" onclick="interactNPC('${npcId}','${o.id}')">
+        ${o.icon} ${o.name} <span style="color:var(--sub);font-size:.75rem">${o.desc}</span>
+        ${o.cost?`<div class="opt-cost">${o.cost}</div>`:''}</div>`).join('')}</div>`;
+  $('dialog').classList.add('show');
+}
+
+function closeDialog() { $('dialog').classList.remove('show'); }
+
+function interactNPC(npcId, type) {
+  game.interactNPC(npcId, type);
+  const npc = game.npcs.npcs[npcId];
+  const rel = game.npcs.getRelationLabel(npcId);
+  const recent = game.messages.filter(m => m.type === 'social').slice(-3);
+  const txt = recent.map(m => m.text).join('<br>') || '...';
+  const relColors = { stranger:'var(--sub)', acquaintance:'var(--orange)', friend:'var(--green)', closeFriend:'var(--pink)' };
+  const total = (npc.relation.trust + npc.relation.like + npc.relation.intimacy);
+
+  $('dialog-box').innerHTML = `
+    <div class="dialog-header"><div class="d-avatar">${npc.avatar}</div>
+      <div style="flex:1"><div class="d-name">${npc.name}</div>
+      <div class="d-rel">${npc.job} · <span style="color:${relColors[npc.relationLevel]||'var(--sub)'}">${rel}</span> · 好感${total}</div></div></div>
+    <div class="dialog-text">${txt}</div>
+    <div class="dialog-options">
+      <div class="dialog-opt" onclick="openDialog('${npcId}')">💬 继续互动</div>
+      <div class="dialog-opt" onclick="closeDialog()">👋 离开</div></div>`;
+  updateUI();
+}
+
+// === 投资面板 ===
+function openFinancePanel() {
+  const eco = game.economy, p = game.player;
+  const cycles = { boom:'📈 牛市', normal:'➡️ 震荡', recession:'📉 熊市' };
+  let html = `<div class="fin-summary">
+    <div class="fin-card"><div class="fin-label">现金</div><div class="fin-value">$${p.finance.cash.toLocaleString()}</div></div>
+    <div class="fin-card"><div class="fin-label">存款</div><div class="fin-value">$${p.finance.savings.toLocaleString()}</div></div>
+    <div class="fin-card"><div class="fin-label">股票市值</div><div class="fin-value ${eco.stockPortfolioValue>0?'up':''}">$${eco.stockPortfolioValue.toLocaleString()}</div></div>
+    <div class="fin-card"><div class="fin-label">总资产</div><div class="fin-value">$${p.netWorth.toLocaleString()}</div></div>
+  </div>`;
+  html += `<div style="font-size:.75rem;color:var(--sub);margin-bottom:12px">市场：${cycles[eco.economyCycle]} · 情绪 ${Math.round(eco.marketSentiment)}</div>`;
+  html += '<div style="font-weight:700;margin-bottom:10px">📊 股票市场</div>';
+  eco.stocks.forEach(s => {
+    const hist = s.history || [];
+    const prev = hist.length > 1 ? hist[hist.length-2] : s.basePrice;
+    const chg = s.price - prev;
+    const pct = prev > 0 ? (chg/prev*100).toFixed(1) : '0.0';
+    const held = eco.playerStocks[s.id];
+    html += `<div class="stock-card" onclick="openStockDetail('${s.id}')">
+      <div class="st-icon">${s.icon}</div><div class="st-info"><div class="st-name">${s.name} ${held?`<span style="font-size:.65rem;color:var(--accent)">持${held.shares}股</span>`:''}</div>
+      <div class="st-sector">${s.sector}</div></div>
+      <div class="st-price"><div class="price">$${s.price.toFixed(2)}</div>
+      <div class="change ${chg>=0?'up':'down'}">${chg>=0?'+':''}${pct}%</div></div></div>`;
+  });
+  $('finance-content').innerHTML = html;
+  openPanel('finance');
+}
+
+function openStockDetail(stockId) {
+  const s = game.economy.stocks.find(x => x.id === stockId);
+  if (!s) return;
+  const held = game.economy.playerStocks[stockId];
+  const hist = s.history || [];
+  $('stock-detail-title').textContent = `${s.icon} ${s.name}`;
+  let html = `<canvas id="kline" width="360" height="140" style="width:100%;height:140px;border-radius:12px;background:#F8F9FC"></canvas>`;
+  html += `<div style="display:flex;justify-content:space-between;margin:12px 0;font-size:.82rem">
+    <span>当前：<b>$${s.price.toFixed(2)}</b></span><span>波动率：${(s.volatility*100).toFixed(0)}%</span></div>`;
+  if (held) {
+    const mv = Math.round(s.price * held.shares);
+    const profit = mv - Math.round(held.avgCost * held.shares);
+    html += `<div style="padding:12px;background:#F5F6FA;border-radius:12px;margin-bottom:12px;font-size:.82rem">
+      持有 <b>${held.shares}</b> 股 · 均价 $${held.avgCost.toFixed(2)} · 市值 $${mv.toLocaleString()}
+      · <span style="color:${profit>=0?'var(--green)':'var(--red)'}">${profit>=0?'盈利':'亏损'} $${Math.abs(profit)}</span></div>`;
+  }
+  html += `<div class="stock-actions">
+    <button class="btn-buy" onclick="tradeStock('${stockId}','buy')">买入10股 ($${(s.price*10).toFixed(0)})</button>
+    <button class="btn-sell" onclick="tradeStock('${stockId}','sell')" ${held?'':'disabled'}>卖出10股</button></div>`;
+  $('stock-detail-content').innerHTML = html;
+  openPanel('stock-detail');
+  setTimeout(() => drawChart(hist, s.basePrice), 50);
+}
+
+function drawChart(history, basePrice) {
+  const canvas = document.getElementById('kline');
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 2;
+  const W = canvas.clientWidth * dpr, H = canvas.clientHeight * dpr;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  ctx.clearRect(0,0,w,h);
+  const data = history.length > 1 ? history : [basePrice, basePrice];
+  const min = Math.min(...data)*.95, max = Math.max(...data)*1.05, range = max-min||1;
+  ctx.strokeStyle = '#EEF0F4'; ctx.lineWidth = .5;
+  for (let i=0;i<4;i++){const y=h*i/3;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+  const up = data[data.length-1] >= data[0];
+  ctx.beginPath(); ctx.strokeStyle = up?'#10B981':'#EF4444'; ctx.lineWidth = 2;
+  data.forEach((v,i)=>{const x=i/(data.length-1)*w;const y=h-((v-min)/range)*h;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.stroke();
+  const g = ctx.createLinearGradient(0,0,0,h);
+  const c = up?'16,185,129':'239,68,68';
+  g.addColorStop(0,`rgba(${c},.2)`);g.addColorStop(1,`rgba(${c},0)`);
+  ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();ctx.fillStyle=g;ctx.fill();
+}
+
+function tradeStock(sid, action) {
+  if (action==='buy') game.buyStock(sid,10); else game.sellStock(sid,10);
+  openStockDetail(sid); updateUI();
+}
+
+// === 我的面板 ===
+function openMePanel() {
+  const p = game.player;
+  const bar = (icon,name,val,max=100,inv=false) => {
+    const c = getBarColor(val,inv);
+    return `<div class="stat-row"><div class="s-icon">${icon}</div><div class="s-info"><div class="s-name">${name}</div>
+      <div class="stat-bar"><div class="stat-bar-fill" style="width:${val/max*100}%;background:${c}"></div></div></div>
+      <div class="s-val">${Math.round(val)}</div></div>`;
+  };
+  let html = `<div class="status-section"><h3>🧬 身体状态</h3>
+    ${bar('💪','体力',p.body.energy)}${bar('🍔','饱腹',100-p.body.hunger)}${bar('❤️','健康',p.body.health)}
+    ${bar('💤','疲劳',p.body.fatigue,100,true)}${bar('✨','外貌',p.body.appearance)}
+    ${p.body.sick?`<div style="color:var(--red);font-size:.78rem;margin-top:4px">🤒 ${p.body.sickType?.name||'生病了'}（还需${p.body.sickDays}天恢复）</div>`:''}</div>`;
+
+  html += `<div class="status-section"><h3>🧠 精神状态 ${p.moodName}</h3>
+    ${bar('😊','快乐',p.mind.happiness)}${bar('😫','压力',p.mind.stress,100,true)}
+    ${bar('😔','孤独',p.mind.loneliness,100,true)}${bar('💡','灵感',p.mind.inspiration)}${bar('🔥','意志力',p.mind.willpower)}</div>`;
+
+  html += `<div class="status-section"><h3>🌐 社会属性</h3>
+    ${bar('⭐','声望',p.social.reputation)}${bar('💳','信用',p.social.credit)}${bar('💫','魅力',p.social.charm)}</div>`;
+
+  html += `<div class="status-section"><h3>💼 职业</h3>
+    <div style="padding:14px;background:#F5F6FA;border-radius:12px;font-size:.85rem">
+    ${p.job.current?`${p.job.position} @ ${p.job.company}<br>月薪 $${p.job.salary} · 绩效 ${p.job.performance}`:'目前无业'}</div></div>`;
+
+  // 宠物
+  if (p.housing.pets?.length > 0) {
+    html += `<div class="status-section"><h3>🐾 宠物</h3>
+      ${p.housing.pets.map(pet => `<div style="padding:14px;background:#F5F6FA;border-radius:12px;font-size:.85rem">
+        🐱 ${pet.name} · 心情：${'❤️'.repeat(Math.ceil(pet.mood/20))}</div>`).join('')}</div>`;
+  }
+
+  html += `<div class="status-section"><h3>📈 技能</h3><div class="skill-grid">
+    ${Object.entries(p.skills).map(([k,s])=>`<div class="skill-card"><div class="sk-icon">${s.icon}</div>
+      <div class="sk-name">${s.name}</div><div class="sk-lv">Lv.${s.level}</div>
+      <div class="stat-bar" style="margin-top:4px"><div class="stat-bar-fill" style="width:${s.exp/((s.level+1)*20)*100}%;background:var(--accent)"></div></div></div>`).join('')}</div></div>`;
+
+  // 成就
+  const achDefs = game.events.achievementDefs;
+  html += `<div class="status-section"><h3>🏆 成就 (${achDefs.filter(a=>a.unlocked).length}/${achDefs.length})</h3>
+    <div class="ach-grid">${achDefs.map(a => `<div class="ach-badge ${a.unlocked?'':'locked'}">
+      <div class="ach-badge-icon">${a.icon}</div><div class="ach-badge-name">${a.name}</div></div>`).join('')}</div></div>`;
+
+  html += `<div class="status-section"><h3>📊 统计</h3>
+    <div style="font-size:.82rem;color:var(--sub);line-height:2">
+    已度过 ${p.stats.totalDays} 天 · 总收入 $${p.stats.moneyEarned.toLocaleString()} · 认识了 ${p.stats.npcsMetCount} 人</div></div>`;
+
+  html += `<div style="display:flex;gap:8px">
+    <button class="save-btn" onclick="saveGame()" style="flex:1">💾 保存游戏</button>
+    <button class="save-btn" onclick="openLogPanel()" style="flex:1;background:linear-gradient(135deg,#F59E0B,#EF4444)">📜 消息日志</button>
+  </div>`;
+  $('me-content').innerHTML = html;
+  openPanel('me');
+}
+
+// === 消息日志 ===
+function openLogPanel() {
+  closeAllPanels();
+  const msgs = game.messages.slice().reverse();
+  $('log-content').innerHTML = msgs.map(m =>
+    `<div class="msg-item ${m.type}"><span class="msg-time">${m.time}</span> ${m.text}</div>`
+  ).join('');
+  openPanel('log');
+}
+
+// === 存档 ===
+function saveGame() { game.save(0); showFloatMsg('💾 游戏已保存！','info'); }
+function loadGame() {
+  game = new Game(); game.onUpdate = updateUI;
+  game.onAchievement = showAchievement;
+  if (game.load(0)) { $('splash').classList.add('hide'); $('app').classList.add('show'); _lastMsgCount = game.messages.length; updateUI(); }
+  else alert('没有找到存档！');
+}
+
+// === 启动 ===
+function startNew() {
+  game = new Game(); game.onUpdate = updateUI;
+  game.onAchievement = showAchievement;
+  game.player.job = { current:'programmer', company:'星云科技', position:'初级程序员', salary:4500, performance:50, daysWorked:0 };
+  game.start(); _lastMsgCount = 0;
+  $('splash').classList.add('hide'); $('app').classList.add('show');
+  updateUI();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const tmp = new Game();
+  if (!tmp.hasSave(0)) { $('btn-load').style.opacity='.4'; $('btn-load').style.pointerEvents='none'; }
+  const setVH = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight*.01}px`);
+  setVH(); window.addEventListener('resize', setVH);
+});
+</script>
+</body>
+</html>
