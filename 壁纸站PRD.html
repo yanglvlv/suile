@@ -138,9 +138,9 @@
 <table>
 <tr><th style="width:100px;">文档属性</th><th>内容</th></tr>
 <tr><td><strong>产品名称</strong></td><td>DNF 官方壁纸站</td></tr>
-<tr><td><strong>文档版本</strong></td><td>v1.1.0</td></tr>
+<tr><td><strong>文档版本</strong></td><td>v1.4.0</td></tr>
 <tr><td><strong>涉及端</strong></td><td>前台展示页 + 后台管理页</td></tr>
-<tr><td><strong>创建日期</strong></td><td>2026-04-10</td></tr>
+<tr><td><strong>创建日期</strong></td><td>2026-04-14</td></tr>
 </table>
 
 <hr class="section-sep">
@@ -149,8 +149,8 @@
 
 <p>DNF 官方壁纸站是地下城与勇士（DNF）游戏官方的<strong>高清壁纸展示与分发平台</strong>，面向全平台用户提供：</p>
 <ul>
-<li><strong>官方壁纸</strong>：版本KV主视觉、人物立绘、活动/节日限定壁纸等多分辨率下载</li>
-<li><strong>同人画廊</strong>：社区创作者投稿的优质同人作品展示与下载</li>
+<li><strong>官方壁纸</strong>：版本KV主视觉、活动/节日限定壁纸等多分辨率下载</li>
+<li><strong>同人作品</strong>：社区创作者投稿的优质同人作品展示与下载 + 公告/活动信息</li>
 </ul>
 
 <h3>1.1 TDK 要求</h3>
@@ -175,13 +175,11 @@
 <tr><td>1179×2556</td><td>iPhone 14 / 15 Pro</td></tr>
 </table>
 <blockquote>后台壁纸编辑弹窗内置以上 9 个预设分辨率快捷按钮，运营也可自定义添加其他尺寸。</blockquote>
-<li><strong>同人画廊</strong>：社区创作者投稿的优质同人作品展示与下载</li>
-</ul>
 
 <table>
 <tr><th>用户角色</th><th>说明</th><th>核心需求</th></tr>
 <tr><td>C端玩家</td><td>DNF 游戏玩家 / 壁纸爱好者</td><td>浏览、预览、下载多分辨率壁纸</td></tr>
-<tr><td>运营人员</td><td>官网内容运营</td><td>管理Banner、分类、壁纸内容、配置投稿规则</td></tr>
+<tr><td>运营人员</td><td>官网内容运营</td><td>管理Banner、分类、壁纸、公告、活动、投稿规则</td></tr>
 </table>
 
 <p><strong>系统组成</strong>：前台展示页 + 后台管理页，数据互通。</p>
@@ -206,8 +204,8 @@
 <h4>分类类型差异</h4>
 <table>
 <tr><th>类型</th><th>行为差异</th></tr>
-<tr><td>官方壁纸 (normal)</td><td>下方展示二级分类 Tab 栏；不显示投稿入口</td></tr>
-<tr><td>同人画廊 (ugc)</td><td>不展示二级分类 Tab；显示投稿入口横幅</td></tr>
+<tr><td>官方壁纸 (normal)</td><td>下方展示二级分类 Tab 栏；壁纸使用分组 Grid 布局（每5张一组，1大+4小交替）；每页20条分页</td></tr>
+<tr><td>同人作品 (ugc)</td><td>不展示二级分类 Tab；显示投稿入口横幅+公告活动区；壁纸使用瀑布流布局（column-count:4，横竖混排）；不分页全展示</td></tr>
 </table>
 </div>
 
@@ -217,8 +215,8 @@
     <div style="display:flex;align-items:center"><span class="mock-logo">DNF 壁纸站</span><span class="mock-logo-sub">WALLPAPER GALLERY</span></div>
     <div style="display:flex;align-items:center;gap:14px">
       <div class="mock-nav-items">
-        <div class="mock-nav-item active">官方壁纸</div>
-        <div class="mock-nav-item">同人画廊</div>
+        <div class="mock-nav-item active">📁 官方壁纸</div>
+        <div class="mock-nav-item">⭐ 同人作品</div>
       </div>
       <div class="mock-search"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#a0a8b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><span>搜索...</span></div>
     </div>
@@ -229,16 +227,18 @@
 </div>
 
 
-<!-- ==================== 2.2 Banner轮播 ==================== -->
-<h3>2.2 Banner 轮播区</h3>
+<!-- ==================== 2.2 Banner走马灯 ==================== -->
+<h3>2.2 Banner 走马灯轮播</h3>
 
 <div class="feat-row">
 <div class="feat-desc">
 <h4>功能说明</h4>
 <ul>
-<li>页面首屏核心区域，全宽展示</li>
-<li><strong>自动轮播</strong>：每隔数秒自动切换下一张</li>
-<li><strong>手动控制</strong>：底部指示器 + 左右箭头可手动切换</li>
+<li>页面首屏核心区域，<strong>走马灯式</strong>轮播</li>
+<li><strong>布局</strong>：16:9 比例，中间大图占 60% 宽度 + 左右各露出半张小图（缩小到 82%，半透明+暗化）</li>
+<li><strong>切换动效</strong>：<code>cubic-bezier(.4,0,.2,1)</code> 缓动，0.5s 平滑滑动</li>
+<li><strong>自动播放</strong>：5 秒间隔自动切换</li>
+<li><strong>手动控制</strong>：底部圆点指示器 + 左右箭头按钮</li>
 <li>Banner 上的文字、排版由运营自行 P 到图片上，系统只负责展示图片</li>
 </ul>
 <h4>运营需要填写的内容</h4>
@@ -257,9 +257,18 @@
     <span class="mock-logo" style="font-size:11px">DNF 壁纸站</span>
     <div class="mock-search" style="width:100px;padding:2px 8px"><span style="font-size:9px">搜索...</span></div>
   </div>
-  <div class="mock-hero">
-    <div style="flex:1;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);font-size:12px;letter-spacing:1px">运营提供的完整 Banner 图片（含文字排版）</div>
-    <div class="mock-hero-dots">
+  <!-- 走马灯式Banner -->
+  <div style="position:relative;padding:10px 0;background:#f4f6f9;overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;height:100px">
+      <!-- 左侧小图 -->
+      <div style="width:22%;height:80px;border-radius:6px;background:linear-gradient(135deg,#f093fb,#f5576c);opacity:0.5;transform:scale(0.82);flex-shrink:0"></div>
+      <!-- 中间大图 -->
+      <div style="width:48%;height:90px;border-radius:8px;background:linear-gradient(135deg,#1a1a2e,#3b7ddd);box-shadow:0 6px 24px rgba(0,0,0,0.15);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);font-size:10px">运营 Banner 图（含文字）</div>
+      <!-- 右侧小图 -->
+      <div style="width:22%;height:80px;border-radius:6px;background:linear-gradient(135deg,#2c3e50,#e74c3c);opacity:0.5;transform:scale(0.82);flex-shrink:0"></div>
+    </div>
+    <!-- 指示器 -->
+    <div style="display:flex;justify-content:center;gap:4px;margin-top:6px">
       <div class="mock-dot active"></div>
       <div class="mock-dot"></div>
       <div class="mock-dot"></div>
@@ -282,7 +291,7 @@
 <li>其余 Tab 由后台二级分类配置动态生成</li>
 <li>点击不同 Tab 筛选对应分类的壁纸</li>
 </ul>
-<blockquote>默认二级分类：版本KV · 人物立绘 · 活动/节日壁纸</blockquote>
+<blockquote>默认二级分类：版本KV · 活动/节日壁纸</blockquote>
 </div>
 
 <div class="feat-mock">
@@ -290,23 +299,22 @@
   <div class="mock-tabs" style="padding:8px 16px">
     <div class="mock-tab active">全部</div>
     <div class="mock-tab">版本KV</div>
-    <div class="mock-tab">人物立绘</div>
     <div class="mock-tab">活动·节日壁纸</div>
   </div>
-  <div style="height:45px;background:#fafbfd;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:11px">↓ 卡片网格</div>
+  <div style="height:45px;background:#fafbfd;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:11px">↓ 瀑布流壁纸列表</div>
 </div>
 </div>
 </div>
 
 
 <!-- ==================== 2.4 投稿入口 ==================== -->
-<h3>2.4 投稿入口横幅（仅同人画廊）</h3>
+<h3>2.4 投稿入口横幅（仅同人作品）</h3>
 
 <div class="feat-row">
 <div class="feat-desc">
 <h4>功能说明</h4>
 <ul>
-<li>仅在选择<strong>同人画廊</strong>分类时显示</li>
+<li>仅在选择<strong>同人作品</strong>分类且投稿配置已启用时显示</li>
 <li>横幅包含：<strong>引导文案 + 投稿按钮</strong>（固定文案"我要投稿"）</li>
 <li>点击按钮弹出投稿说明弹窗（显示投稿邮箱 + 完整投稿说明文本）</li>
 </ul>
@@ -324,7 +332,7 @@
 <div style="border:1px solid #e0e4ea;border-radius:8px;overflow:hidden;background:#fff;padding:8px 16px 0">
   <div class="mock-tabs" style="padding:4px 0 8px">
     <div class="mock-tab">全部</div>
-    <div class="mock-tab active" style="color:#3b7ddd;background:none;border:none;font-weight:700">同人画廊</div>
+    <div class="mock-tab active" style="color:#3b7ddd;background:none;border:none;font-weight:700">⭐ 同人作品</div>
   </div>
   <div class="mock-submit-bar show">
     <div class="mock-submit-card">
@@ -337,64 +345,146 @@
 </div>
 
 
-<!-- ==================== 2.5 卡片网格 ==================== -->
-<h3>2.5 壁纸卡片列表</h3>
+<!-- ==================== 2.5 壁纸列表（双布局） ==================== -->
+<h3>2.5 壁纸列表（双布局模式）</h3>
 
 <div class="feat-row">
 <div class="feat-desc">
-<h4>功能说明</h4>
+<h4>布局模式一：官方壁纸（type='normal'）— 分组 Grid 布局</h4>
 <ul>
-<li>以<strong>卡片网格</strong>形式展示当前分类下的所有壁纸</li>
-<li>每张卡片展示：缩略图、标题、日期、分类、角标（可选）、作者头像+昵称（仅 UGC）</li>
-<li><strong>点击卡片</strong> → 打开预览弹窗（见 2.6）</li>
-<li>底部分页显示（每页固定数量）</li>
+<li>每 <strong>5 张壁纸</strong>为一组，渲染为一个 <code>.grid-row</code>（<code>display:grid; grid-template-columns:repeat(4,1fr); height:280px</code>）</li>
+<li>每组第 1 张为<strong>大图</strong>（占 2 列 × 2 行），第 2~5 张为<strong>小图</strong>（各占 1 格）</li>
+<li><strong>大图左右交替</strong>：奇数组大图在左侧（grid-column 1~2），偶数组大图在右侧（grid-column 3~4），形成视觉节奏感</li>
+<li>不足 5 张时全部等大排列，4 列单行（高度 150px）</li>
+<li>每页 <strong>20 条</strong>（PAGE_SIZE=20），底部显示分页器（页码按钮 + 前后翻页 + 范围提示）</li>
 </ul>
-<h4>运营需要填写的内容</h4>
+<h4>布局模式二：同人作品（type='ugc'）— CSS 瀑布流</h4>
+<ul>
+<li><code>column-count:4</code> 多列瀑布流（平板 3 列，手机 2 列），<code>column-gap:12px</code></li>
+<li>壁纸含 <code>orient</code> 字段区分横版(h)和竖版(v)，渲染时按<strong>"2横+1竖+1横"</strong>节奏交替插入，保证横竖图均匀分布</li>
+<li>竖版图 <code>max-height:360px; object-fit:cover</code> 防止过长</li>
+<li><strong>不分页</strong>，全部展示。底部显示"海量作品"提示卡片（蓝紫渐变背景，内容"✨ 海量作品 持续更新中 + 共收录 XX 幅同人佳作"）</li>
+</ul>
+<h4>搜索结果布局</h4>
+<ul>
+<li>按 Enter 触发全局搜索，匹配标题 / 日期 / 扩展字段值（大小写不敏感子串匹配）</li>
+<li>搜索结果按<strong>一级分类分组</strong>显示，每组有独立标题头（分类图标 + 分类名 + 结果计数标签）+ 底部分割线</li>
+<li>每组内统一使用 <strong>4 列等高 Grid 平铺</strong>（卡片高 160px），不区分大小图</li>
+<li>清空搜索框按 Enter 或点击导航分类按钮退出搜索模式</li>
+</ul>
+<h4>通用卡片结构</h4>
 <table>
-<tr><th>字段</th><th>必填</th><th>说明</th></tr>
-<tr><td>标题 / 所属分类 / 缩略图 / 日期</td><td>是</td><td>基本信息</td></tr>
-<tr><td>原图 / 作者头像 / 角标 / 扩展字段</td><td>否</td><td>增强信息</td></tr>
-<tr><td>排序权重 / 启用状态</td><td>是</td><td>展示控制</td></tr>
+<tr><th>元素</th><th>说明</th></tr>
+<tr><td>角标</td><td>左上角蓝色标签，显示 badge 字段（NEW/HOT/精选），可选</td></tr>
+<tr><td>缩略图</td><td><code>object-fit:cover</code> 填满，<code>loading="lazy"</code> 懒加载，hover 微放大 5%</td></tr>
+<tr><td>信息遮罩</td><td>底部渐变黑色遮罩：标题（白色12px加粗单行省略）+ 日期·元数据 + 作者头像昵称（仅UGC）</td></tr>
 </table>
 </div>
 
 <div class="feat-mock">
 <div style="border:1px solid #e0e4ea;border-radius:8px;overflow:hidden">
-  <div class="mock-tabs" style="padding:6px 16px 8px">
-    <div class="mock-tab active">全部</div>
-    <div class="mock-tab">版本KV</div>
-    <div class="mock-tab">人物立绘</div>
-    <div class="mock-tab">活动·节日</div>
+  <div style="padding:6px 12px;font-size:10px;color:#666;font-weight:600;background:#fff">官方壁纸 — 分组 Grid 布局（每5张一组，1大+4小，大图左右交替）</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:4px;height:120px;padding:6px 10px;background:#fafbfd">
+    <div style="grid-row:1/3;grid-column:span 2;background:linear-gradient(135deg,#1a1a2e,#3b7ddd);border-radius:6px;display:flex;align-items:flex-end;padding:6px;position:relative;overflow:hidden"><span style="position:absolute;top:3px;left:3px;padding:1px 5px;border-radius:2px;font-size:7px;font-weight:700;background:#3b7ddd;color:#fff">NEW</span><span style="color:rgba(255,255,255,.8);font-size:9px;font-weight:600">大图（2列×2行）</span></div>
+    <div style="background:linear-gradient(135deg,#2c3e50,#e74c3c);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图1</span></div>
+    <div style="background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图2</span></div>
+    <div style="background:linear-gradient(135deg,#11998e,#38ef7d);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图3</span></div>
+    <div style="background:linear-gradient(135deg,#667eea,#764ba2);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图4</span></div>
   </div>
-  <div style="padding:4px 12px 0;display:flex;align-items:center;justify-content:space-between">
-    <span style="font-size:10.5px;color:#a0a8b8">共 23 张</span>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:4px;height:120px;padding:0 10px 6px;background:#fafbfd">
+    <div style="background:linear-gradient(135deg,#0f0c29,#302b63);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图5</span></div>
+    <div style="background:linear-gradient(135deg,#4facfe,#00f2fe);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图6</span></div>
+    <div style="grid-row:1/3;grid-column:3/5;background:linear-gradient(135deg,#e74c3c,#f39c12);border-radius:6px;display:flex;align-items:flex-end;padding:6px;position:relative;overflow:hidden"><span style="position:absolute;top:3px;left:3px;padding:1px 5px;border-radius:2px;font-size:7px;font-weight:700;background:#e74c3c;color:#fff">HOT</span><span style="color:rgba(255,255,255,.8);font-size:9px;font-weight:600">大图（右侧交替）</span></div>
+    <div style="background:linear-gradient(135deg,#1a1a2e,#3b7ddd);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图7</span></div>
+    <div style="background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:4px;display:flex;align-items:flex-end;padding:4px"><span style="color:rgba(255,255,255,.7);font-size:7px">小图8</span></div>
   </div>
-  <div class="mock-grid" style="gap:6px;padding:8px 10px 10px">
-    <div class="mock-card"><div class="mock-card-img" style="background:linear-gradient(135deg,#1a1a2e,#3b7ddd)"><span class="mock-badge">NEW</span></div><div class="mock-card-body"><div class="mock-card-title">雾岚黄昏战</div><div class="mock-card-meta">2025/09 · 版本KV</div></div></div>
-    <div class="mock-card"><div class="mock-card-img" style="background:linear-gradient(135deg,#2c3e50,#e74c3c)"></div><div class="mock-card-body"><div class="mock-card-title">暗夜裁决者</div><div class="mock-card-meta">2025/06 · 版本KV</div></div></div>
-    <div class="mock-card"><div class="mock-card-img" style="background:linear-gradient(135deg,#0f0c29,#302b63)"></div><div class="mock-card-body"><div class="mock-card-title">龙之挽歌</div><div class="mock-card-meta">2025/03 · 版本KV</div></div></div>
-    <div class="mock-card"><div class="mock-card-img" style="background:linear-gradient(135deg,#373B44,#4facfe)"><span class="mock-badge" style="background:#e74c3c">HOT</span></div><div class="mock-card-body"><div class="mock-card-title">鬼剑士觉醒立绘</div><div class="mock-card-meta">2025/08 · 人物立绘</div></div></div>
-    <div class="mock-card"><div class="mock-card-img" style="background:linear-gradient(135deg,#667eea,#764ba2)"></div><div class="mock-card-body"><div class="mock-card-title">女魔法师觉醒</div><div class="mock-card-meta">2025/07 · 人物立绘</div></div></div>
-    <div class="mock-card"><div class="mock-card-img" style="background:linear-gradient(135deg,#f093fb,#f5576c)"><span class="mock-badge" style="background:#f39c12">精选</span></div><div class="mock-card-body"><div class="mock-card-title">赛利亚的日常</div><div class="mock-card-meta">2026/03 · 同人</div><div class="mock-author"><div class="mock-avatar" style="background:linear-gradient(135deg,#667eea,#764ba2)"></div><span class="mock-author-name">画师小A</span></div></div></div>
-    <div class="mock-card"><div class="mock-card-img" style="background:linear-gradient(135deg,#4facfe,#00f2fe)"></div><div class="mock-card-body"><div class="mock-card-title">阿拉德冒险记</div><div class="mock-card-meta">2026/02 · 同人</div><div class="mock-author"><div class="mock-avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)"></div><span class="mock-author-name">colg_大触</span></div></div></div>
-    <div class="mock-card"><div class="mock-card-img" style="background:linear-gradient(135deg,#11998e,#38ef7d)"><span class="mock-badge" style="background:#e74c3c">HOT</span></div><div class="mock-card-body"><div class="mock-card-title">DNF 18周年庆</div><div class="mock-card-meta">2026/06 · 活动</div></div></div>
-    <div class="mock-card"><div class="mock-card-img" style="background:linear-gradient(135deg,#ee0979,#ff6a00)"><span class="mock-badge">NEW</span></div><div class="mock-card-body"><div class="mock-card-title">新春贺岁</div><div class="mock-card-meta">2026/01 · 活动</div></div></div>
+  <div style="padding:4px 12px;font-size:10px;color:#666;font-weight:600;background:#fff;border-top:1px solid #eee">同人作品 — CSS 瀑布流（column-count:4，横竖混排）</div>
+  <div style="column-count:4;column-gap:4px;padding:6px 10px 10px;background:#fafbfd">
+    <div style="break-inside:avoid;margin-bottom:4px;height:50px;background:linear-gradient(135deg,#1a1a2e,#3b7ddd);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">横版</span></div>
+    <div style="break-inside:avoid;margin-bottom:4px;height:80px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">竖版</span></div>
+    <div style="break-inside:avoid;margin-bottom:4px;height:50px;background:linear-gradient(135deg,#2c3e50,#e74c3c);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">横版</span></div>
+    <div style="break-inside:avoid;margin-bottom:4px;height:50px;background:linear-gradient(135deg,#11998e,#38ef7d);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">横版</span></div>
+    <div style="break-inside:avoid;margin-bottom:4px;height:80px;background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">竖版</span></div>
+    <div style="break-inside:avoid;margin-bottom:4px;height:50px;background:linear-gradient(135deg,#4facfe,#00f2fe);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">横版</span></div>
+    <div style="break-inside:avoid;margin-bottom:4px;height:50px;background:linear-gradient(135deg,#0f0c29,#302b63);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">横版</span></div>
+    <div style="break-inside:avoid;margin-bottom:4px;height:80px;background:linear-gradient(135deg,#f39c12,#e74c3c);border-radius:4px;display:flex;align-items:flex-end;padding:3px"><span style="color:rgba(255,255,255,.7);font-size:7px">竖版</span></div>
   </div>
-  <div class="mock-pagination">
-    <div class="mock-page-btn disabled">‹</div>
-    <div class="mock-page-btn active">1</div>
-    <div class="mock-page-btn">2</div>
-    <div class="mock-page-btn">3</div>
-    <div class="mock-page-btn disabled">›</div>
-    <span style="font-size:10px;color:#a0a8b8;margin-left:6px">共 23 条</span>
+  <div style="padding:4px 12px;font-size:10px;color:#666;font-weight:600;background:#fff;border-top:1px solid #eee">搜索结果 — 按一级分类分组 + 4列Grid平铺</div>
+  <div style="padding:6px 10px 10px;background:#fafbfd">
+    <div style="display:flex;align-items:center;gap:5px;padding-bottom:5px;border-bottom:2px solid #e8ecf2;margin-bottom:6px"><span style="font-size:12px">📁</span><span style="font-size:10px;font-weight:700;color:#2c3e50">官方壁纸</span><span style="font-size:8px;color:#a0a8b8;margin-left:auto;background:#f0f2f6;padding:1px 6px;border-radius:8px">2 条结果</span></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:8px"><div style="height:45px;background:linear-gradient(135deg,#1a1a2e,#3b7ddd);border-radius:4px"></div><div style="height:45px;background:linear-gradient(135deg,#2c3e50,#e74c3c);border-radius:4px"></div></div>
+    <div style="display:flex;align-items:center;gap:5px;padding-bottom:5px;border-bottom:2px solid #e8ecf2;margin-bottom:6px"><span style="font-size:12px">⭐</span><span style="font-size:10px;font-weight:700;color:#2c3e50">同人作品</span><span style="font-size:8px;color:#a0a8b8;margin-left:auto;background:#f0f2f6;padding:1px 6px;border-radius:8px">2 条结果</span></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px"><div style="height:45px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:4px"></div><div style="height:45px;background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:4px"></div></div>
   </div>
 </div>
 </div>
 </div>
 
 
-<!-- ==================== 2.6 预览弹窗 ==================== -->
-<h3>2.6 壁纸预览与下载</h3>
+<!-- ==================== 2.6 公告+活动区 ==================== -->
+<h3>2.6 公告 + 活动区（仅同人作品）</h3>
+
+<div class="feat-row">
+<div class="feat-desc">
+<h4>功能说明</h4>
+<ul>
+<li>仅在<strong>同人作品</strong>分类下，投稿横幅和壁纸列表之间显示</li>
+<li>左右两栏并排：<strong>左栏公告、右栏活动</strong></li>
+<li>每栏最多展示 4 条（按 <code>sort</code> 字段升序排列），每条有彩色圆点（公告蓝色/活动橙色）+ 标题文本 + 可选标签（NEW/HOT）+ 右侧日期</li>
+<li>右上角<strong>「更多 →」</strong>按钮：公告跳转 <code>#/notice</code>，活动跳转 <code>#/activity</code></li>
+<li>点击每条公告/活动项跳转对应详情页（<code>#/notice/{id}</code> 或 <code>#/activity/{id}</code>）</li>
+</ul>
+<h4>Hash 路由跳转</h4>
+<table>
+<tr><th>路由</th><th>页面</th></tr>
+<tr><td><code>#/notice</code></td><td>公告列表页（展示所有公告，卡片式列表）</td></tr>
+<tr><td><code>#/notice/{id}</code></td><td>公告详情页（标题 + 日期 + 标签 + 正文）</td></tr>
+<tr><td><code>#/activity</code></td><td>活动列表页</td></tr>
+<tr><td><code>#/activity/{id}</code></td><td>活动详情页</td></tr>
+</table>
+<ul>
+<li>详情页「← 返回」按钮使用 <code>history.back()</code> 导航，确保从列表页进入时能正确返回列表而非主页</li>
+<li>列表页「← 返回壁纸站」按钮使用 <code>location.hash=''</code> 返回主页</li>
+<li>路由切换时隐藏主页所有区块（Banner/Tab/投稿横幅/公告活动区/壁纸列表），显示路由页面容器（最大宽度 900px 居中）</li>
+<li>详情内容支持 HTML 富文本渲染（加粗、标题、列表、引用、图片等），兼容旧纯文本（自动将 <code>\n</code> 转为 <code>&lt;br&gt;</code>）</li>
+</ul>
+</div>
+
+<div class="feat-mock">
+<div style="border:1px solid #e0e4ea;border-radius:8px;overflow:hidden;background:#fff;padding:12px">
+  <div style="display:flex;gap:10px">
+    <!-- 公告栏 -->
+    <div style="flex:1;background:#f8fafc;border-radius:6px;padding:8px 10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:11.5px;font-weight:700;color:#2c3e50">📢 公告</span>
+        <span style="font-size:9px;color:#3b7ddd;cursor:pointer">更多 →</span>
+      </div>
+      <div style="font-size:10px;color:#555;display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;align-items:center;gap:5px"><span style="width:5px;height:5px;border-radius:50%;background:#3b7ddd;flex-shrink:0"></span><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">壁纸站全新上线公告</span><span style="color:#a0a8b8;font-size:9px;flex-shrink:0">04/10</span></div>
+        <div style="display:flex;align-items:center;gap:5px"><span style="width:5px;height:5px;border-radius:50%;background:#3b7ddd;flex-shrink:0"></span><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">同人投稿规则更新</span><span style="color:#a0a8b8;font-size:9px;flex-shrink:0">04/08</span></div>
+        <div style="display:flex;align-items:center;gap:5px"><span style="width:5px;height:5px;border-radius:50%;background:#3b7ddd;flex-shrink:0"></span><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">4月壁纸更新计划</span><span style="color:#a0a8b8;font-size:9px;flex-shrink:0">04/01</span></div>
+      </div>
+    </div>
+    <!-- 活动栏 -->
+    <div style="flex:1;background:#fffbf5;border-radius:6px;padding:8px 10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:11.5px;font-weight:700;color:#2c3e50">🎉 活动</span>
+        <span style="font-size:9px;color:#d97706;cursor:pointer">更多 →</span>
+      </div>
+      <div style="font-size:10px;color:#555;display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;align-items:center;gap:5px"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0"></span><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">18周年庆壁纸征集</span><span style="color:#a0a8b8;font-size:9px;flex-shrink:0">04/12</span></div>
+        <div style="display:flex;align-items:center;gap:5px"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0"></span><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">春日限定壁纸投票</span><span style="color:#a0a8b8;font-size:9px;flex-shrink:0">03/20</span></div>
+        <div style="display:flex;align-items:center;gap:5px"><span style="width:5px;height:5px;border-radius:50%;background:#f59e0b;flex-shrink:0"></span><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">最佳同人作品评选</span><span style="color:#a0a8b8;font-size:9px;flex-shrink:0">03/01</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+
+<!-- ==================== 2.7 预览弹窗 ==================== -->
+<h3>2.7 壁纸预览与下载</h3>
 
 <div class="feat-row">
 <div class="feat-desc">
@@ -402,14 +492,18 @@
 <p>点击任意壁纸卡片后弹出预览弹窗：</p>
 <table>
 <tr><th>能力</th><th>描述</th></tr>
-<tr><td>大图预览</td><td>优先使用原图，无则放大缩略图</td></tr>
-<tr><td>左右切换</td><td>箭头或键盘方向键</td></tr>
-<tr><td>缩放查看</td><td>放大/缩小/重置</td></tr>
-<tr><td>显示原图</td><td>一键查看原始尺寸</td></tr>
+<tr><td>大图预览</td><td>直接加载 originalImg（有则用），否则缩略图放大版</td></tr>
+<tr><td>左右切换</td><td>箭头按钮 + 键盘方向键</td></tr>
+<tr><td>缩放查看</td><td>底部 <code>- 100% +</code>，范围 25%~300%，步进 25%</td></tr>
+<tr><td>键盘快捷键</td><td><code>+/=</code> 放大，<code>-/_</code> 缩小，<code>0</code> 重置，ESC 关闭</td></tr>
 <tr><td>信息面板</td><td>标题、日期、分类路径、扩展字段</td></tr>
 <tr><td>多分辨率下载</td><td>按横版/竖版分组列出各尺寸</td></tr>
-<tr><td>关闭</td><td>ESC 或关闭按钮</td></tr>
 </table>
+<h4>下载区交互</h4>
+<ul>
+<li>点击<strong>分辨率文字区域</strong> → 切换预览图为该分辨率的图</li>
+<li>点击<strong>下载图标</strong> → 触发下载（<code>&lt;a download&gt;</code> 方式）</li>
+</ul>
 </div>
 
 <div class="feat-mock">
@@ -419,22 +513,21 @@
       <div class="modal-arrow prev">‹</div>
       <div class="mock-modal-img" style="width:200px;height:112px;background:linear-gradient(135deg,#1a1a2e,#3b7ddd);border-radius:6px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);font-size:10px">预览区域</div>
       <div class="modal-arrow next">›</div>
-      <div class="mock-show-original"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v6M8 11h6"/></svg> 原图</div>
       <div class="mock-modal-zoom"><button>−</button><span>100%</span><button>+</button></div>
     </div>
     <div class="mock-modal-side">
       <div class="mock-side-title">赛利亚的日常</div>
       <div class="mock-side-date">2026/03/01</div>
-      <div class="mock-info-row"><span class="mock-info-label">分类</span><span class="mock-info-value">同人画廊</span></div>
+      <div class="mock-info-row"><span class="mock-info-label">分类</span><span class="mock-info-value">同人作品</span></div>
       <div class="mock-info-row"><span class="mock-info-label">创作者</span><span class="mock-info-value">画师小A</span></div>
       <div class="mock-info-row"><span class="mock-info-label">来源</span><span class="mock-info-value">COLG社区</span></div>
       <div class="mock-dl-section">
         <div class="mock-dl-title">选择尺寸</div>
         <div class="mock-dl-group">横版</div>
-        <div class="mock-dl-item"><span>1920×1080</span><div class="mock-dl-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></div></div>
-        <div class="mock-dl-item"><span>2560×1440</span><div class="mock-dl-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></div></div>
+        <div class="mock-dl-item"><span style="cursor:pointer">1920×1080</span><div class="mock-dl-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></div></div>
+        <div class="mock-dl-item"><span style="cursor:pointer">2560×1440</span><div class="mock-dl-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></div></div>
         <div class="mock-dl-group">竖版</div>
-        <div class="mock-dl-item"><span>1080×1920</span><div class="mock-dl-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></div></div>
+        <div class="mock-dl-item"><span style="cursor:pointer">1080×1920</span><div class="mock-dl-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></div></div>
       </div>
     </div>
   </div>
@@ -448,7 +541,7 @@
 
 <h2>三、后台管理功能</h2>
 
-<p>后台供运营人员管理所有前台展示内容，分为四个管理模块。所有编辑操作通过弹窗表单进行，保存后即时生效。带 <span style="color:#e04040;font-weight:bold">*</span> 的为必填项。</p>
+<p>后台供运营人员管理所有前台展示内容，分为六个管理模块。所有编辑操作通过弹窗表单进行，保存后即时生效。带 <span style="color:#e04040;font-weight:bold">*</span> 的为必填项。</p>
 
 
 <!-- ===== 3.1 后台框架 ===== -->
@@ -458,10 +551,12 @@
 <div class="feat-desc">
 <h4>模块总览</h4>
 <ol style="font-size:12px;padding-left:18px">
-<li><b>Banner 管理</b> — 首屏轮播图的增删改查、排序、上下线控制</li>
-<li><b>分类管理</b> — 一级分类（官方壁纸/同人画廊等）及其下属二级分类的管理</li>
+<li><b>Banner 管理</b> — 首屏走马灯轮播图的增删改查、排序、上下线控制</li>
+<li><b>分类管理</b> — 一级分类（官方壁纸/同人作品等）及其下属二级分类的管理</li>
 <li><b>壁纸管理</b> — 所有壁纸内容的增删改查，包含扩展字段和多分辨率下载资源</li>
-<li><b>投稿配置</b> — 同人画廊投稿入口的邮箱和说明文案配置</li>
+<li><b>公告管理</b> — 同人作品公告的增删改查，含富文本详情内容</li>
+<li><b>活动管理</b> — 同人作品活动的增删改查，含富文本详情内容</li>
+<li><b>投稿配置</b> — 同人作品投稿入口的邮箱和说明文案配置</li>
 </ol>
 <h4>通用能力</h4>
 <ul style="font-size:12px">
@@ -480,6 +575,8 @@
     <div class="admin-nav-item">📺 Banner管理</div>
     <div class="admin-nav-item">📂 分类管理</div>
     <div class="admin-nav-item">🖼️ 壁纸管理</div>
+    <div class="admin-nav-item">📢 公告管理</div>
+    <div class="admin-nav-item">🎉 活动管理</div>
     <div class="admin-nav-group" style="margin-top:8px">系统配置</div>
     <div class="admin-nav-item">✉️ 投稿配置</div>
   </div>
@@ -536,6 +633,8 @@
     <div class="admin-nav-item">📺 Banner管理</div>
     <div class="admin-nav-item active">📂 分类管理</div>
     <div class="admin-nav-item">🖼️ 壁纸管理</div>
+    <div class="admin-nav-item">📢 公告管理</div>
+    <div class="admin-nav-item">🎉 活动管理</div>
     <div class="admin-nav-group" style="margin-top:8px">系统配置</div>
     <div class="admin-nav-item">✉️ 投稿配置</div>
   </div>
@@ -545,8 +644,8 @@
       <table class="admin-t">
         <thead><tr><th>名称</th><th>类型</th><th>排序</th><th>状态</th><th>子分类</th><th>操作</th></tr></thead>
         <tbody>
-          <tr><td><b>官方壁纸</b></td><td><span class="status-tag tag-blue">normal</span></td><td>1</td><td><span class="status-tag tag-green">●</span></td><td style="font-size:10px;color:#8090a8">版本KV · 人物立绘 · 活动·节日</td><td>编辑</td></tr>
-          <tr><td><b>同人画廊</b></td><td><span class="status-tag tag-orange">ugc</span></td><td>2</td><td><span class="status-tag tag-green">●</span></td><td style="font-size:10px;color:#ccc">—</td><td>编辑</td></tr>
+          <tr><td><b>官方壁纸</b></td><td><span class="status-tag tag-blue">normal</span></td><td>1</td><td><span class="status-tag tag-green">●</span></td><td style="font-size:10px;color:#8090a8">版本KV · 活动·节日</td><td>编辑</td></tr>
+          <tr><td><b>同人作品</b></td><td><span class="status-tag tag-orange">ugc</span></td><td>2</td><td><span class="status-tag tag-green">●</span></td><td style="font-size:10px;color:#ccc">—</td><td>编辑</td></tr>
         </tbody>
       </table>
     </div>
@@ -577,6 +676,7 @@
 <tr><td>作者头像</td><td></td><td>同人画廊专用，卡片上显示的圆形头像</td></tr>
 <tr><td>发布时间</td><td><span style="color:#e04040">*</span></td><td>格式 YYYY/MM/DD，前台卡片和详情面板展示</td></tr>
 <tr><td>角标文字</td><td></td><td>卡片左上角标记，如 NEW、HOT、精选</td></tr>
+<tr><td>图片方向(orient)</td><td><span style="color:#e04040">*</span></td><td>下拉选择：<code>h</code>=横版（16:9）或 <code>v</code>=竖版。影响同人作品瀑布流中的横竖交替排列算法</td></tr>
 <tr><td>排序</td><td><span style="color:#e04040">*</span></td><td>数字越小越靠前</td></tr>
 <tr><td>状态</td><td><span style="color:#e04040">*</span></td><td>上线/下线，下线后前台不可见</td></tr>
 <tr><td>扩展字段</td><td></td><td>自由添加任意 key-value 对（如版本名称、创作者、来源等），可控制是否在前台展示</td></tr>
@@ -592,6 +692,8 @@
     <div class="admin-nav-item">📺 Banner管理</div>
     <div class="admin-nav-item">📂 分类管理</div>
     <div class="admin-nav-item active">🖼️ 壁纸管理</div>
+    <div class="admin-nav-item">📢 公告管理</div>
+    <div class="admin-nav-item">🎉 活动管理</div>
     <div class="admin-nav-group" style="margin-top:8px">系统配置</div>
     <div class="admin-nav-item">✉️ 投稿配置</div>
   </div>
@@ -599,13 +701,12 @@
     <div class="admin-topbar"><span class="admin-topbar-title">壁纸管理</span><div class="admin-action-btn admin-action-primary">+ 新增</div></div>
     <div class="admin-table-wrap">
       <table class="admin-t" style="font-size:10.5px">
-        <thead><tr><th>缩略图</th><th>标题</th><th>分类</th><th>日期</th><th>角标</th><th>状态</th><th>操作</th></tr></thead>
+        <thead><tr><th>缩略图</th><th>标题</th><th>分类</th><th>方向</th><th>日期</th><th>角标</th><th>状态</th><th>操作</th></tr></thead>
         <tbody>
-          <tr><td><div class="td-thumb" style="background:linear-gradient(135deg,#1a1a2e,#3b7ddd)"></div></td><td>雾岚黄昏战</td><td>版本KV</td><td>2025/09</td><td><span class="status-tag tag-blue">NEW</span></td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
-          <tr><td><div class="td-thumb" style="background:linear-gradient(135deg,#2c3e50,#e74c3c)"></div></td><td>暗夜裁决者</td><td>版本KV</td><td>2025/06</td><td>—</td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
-          <tr><td><div class="td-thumb" style="background:linear-gradient(135deg,#373B44,#4facfe)"></div></td><td>鬼剑士觉醒立绘</td><td>人物立绘</td><td>2025/08</td><td>—</td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
-          <tr><td><div class="td-thumb" style="background:linear-gradient(135deg,#11998e,#38ef7d)"></div></td><td>DNF 18周年庆</td><td>活动·节日</td><td>2026/06</td><td><span class="status-tag tag-orange">HOT</span></td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
-          <tr><td><div class="td-thumb" style="background:linear-gradient(135deg,#667eea,#764ba2)"></div></td><td>赛利亚的日常</td><td>同人画廊</td><td>2026/03</td><td><span class="status-tag" style="background:#fef0e0;color:#d97706">精选</span></td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
+          <tr><td><div class="td-thumb" style="background:linear-gradient(135deg,#1a1a2e,#3b7ddd)"></div></td><td>雾岚黄昏战</td><td>版本KV</td><td><span class="status-tag tag-blue">横版</span></td><td>2025/09</td><td><span class="status-tag tag-blue">NEW</span></td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
+          <tr><td><div class="td-thumb" style="background:linear-gradient(135deg,#2c3e50,#e74c3c)"></div></td><td>暗夜裁决者</td><td>版本KV</td><td><span class="status-tag tag-blue">横版</span></td><td>2025/06</td><td>—</td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
+          <tr><td><div class="td-thumb" style="background:linear-gradient(135deg,#11998e,#38ef7d)"></div></td><td>DNF 18周年庆</td><td>活动·节日</td><td><span class="status-tag tag-blue">横版</span></td><td>2026/06</td><td><span class="status-tag tag-orange">HOT</span></td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
+          <tr><td><div class="td-thumb" style="background:linear-gradient(135deg,#667eea,#764ba2)"></div></td><td>赛利亚的日常</td><td>同人作品</td><td><span class="status-tag tag-orange">竖版</span></td><td>2026/03</td><td><span class="status-tag" style="background:#fef0e0;color:#d97706">精选</span></td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
         </tbody>
       </table>
     </div>
@@ -615,14 +716,122 @@
 </div>
 
 
-<!-- ===== 3.4 投稿配置 ===== -->
-<h3>3.4 投稿配置</h3>
+<!-- ===== 3.4 公告管理 ===== -->
+<h3>3.4 公告管理 <span class="tag-new">NEW</span></h3>
 
 <div class="feat-row">
 <div class="feat-desc">
 <h4>功能说明</h4>
 <ul style="font-size:12px">
-<li>集中管理前台同人画廊的投稿入口，配置项精简为三个核心内容</li>
+<li>管理同人作品页面显示的公告信息</li>
+<li>前台同人作品左栏展示最新 4 条，"更多"跳转完整列表页</li>
+<li>每条公告有详情内容，前台通过 hash 路由 <code>#/notice/{id}</code> 查看</li>
+</ul>
+<h4>编辑弹窗字段</h4>
+<table style="font-size:11.5px">
+<tr><th>字段</th><th>必填</th><th>说明</th></tr>
+<tr><td>标题</td><td><span style="color:#e04040">*</span></td><td>公告标题</td></tr>
+<tr><td>日期</td><td><span style="color:#e04040">*</span></td><td>格式 YYYY/MM/DD</td></tr>
+<tr><td>标签</td><td></td><td>可选：new 等</td></tr>
+<tr><td>排序</td><td><span style="color:#e04040">*</span></td><td>数字越小越靠前</td></tr>
+<tr><td>状态</td><td><span style="color:#e04040">*</span></td><td>上线/下线</td></tr>
+<tr><td>详情内容</td><td><span style="color:#e04040">*</span></td><td>富文本编辑器，支持加粗/斜体/标题/列表/插入图片/链接等，前台渲染HTML</td></tr>
+</table>
+</div>
+
+<div class="feat-mock">
+<div class="admin-layout">
+  <div class="admin-sidebar">
+    <div class="admin-sidebar-logo">DNF壁纸站<small>配置后台</small></div>
+    <div class="admin-nav-group">内容管理</div>
+    <div class="admin-nav-item">📺 Banner管理</div>
+    <div class="admin-nav-item">📂 分类管理</div>
+    <div class="admin-nav-item">🖼️ 壁纸管理</div>
+    <div class="admin-nav-item active">📢 公告管理</div>
+    <div class="admin-nav-item">🎉 活动管理</div>
+    <div class="admin-nav-group" style="margin-top:8px">系统配置</div>
+    <div class="admin-nav-item">✉️ 投稿配置</div>
+  </div>
+  <div class="admin-main">
+    <div class="admin-topbar"><span class="admin-topbar-title">公告管理</span><div class="admin-action-btn admin-action-primary">+ 新增</div></div>
+    <div class="admin-table-wrap">
+      <table class="admin-t">
+        <thead><tr><th>标题</th><th>日期</th><th>标签</th><th>排序</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody>
+          <tr><td>壁纸站全新上线公告</td><td>2026/04/10</td><td><span class="status-tag tag-blue">new</span></td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
+          <tr><td>同人投稿规则更新</td><td>2026/04/08</td><td>—</td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
+          <tr><td>4月壁纸更新计划</td><td>2026/04/01</td><td>—</td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+
+<!-- ===== 3.5 活动管理 ===== -->
+<h3>3.5 活动管理 <span class="tag-new">NEW</span></h3>
+
+<div class="feat-row">
+<div class="feat-desc">
+<h4>功能说明</h4>
+<ul style="font-size:12px">
+<li>管理同人作品页面显示的活动信息</li>
+<li>前台同人作品右栏展示最新 4 条，"更多"跳转完整列表页</li>
+<li>每条活动有详情内容，前台通过 hash 路由 <code>#/activity/{id}</code> 查看</li>
+</ul>
+<h4>编辑弹窗字段</h4>
+<table style="font-size:11.5px">
+<tr><th>字段</th><th>必填</th><th>说明</th></tr>
+<tr><td>标题</td><td><span style="color:#e04040">*</span></td><td>活动标题</td></tr>
+<tr><td>日期</td><td><span style="color:#e04040">*</span></td><td>格式 YYYY/MM/DD</td></tr>
+<tr><td>标签</td><td></td><td>可选：hot、new 等</td></tr>
+<tr><td>排序</td><td><span style="color:#e04040">*</span></td><td>数字越小越靠前</td></tr>
+<tr><td>状态</td><td><span style="color:#e04040">*</span></td><td>上线/下线</td></tr>
+<tr><td>详情内容</td><td><span style="color:#e04040">*</span></td><td>富文本编辑器，支持加粗/斜体/标题/列表/插入图片/链接等，前台渲染HTML</td></tr>
+</table>
+</div>
+
+<div class="feat-mock">
+<div class="admin-layout">
+  <div class="admin-sidebar">
+    <div class="admin-sidebar-logo">DNF壁纸站<small>配置后台</small></div>
+    <div class="admin-nav-group">内容管理</div>
+    <div class="admin-nav-item">📺 Banner管理</div>
+    <div class="admin-nav-item">📂 分类管理</div>
+    <div class="admin-nav-item">🖼️ 壁纸管理</div>
+    <div class="admin-nav-item">📢 公告管理</div>
+    <div class="admin-nav-item active">🎉 活动管理</div>
+    <div class="admin-nav-group" style="margin-top:8px">系统配置</div>
+    <div class="admin-nav-item">✉️ 投稿配置</div>
+  </div>
+  <div class="admin-main">
+    <div class="admin-topbar"><span class="admin-topbar-title">活动管理</span><div class="admin-action-btn admin-action-primary">+ 新增</div></div>
+    <div class="admin-table-wrap">
+      <table class="admin-t">
+        <thead><tr><th>标题</th><th>日期</th><th>标签</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody>
+          <tr><td>18周年庆壁纸征集</td><td>2026/04/12</td><td><span class="status-tag tag-orange">hot</span></td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
+          <tr><td>春日限定壁纸投票</td><td>2026/03/20</td><td>—</td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
+          <tr><td>最佳同人作品评选</td><td>2026/03/01</td><td><span class="status-tag tag-blue">new</span></td><td><span class="status-tag tag-green">●</span></td><td>编辑 / 删</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+
+<!-- ===== 3.6 投稿配置 ===== -->
+<h3>3.6 投稿配置</h3>
+
+<div class="feat-row">
+<div class="feat-desc">
+<h4>功能说明</h4>
+<ul style="font-size:12px">
+<li>集中管理前台同人作品的投稿入口，配置项精简为三个核心内容</li>
 <li>前台点击"我要投稿"按钮后，弹窗展示投稿邮箱和完整投稿说明</li>
 <li>投稿按钮文案固定为"我要投稿"，不可修改</li>
 </ul>
@@ -644,6 +853,8 @@
     <div class="admin-nav-item">📺 Banner管理</div>
     <div class="admin-nav-item">📂 分类管理</div>
     <div class="admin-nav-item">🖼️ 壁纸管理</div>
+    <div class="admin-nav-item">📢 公告管理</div>
+    <div class="admin-nav-item">🎉 活动管理</div>
     <div class="admin-nav-group" style="margin-top:8px">系统配置</div>
     <div class="admin-nav-item active">✉️ 投稿配置</div>
   </div>
@@ -651,7 +862,7 @@
     <div class="admin-topbar"><span class="admin-topbar-title">投稿配置</span></div>
     <div style="padding:14px 18px">
       <table style="font-size:11px">
-        <tr><td style="width:90px;background:#f7f9fc;font-weight:600;">关联分类</td><td>同人画廊 (ugc)</td></tr>
+        <tr><td style="width:90px;background:#f7f9fc;font-weight:600;">关联分类</td><td>同人作品 (ugc)</td></tr>
         <tr><td style="background:#f7f9fc;font-weight:600;">投稿邮箱</td><td>dnf-fanart@example.com</td></tr>
         <tr><td style="background:#f7f9fc;font-weight:600;">启用状态</td><td><span class="status-tag tag-green">● 开启</span></td></tr>
         <tr><td style="background:#f7f9fc;font-weight:600;vertical-align:top;">投稿说明</td><td style="line-height:1.8;font-size:10.5px;color:#555;white-space:pre-line">欢迎DNF创作者投稿原创同人作品！
@@ -676,17 +887,19 @@
 
 <table>
 <tr><th>内容</th><th>数量</th><th>说明</th></tr>
-<tr><td>Banner 轮播</td><td><b>3 条</b></td><td>版本KV / 精选同人 / 周年庆典</td></tr>
-<tr><td>一级分类</td><td><b>2 个</b></td><td>官方壁纸 + 同人画廊</td></tr>
-<tr><td>二级分类</td><td><b>3 个</b></td><td>版本KV / 人物立绘 / 活动·节日</td></tr>
-<tr><td>壁纸总数</td><td><b>23 张</b></td><td>版本KV 5 + 人物立绘 6 + 活动节日 4 + 同人 8</td></tr>
+<tr><td>Banner 轮播</td><td><b>3 条</b></td><td>使用 picsum.photos 占位图，标签分别为版本KV / 精选同人 / 周年庆典</td></tr>
+<tr><td>一级分类</td><td><b>2 个</b></td><td>官方壁纸（type='normal'）+ 同人作品（type='ugc'）</td></tr>
+<tr><td>二级分类</td><td><b>2 个</b></td><td>版本KV（id=11）+ 活动/节日壁纸（id=13），均属官方壁纸下</td></tr>
+<tr><td>壁纸总数</td><td><b>108 张</b></td><td>版本KV 36张（全横版）+ 活动/节日 36张（全横版）+ 同人 36张（横竖混排，每3张中1张竖版）</td></tr>
+<tr><td>公告</td><td><b>3 条</b></td><td>同人作品公告信息，前后台 content 字段完整一致</td></tr>
+<tr><td>活动</td><td><b>3 条</b></td><td>同人作品活动信息，前后台 content 字段完整一致</td></tr>
 </table>
 
-<p style="font-size:12px">每张壁纸均配有多个分辨率下载链接（至少 2 个），部分配有高清原图和作者头像信息。</p>
+<p style="font-size:12px">前后台共享 <code>localStorage</code> 键 <code>dnf_wallpaper_config</code>，数据含 <code>_ver</code> 版本号字段（当前 <code>'v2.2'</code>），版本不匹配时自动重置为默认数据。每张壁纸含 <code>orient</code> 字段（<code>'h'</code>=横版 / <code>'v'</code>=竖版）。</p>
 
 
 <div style="margin-top:36px;padding-top:16px;border-top:1px solid #e5e7eb;text-align:center;color:#b0b8c8;font-size:11px">
-<p><b>DNF 官方壁纸站 PRD v1.1.0</b> · 2026-04-10</p>
+<p><b>DNF 官方壁纸站 PRD v1.4.0</b> · 2026-04-14</p>
 <p style="margin-top:3px">每个功能模块配有界面原型示意图</p>
 </div>
 

@@ -86,6 +86,20 @@ tr:hover td{background:#fafbfe}
 .form-row>*{flex:1}
 .form-hint{font-size:11px;color:#aaa;margin-top:4px}
 
+/* Rich Text Editor */
+.rte-wrap{border:1px solid #dde0e8;border-radius:6px;overflow:hidden}
+.rte-toolbar{display:flex;flex-wrap:wrap;gap:2px;padding:6px 8px;background:#f7f8fc;border-bottom:1px solid #e8eaf0}
+.rte-btn{width:28px;height:28px;border:none;background:transparent;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#555;font-size:13px;font-weight:600;transition:all .15s}
+.rte-btn:hover{background:#e8ecf2;color:#333}
+.rte-btn.active{background:#4070e0;color:#fff}
+.rte-sep{width:1px;height:20px;background:#dde0e8;margin:4px 4px;align-self:center}
+.rte-body{min-height:200px;max-height:400px;overflow-y:auto;padding:12px 14px;font-size:13px;color:#333;line-height:1.8;outline:none;background:#fff}
+.rte-body:empty::before{content:attr(data-placeholder);color:#bbb;pointer-events:none}
+.rte-body img{max-width:100%;border-radius:6px;margin:6px 0}
+.rte-body blockquote{border-left:3px solid #4070e0;padding:6px 12px;margin:6px 0;background:#f8fafc;color:#555;border-radius:0 4px 4px 0}
+.rte-body p{margin:0 0 4px}
+.rte-body ul,.rte-body ol{padding-left:20px;margin:4px 0}
+
 /* Modal */
 .admin-modal{
   position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;
@@ -176,6 +190,14 @@ tr:hover td{background:#fafbfe}
         壁纸管理
       </div>
       <div class="nav-group-title" style="margin-top:12px">系统配置</div>
+      <div class="sidebar-link" data-tab="notice" onclick="switchTab('notice')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        公告管理
+      </div>
+      <div class="sidebar-link" data-tab="activity" onclick="switchTab('activity')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        活动管理
+      </div>
       <div class="sidebar-link" data-tab="submit" onclick="switchTab('submit')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
         投稿配置
@@ -227,229 +249,143 @@ const STORE_KEY = 'dnf_wallpaper_config';
 // ===== Default Data =====
 function getDefaultData(){
   return {
+    _ver: DATA_VERSION,
     banners: [
-      {id:1,img:'https://picsum.photos/1400/520?random=30',title:'雾岚黄昏战',desc:'2025年9月版本主视觉 · 高清壁纸现已上线',tag:'最新版本',link:'',sort:1,status:true},
-      {id:2,img:'https://picsum.photos/1400/520?random=31',title:'创作者之星 · 三月精选',desc:'来自COLG社区的优秀同人作品合集',tag:'精选同人',link:'',sort:2,status:true},
-      {id:3,img:'https://picsum.photos/1400/520?random=32',title:'DNF 18周年庆',desc:'周年庆限定壁纸 · 限时下载',tag:'周年庆典',link:'',sort:3,status:true},
+      {id:1,img:'https://picsum.photos/id/30/800/300',tag:'最新版本',link:'',sort:1,status:true},
+      {id:2,img:'https://picsum.photos/id/31/800/300',tag:'精选同人',link:'',sort:2,status:true},
+      {id:3,img:'https://picsum.photos/id/32/800/300',tag:'周年庆典',link:'',sort:3,status:true},
     ],
     categories: [
       {id:1,name:'官方壁纸',type:'normal',sort:1,status:true,children:[
         {id:11,name:'版本KV',sort:1,status:true},
-        {id:12,name:'人物立绘',sort:2,status:true},
-        {id:13,name:'活动/节日壁纸',sort:3,status:true},
+        {id:13,name:'活动/节日壁纸',sort:2,status:true},
       ]},
-      {id:2,name:'同人画廊',type:'ugc',sort:2,status:true,children:[]},
+      {id:2,name:'同人作品',type:'ugc',sort:2,status:true,children:[]},
     ],
-    wallpapers: [
-      // ===== 版本KV =====
-      {id:101,title:'雾岚黄昏战',catId:11,thumb:'https://picsum.photos/600/340?random=10',
-       status:true,sort:1,date:'2025/09/11',badge:'NEW',
-       originalImg:'https://picsum.photos/1920/1080?random=110',
-       extFields:[{key:'版本名称',value:'雾岚黄昏战',show:true},{key:'版本日期',value:'2025/09/11',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=110'},
-         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=111'},
-         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=112'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=113'},
-       ]},
-      {id:102,title:'暗夜裁决者',catId:11,thumb:'https://picsum.photos/600/340?random=11',
-       status:true,sort:2,date:'2025/06/20',badge:'',
-       originalImg:'https://picsum.photos/1920/1080?random=120',
-       extFields:[{key:'版本名称',value:'暗夜裁决者',show:true},{key:'版本日期',value:'2025/06/20',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=120'},
-         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=121'},
-         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=122'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=123'},
-         {label:'1080×2340',type:'竖版',url:'https://picsum.photos/1080/2340?random=124'},
-       ]},
-      {id:103,title:'龙之挽歌',catId:11,thumb:'https://picsum.photos/600/340?random=12',
-       status:true,sort:3,date:'2025/03/15',badge:'',
-       originalImg:'https://picsum.photos/1920/1080?random=130',
-       extFields:[{key:'版本名称',value:'龙之挽歌',show:true},{key:'版本日期',value:'2025/03/15',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=130'},
-         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=131'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=132'},
-       ]},
-      {id:104,title:'星辰之海',catId:11,thumb:'https://picsum.photos/600/340?random=17',
-       status:true,sort:4,date:'2024/12/05',badge:'',
-       extFields:[{key:'版本名称',value:'星辰之海',show:true},{key:'版本日期',value:'2024/12/05',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=140'},
-         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=141'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=142'},
-       ]},
-      {id:105,title:'黎明裂谷',catId:11,thumb:'https://picsum.photos/600/340?random=40',
-       status:true,sort:5,date:'2024/06/12',badge:'',
-       extFields:[{key:'版本名称',value:'黎明裂谷',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=150'},
-         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=151'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=152'},
-       ]},
+    wallpapers:[
+      // ===== 版本KV（36张横版）=====
+      {id:101,title:'雾岚黄昏战',catId:11,thumb:'https://picsum.photos/id/10/400/225',orient:'h',status:true,sort:1,date:'2025/09/11',badge:'NEW',extFields:[{key:'版本名称',value:'雾岚黄昏战',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/200/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/200/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/200/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/200/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/200/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/200/1179/2556'}]},
+      {id:102,title:'暗夜裁决者',catId:11,thumb:'https://picsum.photos/id/11/400/225',orient:'h',status:true,sort:2,date:'2025/06/20',badge:'HOT',extFields:[{key:'版本名称',value:'暗夜裁决者',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/201/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/201/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/201/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/201/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/201/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/201/1179/2556'}]},
+      {id:103,title:'龙之挽歌',catId:11,thumb:'https://picsum.photos/id/12/400/225',orient:'h',status:true,sort:3,date:'2025/03/15',badge:'精选',extFields:[{key:'版本名称',value:'龙之挽歌',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/202/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/202/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/202/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/202/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/202/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/202/1179/2556'}]},
+      {id:104,title:'星辰之海',catId:11,thumb:'https://picsum.photos/id/13/400/225',orient:'h',status:true,sort:4,date:'2024/12/05',badge:'NEW',extFields:[{key:'版本名称',value:'星辰之海',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/203/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/203/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/203/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/203/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/203/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/203/1179/2556'}]},
+      {id:105,title:'黎明裂谷',catId:11,thumb:'https://picsum.photos/id/14/400/225',orient:'h',status:true,sort:5,date:'2024/06/12',badge:'',extFields:[{key:'版本名称',value:'黎明裂谷',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/204/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/204/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/204/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/204/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/204/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/204/1179/2556'}]},
+      {id:106,title:'炽焰风暴',catId:11,thumb:'https://picsum.photos/id/15/400/225',orient:'h',status:true,sort:6,date:'2024/03/20',badge:'',extFields:[{key:'版本名称',value:'炽焰风暴',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/205/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/205/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/205/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/205/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/205/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/205/1179/2556'}]},
+      {id:107,title:'深渊觉醒',catId:11,thumb:'https://picsum.photos/id/16/400/225',orient:'h',status:true,sort:7,date:'2023/12/15',badge:'精选',extFields:[{key:'版本名称',value:'深渊觉醒',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/206/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/206/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/206/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/206/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/206/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/206/1179/2556'}]},
+      {id:108,title:'破晓之光',catId:11,thumb:'https://picsum.photos/id/17/400/225',orient:'h',status:true,sort:8,date:'2023/09/10',badge:'NEW',extFields:[{key:'版本名称',value:'破晓之光',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/207/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/207/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/207/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/207/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/207/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/207/1179/2556'}]},
+      {id:109,title:'暗黑圣战',catId:11,thumb:'https://picsum.photos/id/18/400/225',orient:'h',status:true,sort:9,date:'2023/06/08',badge:'',extFields:[{key:'版本名称',value:'暗黑圣战',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/208/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/208/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/208/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/208/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/208/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/208/1179/2556'}]},
+      {id:110,title:'风暴前夕',catId:11,thumb:'https://picsum.photos/id/19/400/225',orient:'h',status:true,sort:10,date:'2023/03/01',badge:'',extFields:[{key:'版本名称',value:'风暴前夕',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/209/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/209/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/209/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/209/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/209/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/209/1179/2556'}]},
+      {id:111,title:'天空之城',catId:11,thumb:'https://picsum.photos/id/20/400/225',orient:'h',status:true,sort:11,date:'2022/12/20',badge:'',extFields:[{key:'版本名称',value:'天空之城',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/210/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/210/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/210/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/210/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/210/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/210/1179/2556'}]},
+      {id:112,title:'冰霜领域',catId:11,thumb:'https://picsum.photos/id/21/400/225',orient:'h',status:true,sort:12,date:'2022/09/15',badge:'HOT',extFields:[{key:'版本名称',value:'冰霜领域',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/211/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/211/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/211/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/211/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/211/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/211/1179/2556'}]},
+      {id:113,title:'烈焰征途',catId:11,thumb:'https://picsum.photos/id/22/400/225',orient:'h',status:true,sort:13,date:'2022/06/10',badge:'',extFields:[{key:'版本名称',value:'烈焰征途',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/212/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/212/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/212/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/212/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/212/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/212/1179/2556'}]},
+      {id:114,title:'幽冥之境',catId:11,thumb:'https://picsum.photos/id/23/400/225',orient:'h',status:true,sort:14,date:'2022/03/05',badge:'',extFields:[{key:'版本名称',value:'幽冥之境',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/213/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/213/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/213/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/213/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/213/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/213/1179/2556'}]},
+      {id:115,title:'星河战场',catId:11,thumb:'https://picsum.photos/id/24/400/225',orient:'h',status:true,sort:15,date:'2021/12/01',badge:'精选',extFields:[{key:'版本名称',value:'星河战场',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/214/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/214/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/214/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/214/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/214/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/214/1179/2556'}]},
+      {id:116,title:'混沌起源',catId:11,thumb:'https://picsum.photos/id/25/400/225',orient:'h',status:true,sort:16,date:'2021/09/20',badge:'HOT',extFields:[{key:'版本名称',value:'混沌起源',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/215/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/215/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/215/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/215/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/215/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/215/1179/2556'}]},
+      {id:117,title:'创世纪元',catId:11,thumb:'https://picsum.photos/id/26/400/225',orient:'h',status:true,sort:17,date:'2025/11/01',badge:'',extFields:[{key:'版本名称',value:'创世纪元',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/216/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/216/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/216/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/216/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/216/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/216/1179/2556'}]},
+      {id:118,title:'魔界裂隙',catId:11,thumb:'https://picsum.photos/id/27/400/225',orient:'h',status:true,sort:18,date:'2025/08/15',badge:'',extFields:[{key:'版本名称',value:'魔界裂隙',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/217/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/217/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/217/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/217/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/217/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/217/1179/2556'}]},
+      {id:119,title:'龙之觉醒',catId:11,thumb:'https://picsum.photos/id/28/400/225',orient:'h',status:true,sort:19,date:'2025/05/01',badge:'精选',extFields:[{key:'版本名称',value:'龙之觉醒',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/218/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/218/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/218/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/218/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/218/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/218/1179/2556'}]},
+      {id:120,title:'天界反攻',catId:11,thumb:'https://picsum.photos/id/29/400/225',orient:'h',status:true,sort:20,date:'2025/01/15',badge:'精选',extFields:[{key:'版本名称',value:'天界反攻',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/219/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/219/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/219/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/219/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/219/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/219/1179/2556'}]},
+      {id:121,title:'异次元入侵',catId:11,thumb:'https://picsum.photos/id/30/400/225',orient:'h',status:true,sort:21,date:'2024/10/01',badge:'',extFields:[{key:'版本名称',value:'异次元入侵',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/220/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/220/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/220/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/220/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/220/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/220/1179/2556'}]},
+      {id:122,title:'使徒来袭',catId:11,thumb:'https://picsum.photos/id/31/400/225',orient:'h',status:true,sort:22,date:'2024/08/01',badge:'',extFields:[{key:'版本名称',value:'使徒来袭',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/221/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/221/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/221/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/221/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/221/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/221/1179/2556'}]},
+      {id:123,title:'机械革命',catId:11,thumb:'https://picsum.photos/id/32/400/225',orient:'h',status:true,sort:23,date:'2024/04/15',badge:'',extFields:[{key:'版本名称',value:'机械革命',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/222/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/222/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/222/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/222/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/222/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/222/1179/2556'}]},
+      {id:124,title:'魔法少女',catId:11,thumb:'https://picsum.photos/id/33/400/225',orient:'h',status:true,sort:24,date:'2024/01/10',badge:'HOT',extFields:[{key:'版本名称',value:'魔法少女',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/223/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/223/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/223/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/223/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/223/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/223/1179/2556'}]},
+      {id:125,title:'守护者之誓',catId:11,thumb:'https://picsum.photos/id/34/400/225',orient:'h',status:true,sort:25,date:'2023/11/01',badge:'',extFields:[{key:'版本名称',value:'守护者之誓',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/224/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/224/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/224/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/224/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/224/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/224/1179/2556'}]},
+      {id:126,title:'绝望之塔',catId:11,thumb:'https://picsum.photos/id/35/400/225',orient:'h',status:true,sort:26,date:'2023/08/01',badge:'',extFields:[{key:'版本名称',value:'绝望之塔',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/225/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/225/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/225/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/225/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/225/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/225/1179/2556'}]},
+      {id:127,title:'远古回响',catId:11,thumb:'https://picsum.photos/id/36/400/225',orient:'h',status:true,sort:27,date:'2023/04/01',badge:'NEW',extFields:[{key:'版本名称',value:'远古回响',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/226/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/226/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/226/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/226/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/226/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/226/1179/2556'}]},
+      {id:128,title:'阿拉德大陆',catId:11,thumb:'https://picsum.photos/id/37/400/225',orient:'h',status:true,sort:28,date:'2023/01/01',badge:'',extFields:[{key:'版本名称',value:'阿拉德大陆',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/227/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/227/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/227/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/227/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/227/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/227/1179/2556'}]},
+      {id:129,title:'赫伊斯之光',catId:11,thumb:'https://picsum.photos/id/38/400/225',orient:'h',status:true,sort:29,date:'2022/10/15',badge:'NEW',extFields:[{key:'版本名称',value:'赫伊斯之光',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/228/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/228/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/228/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/228/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/228/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/228/1179/2556'}]},
+      {id:130,title:'诺伊佩拉',catId:11,thumb:'https://picsum.photos/id/39/400/225',orient:'h',status:true,sort:30,date:'2022/07/01',badge:'',extFields:[{key:'版本名称',value:'诺伊佩拉',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/229/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/229/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/229/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/229/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/229/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/229/1179/2556'}]},
+      {id:131,title:'暗精灵王座',catId:11,thumb:'https://picsum.photos/id/40/400/225',orient:'h',status:true,sort:31,date:'2022/04/01',badge:'',extFields:[{key:'版本名称',value:'暗精灵王座',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/230/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/230/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/230/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/230/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/230/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/230/1179/2556'}]},
+      {id:132,title:'钢铁之翼',catId:11,thumb:'https://picsum.photos/id/41/400/225',orient:'h',status:true,sort:32,date:'2022/01/15',badge:'',extFields:[{key:'版本名称',value:'钢铁之翼',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/231/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/231/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/231/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/231/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/231/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/231/1179/2556'}]},
+      {id:133,title:'虚空裂缝',catId:11,thumb:'https://picsum.photos/id/42/400/225',orient:'h',status:true,sort:33,date:'2026/01/01',badge:'',extFields:[{key:'版本名称',value:'虚空裂缝',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/232/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/232/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/232/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/232/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/232/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/232/1179/2556'}]},
+      {id:134,title:'命运之轮',catId:11,thumb:'https://picsum.photos/id/43/400/225',orient:'h',status:true,sort:34,date:'2025/10/15',badge:'',extFields:[{key:'版本名称',value:'命运之轮',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/233/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/233/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/233/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/233/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/233/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/233/1179/2556'}]},
+      {id:135,title:'时空之门',catId:11,thumb:'https://picsum.photos/id/44/400/225',orient:'h',status:true,sort:35,date:'2025/07/20',badge:'NEW',extFields:[{key:'版本名称',value:'时空之门',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/234/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/234/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/234/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/234/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/234/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/234/1179/2556'}]},
+      {id:136,title:'圣光降临',catId:11,thumb:'https://picsum.photos/id/45/400/225',orient:'h',status:true,sort:36,date:'2025/04/05',badge:'',extFields:[{key:'版本名称',value:'圣光降临',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/235/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/235/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/235/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/235/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/235/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/235/1179/2556'}]},
 
-      // ===== 人物立绘 =====
-      {id:106,title:'鬼剑士觉醒立绘',catId:12,thumb:'https://picsum.photos/600/340?random=13',
-       status:true,sort:1,date:'2025/08/01',badge:'',
-       originalImg:'https://picsum.photos/800/1600?random=200',
-       extFields:[{key:'角色',value:'鬼剑士',show:true}],
-       resFiles:[
-         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=200'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=201'},
-         {label:'1125×2436',type:'竖版',url:'https://picsum.photos/1125/2436?random=202'},
-       ]},
-      {id:107,title:'女魔法师觉醒立绘',catId:12,thumb:'https://picsum.photos/600/340?random=14',
-       status:true,sort:2,date:'2025/07/10',badge:'',
-       originalImg:'https://picsum.photos/800/1600?random=210',
-       extFields:[{key:'角色',value:'女魔法师',show:true}],
-       resFiles:[
-         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=210'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=211'},
-         {label:'1080×2340',type:'竖版',url:'https://picsum.photos/1080/2340?random=212'},
-       ]},
-      {id:108,title:'神枪手三觉立绘',catId:12,thumb:'https://picsum.photos/600/340?random=18',
-       status:true,sort:3,date:'2024/11/01',badge:'HOT',
-       originalImg:'https://picsum.photos/800/1600?random=220',
-       extFields:[{key:'角色',value:'神枪手',show:true}],
-       resFiles:[
-         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=220'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=221'},
-         {label:'1179×2556',type:'竖版',url:'https://picsum.photos/1179/2556?random=222'},
-       ]},
-      {id:109,title:'格斗家觉醒全家福',catId:12,thumb:'https://picsum.photos/600/340?random=19',
-       status:true,sort:4,date:'2024/09/15',badge:'',
-       extFields:[{key:'角色',value:'格斗家',show:true}],
-       resFiles:[
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=230'},
-         {label:'1125×2436',type:'竖版',url:'https://picsum.photos/1125/2436?random=231'},
-       ]},
-      {id:110,title:'暗夜使者·影舞者',catId:12,thumb:'https://picsum.photos/600/340?random=42',
-       status:true,sort:5,date:'2024/07/22',badge:'',
-       extFields:[{key:'角色',value:'暗夜使者',show:true}],
-       resFiles:[
-         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=240'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=241'},
-       ]},
-      {id:111,title:'守护者·炽天使',catId:12,thumb:'https://picsum.photos/600/340?random=43',
-       status:true,sort:6,date:'2024/05/18',badge:'',
-       extFields:[{key:'角色',value:'守护者',show:true}],
-       resFiles:[
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=250'},
-         {label:'1080×2340',type:'竖版',url:'https://picsum.photos/1080/2340?random=251'},
-       ]},
+      // ===== 活动/节日壁纸（36张横版）=====
+      {id:201,title:'DNF 18周年庆典',catId:13,thumb:'https://picsum.photos/id/50/400/225',orient:'h',status:true,sort:1,date:'2026/12/01',badge:'HOT',extFields:[{key:'活动',value:'DNF 18周年庆典',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/300/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/300/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/300/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/300/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/300/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/300/1179/2556'}]},
+      {id:202,title:'2026新春贺岁',catId:13,thumb:'https://picsum.photos/id/51/400/225',orient:'h',status:true,sort:2,date:'2026/12/03',badge:'NEW',extFields:[{key:'活动',value:'2026新春贺岁',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/301/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/301/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/301/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/301/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/301/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/301/1179/2556'}]},
+      {id:203,title:'圣诞特辑·冬日魔法',catId:13,thumb:'https://picsum.photos/id/52/400/225',orient:'h',status:true,sort:3,date:'2026/12/05',badge:'NEW',extFields:[{key:'活动',value:'圣诞特辑',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/302/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/302/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/302/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/302/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/302/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/302/1179/2556'}]},
+      {id:204,title:'七夕限定·星河之约',catId:13,thumb:'https://picsum.photos/id/53/400/225',orient:'h',status:true,sort:4,date:'2026/11/07',badge:'',extFields:[{key:'活动',value:'七夕限定',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/303/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/303/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/303/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/303/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/303/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/303/1179/2556'}]},
+      {id:205,title:'万圣节狂欢',catId:13,thumb:'https://picsum.photos/id/54/400/225',orient:'h',status:true,sort:5,date:'2026/11/09',badge:'',extFields:[{key:'活动',value:'万圣节狂欢',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/304/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/304/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/304/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/304/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/304/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/304/1179/2556'}]},
+      {id:206,title:'中秋团圆夜',catId:13,thumb:'https://picsum.photos/id/55/400/225',orient:'h',status:true,sort:6,date:'2026/11/11',badge:'',extFields:[{key:'活动',value:'中秋团圆夜',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/305/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/305/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/305/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/305/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/305/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/305/1179/2556'}]},
+      {id:207,title:'劳动节特辑',catId:13,thumb:'https://picsum.photos/id/56/400/225',orient:'h',status:true,sort:7,date:'2026/10/13',badge:'',extFields:[{key:'活动',value:'劳动节特辑',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/306/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/306/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/306/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/306/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/306/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/306/1179/2556'}]},
+      {id:208,title:'国庆壁纸',catId:13,thumb:'https://picsum.photos/id/57/400/225',orient:'h',status:true,sort:8,date:'2026/10/15',badge:'',extFields:[{key:'活动',value:'国庆壁纸',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/307/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/307/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/307/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/307/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/307/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/307/1179/2556'}]},
+      {id:209,title:'情人节限定',catId:13,thumb:'https://picsum.photos/id/58/400/225',orient:'h',status:true,sort:9,date:'2026/10/17',badge:'',extFields:[{key:'活动',value:'情人节限定',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/308/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/308/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/308/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/308/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/308/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/308/1179/2556'}]},
+      {id:210,title:'端午龙舟竞',catId:13,thumb:'https://picsum.photos/id/59/400/225',orient:'h',status:true,sort:10,date:'2026/09/19',badge:'HOT',extFields:[{key:'活动',value:'端午龙舟竞',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/309/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/309/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/309/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/309/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/309/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/309/1179/2556'}]},
+      {id:211,title:'元宵花灯会',catId:13,thumb:'https://picsum.photos/id/60/400/225',orient:'h',status:true,sort:11,date:'2026/09/21',badge:'',extFields:[{key:'活动',value:'元宵花灯会',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/310/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/310/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/310/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/310/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/310/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/310/1179/2556'}]},
+      {id:212,title:'清明踏青季',catId:13,thumb:'https://picsum.photos/id/61/400/225',orient:'h',status:true,sort:12,date:'2026/09/23',badge:'',extFields:[{key:'活动',value:'清明踏青季',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/311/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/311/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/311/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/311/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/311/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/311/1179/2556'}]},
+      {id:213,title:'教师节致敬',catId:13,thumb:'https://picsum.photos/id/62/400/225',orient:'h',status:true,sort:13,date:'2026/08/25',badge:'',extFields:[{key:'活动',value:'教师节致敬',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/312/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/312/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/312/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/312/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/312/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/312/1179/2556'}]},
+      {id:214,title:'双十一狂欢',catId:13,thumb:'https://picsum.photos/id/63/400/225',orient:'h',status:true,sort:14,date:'2026/08/27',badge:'',extFields:[{key:'活动',value:'双十一狂欢',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/313/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/313/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/313/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/313/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/313/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/313/1179/2556'}]},
+      {id:215,title:'跨年倒计时',catId:13,thumb:'https://picsum.photos/id/64/400/225',orient:'h',status:true,sort:15,date:'2026/08/28',badge:'',extFields:[{key:'活动',value:'跨年倒计时',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/314/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/314/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/314/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/314/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/314/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/314/1179/2556'}]},
+      {id:216,title:'周年庆返场',catId:13,thumb:'https://picsum.photos/id/65/400/225',orient:'h',status:true,sort:16,date:'2026/07/28',badge:'NEW',extFields:[{key:'活动',value:'周年庆返场',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/315/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/315/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/315/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/315/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/315/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/315/1179/2556'}]},
+      {id:217,title:'夏日海滩派对',catId:13,thumb:'https://picsum.photos/id/66/400/225',orient:'h',status:true,sort:17,date:'2026/07/28',badge:'',extFields:[{key:'活动',value:'夏日海滩派对',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/316/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/316/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/316/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/316/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/316/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/316/1179/2556'}]},
+      {id:218,title:'秋收丰年祭',catId:13,thumb:'https://picsum.photos/id/67/400/225',orient:'h',status:true,sort:18,date:'2026/07/28',badge:'',extFields:[{key:'活动',value:'秋收丰年祭',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/317/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/317/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/317/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/317/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/317/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/317/1179/2556'}]},
+      {id:219,title:'冬至暖心',catId:13,thumb:'https://picsum.photos/id/68/400/225',orient:'h',status:true,sort:19,date:'2026/06/28',badge:'',extFields:[{key:'活动',value:'冬至暖心',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/318/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/318/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/318/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/318/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/318/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/318/1179/2556'}]},
+      {id:220,title:'春分花语',catId:13,thumb:'https://picsum.photos/id/69/400/225',orient:'h',status:true,sort:20,date:'2026/06/28',badge:'',extFields:[{key:'活动',value:'春分花语',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/319/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/319/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/319/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/319/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/319/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/319/1179/2556'}]},
+      {id:221,title:'618嘉年华',catId:13,thumb:'https://picsum.photos/id/70/400/225',orient:'h',status:true,sort:21,date:'2026/06/28',badge:'',extFields:[{key:'活动',value:'618嘉年华',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/320/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/320/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/320/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/320/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/320/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/320/1179/2556'}]},
+      {id:222,title:'双十二盛典',catId:13,thumb:'https://picsum.photos/id/71/400/225',orient:'h',status:true,sort:22,date:'2026/05/28',badge:'精选',extFields:[{key:'活动',value:'双十二盛典',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/321/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/321/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/321/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/321/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/321/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/321/1179/2556'}]},
+      {id:223,title:'儿童节特辑',catId:13,thumb:'https://picsum.photos/id/72/400/225',orient:'h',status:true,sort:23,date:'2026/05/28',badge:'',extFields:[{key:'活动',value:'儿童节特辑',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/322/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/322/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/322/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/322/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/322/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/322/1179/2556'}]},
+      {id:224,title:'父亲节铠甲',catId:13,thumb:'https://picsum.photos/id/73/400/225',orient:'h',status:true,sort:24,date:'2026/05/28',badge:'精选',extFields:[{key:'活动',value:'父亲节铠甲',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/323/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/323/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/323/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/323/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/323/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/323/1179/2556'}]},
+      {id:225,title:'母亲节温馨',catId:13,thumb:'https://picsum.photos/id/74/400/225',orient:'h',status:true,sort:25,date:'2026/04/28',badge:'',extFields:[{key:'活动',value:'母亲节温馨',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/324/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/324/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/324/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/324/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/324/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/324/1179/2556'}]},
+      {id:226,title:'感恩节回馈',catId:13,thumb:'https://picsum.photos/id/75/400/225',orient:'h',status:true,sort:26,date:'2026/04/28',badge:'',extFields:[{key:'活动',value:'感恩节回馈',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/325/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/325/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/325/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/325/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/325/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/325/1179/2556'}]},
+      {id:227,title:'平安夜祝福',catId:13,thumb:'https://picsum.photos/id/76/400/225',orient:'h',status:true,sort:27,date:'2026/04/28',badge:'',extFields:[{key:'活动',value:'平安夜祝福',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/326/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/326/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/326/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/326/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/326/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/326/1179/2556'}]},
+      {id:228,title:'除夕守岁',catId:13,thumb:'https://picsum.photos/id/77/400/225',orient:'h',status:true,sort:28,date:'2026/03/28',badge:'',extFields:[{key:'活动',value:'除夕守岁',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/327/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/327/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/327/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/327/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/327/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/327/1179/2556'}]},
+      {id:229,title:'元旦新年',catId:13,thumb:'https://picsum.photos/id/78/400/225',orient:'h',status:true,sort:29,date:'2026/03/28',badge:'',extFields:[{key:'活动',value:'元旦新年',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/328/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/328/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/328/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/328/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/328/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/328/1179/2556'}]},
+      {id:230,title:'植树节绿意',catId:13,thumb:'https://picsum.photos/id/79/400/225',orient:'h',status:true,sort:30,date:'2026/03/28',badge:'',extFields:[{key:'活动',value:'植树节绿意',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/329/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/329/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/329/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/329/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/329/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/329/1179/2556'}]},
+      {id:231,title:'愚人节趣味',catId:13,thumb:'https://picsum.photos/id/80/400/225',orient:'h',status:true,sort:31,date:'2026/02/28',badge:'',extFields:[{key:'活动',value:'愚人节趣味',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/330/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/330/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/330/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/330/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/330/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/330/1179/2556'}]},
+      {id:232,title:'五四青年节',catId:13,thumb:'https://picsum.photos/id/81/400/225',orient:'h',status:true,sort:32,date:'2026/02/28',badge:'',extFields:[{key:'活动',value:'五四青年节',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/331/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/331/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/331/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/331/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/331/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/331/1179/2556'}]},
+      {id:233,title:'建军节荣耀',catId:13,thumb:'https://picsum.photos/id/82/400/225',orient:'h',status:true,sort:33,date:'2026/02/28',badge:'',extFields:[{key:'活动',value:'建军节荣耀',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/332/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/332/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/332/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/332/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/332/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/332/1179/2556'}]},
+      {id:234,title:'中元节暗影',catId:13,thumb:'https://picsum.photos/id/83/400/225',orient:'h',status:true,sort:34,date:'2026/01/28',badge:'',extFields:[{key:'活动',value:'中元节暗影',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/333/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/333/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/333/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/333/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/333/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/333/1179/2556'}]},
+      {id:235,title:'重阳登高',catId:13,thumb:'https://picsum.photos/id/84/400/225',orient:'h',status:true,sort:35,date:'2026/01/28',badge:'',extFields:[{key:'活动',value:'重阳登高',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/334/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/334/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/334/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/334/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/334/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/334/1179/2556'}]},
+      {id:236,title:'冬奥联动',catId:13,thumb:'https://picsum.photos/id/85/400/225',orient:'h',status:true,sort:36,date:'2026/01/28',badge:'',extFields:[{key:'活动',value:'冬奥联动',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/335/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/335/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/335/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/335/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/335/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/335/1179/2556'}]},
 
-      // ===== 活动/节日壁纸 =====
-      {id:112,title:'DNF 18周年庆典',catId:13,thumb:'https://picsum.photos/600/340?random=15',
-       status:true,sort:1,date:'2026/06/19',badge:'HOT',
-       originalImg:'https://picsum.photos/1920/1080?random=300',
-       extFields:[{key:'活动',value:'18周年庆',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=300'},
-         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=301'},
-         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=302'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=303'},
-         {label:'1125×2436',type:'竖版',url:'https://picsum.photos/1125/2436?random=304'},
-       ]},
-      {id:113,title:'2026新春贺岁 · 烟火福运年',catId:13,thumb:'https://picsum.photos/600/340?random=16',
-       status:true,sort:2,date:'2026/01/20',badge:'NEW',
-       originalImg:'https://picsum.photos/1920/1080?random=310',
-       extFields:[{key:'活动',value:'新春版本',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=310'},
-         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=311'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=312'},
-       ]},
-      {id:114,title:'圣诞特辑 · 冬日魔法',catId:13,thumb:'https://picsum.photos/600/340?random=41',
-       status:true,sort:3,date:'2024/12/24',badge:'',
-       extFields:[{key:'活动',value:'圣诞版本',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=320'},
-         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=321'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=322'},
-       ]},
-      {id:115,title:'七夕限定 · 星河之约',catId:13,thumb:'https://picsum.photos/600/340?random=44',
-       status:true,sort:4,date:'2025/08/10',badge:'',
-       extFields:[{key:'活动',value:'七夕活动',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=330'},
-         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=331'},
-       ]},
-
-      // ===== 同人画廊 =====
-      {id:116,title:'赛利亚的日常',catId:2,thumb:'https://picsum.photos/600/340?random=20',
-       status:true,sort:1,date:'2026/03/01',badge:'精选',
-       authorAvatar:'https://i.pravatar.cc/80?img=1',
-       originalImg:'https://picsum.photos/1920/1080?random=400',
-       extFields:[{key:'创作者',value:'画师小A',show:true},{key:'来源',value:'COLG社区',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=400'},
-         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=401'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=402'},
-       ]},
-      {id:117,title:'阿拉德冒险记',catId:2,thumb:'https://picsum.photos/600/340?random=21',
-       status:true,sort:2,date:'2026/02/15',badge:'',
-       authorAvatar:'https://i.pravatar.cc/80?img=2',
-       extFields:[{key:'创作者',value:'colg_大触',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=410'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=411'},
-       ]},
-      {id:118,title:'暗夜使者之影',catId:2,thumb:'https://picsum.photos/600/340?random=22',
-       status:true,sort:3,date:'2026/01/28',badge:'',
-       authorAvatar:'https://i.pravatar.cc/80?img=3',
-       originalImg:'https://picsum.photos/1920/1080?random=420',
-       extFields:[{key:'创作者',value:'夜光绘',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=420'},
-         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=421'},
-         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=422'},
-       ]},
-      {id:119,title:'风暴之息',catId:2,thumb:'https://picsum.photos/600/340?random=23',
-       status:true,sort:4,date:'2025/12/20',badge:'精选',
-       authorAvatar:'https://i.pravatar.cc/80?img=4',
-       extFields:[{key:'创作者',value:'笔墨江湖',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=430'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=431'},
-       ]},
-      {id:120,title:'决斗场之王',catId:2,thumb:'https://picsum.photos/600/340?random=24',
-       status:true,sort:5,date:'2025/11/10',badge:'',
-       authorAvatar:'https://i.pravatar.cc/80?img=5',
-       extFields:[{key:'创作者',value:'像素匠人',show:true}],
-       resFiles:[
-         {label:'1920×1200',type:'横版',url:'https://picsum.photos/1920/1200?random=440'},
-         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=441'},
-         {label:'750×1334',type:'竖版',url:'https://picsum.photos/750/1334?random=442'},
-       ]},
-      {id:121,title:'赫伊斯的黄昏',catId:2,thumb:'https://picsum.photos/600/340?random=25',
-       status:true,sort:6,date:'2025/10/05',badge:'',
-       authorAvatar:'https://i.pravatar.cc/80?img=6',
-       originalImg:'https://picsum.photos/1920/1080?random=450',
-       extFields:[{key:'创作者',value:'幻想画廊',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=450'},
-         {label:'3840×2160',type:'横版',url:'https://picsum.photos/3840/2160?random=451'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=452'},
-       ]},
-      {id:122,title:'天界机械狂潮',catId:2,thumb:'https://picsum.photos/600/340?random=26',
-       status:true,sort:7,date:'2025/09/18',badge:'NEW',
-       authorAvatar:'https://i.pravatar.cc/80?img=7',
-       extFields:[{key:'创作者',value:'钢铁画师',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=460'},
-         {label:'2560×1440',type:'横版',url:'https://picsum.photos/2560/1440?random=461'},
-       ]},
-      {id:123,title:'魔法少女的茶会',catId:2,thumb:'https://picsum.photos/600/340?random=27',
-       status:true,sort:8,date:'2025/08/25',badge:'精选',
-       authorAvatar:'https://i.pravatar.cc/80?img=8',
-       originalImg:'https://picsum.photos/1920/1080?random=470',
-       extFields:[{key:'创作者',value:'糖果工坊',show:true},{key:'来源',value:'LOFTER',show:true}],
-       resFiles:[
-         {label:'1920×1080',type:'横版',url:'https://picsum.photos/1920/1080?random=470'},
-         {label:'1080×1920',type:'竖版',url:'https://picsum.photos/1080/1920?random=471'},
-         {label:'1125×2436',type:'竖版',url:'https://picsum.photos/1125/2436?random=472'},
-       ]},
+      // ===== 同人画廊（36张横竖混排）=====
+      {id:301,title:'赛利亚的日常',catId:2,thumb:'https://picsum.photos/id/100/400/700',orient:'v',status:true,sort:1,date:'2026/04/01',badge:'精选',authorAvatar:'https://i.pravatar.cc/80?img=1',extFields:[{key:'创作者',value:'画师小A',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/400/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/400/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/400/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/400/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/400/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/400/1179/2556'}]},
+      {id:302,title:'阿拉德冒险记',catId:2,thumb:'https://picsum.photos/id/101/400/225',orient:'h',status:true,sort:2,date:'2026/04/02',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=2',extFields:[{key:'创作者',value:'colg_大触',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/401/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/401/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/401/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/401/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/401/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/401/1179/2556'}]},
+      {id:303,title:'暗夜使者之影',catId:2,thumb:'https://picsum.photos/id/102/400/225',orient:'h',status:true,sort:3,date:'2026/04/03',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=3',extFields:[{key:'创作者',value:'夜光绘',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/402/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/402/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/402/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/402/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/402/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/402/1179/2556'}]},
+      {id:304,title:'风暴之息',catId:2,thumb:'https://picsum.photos/id/103/400/700',orient:'v',status:true,sort:4,date:'2026/04/04',badge:'精选',authorAvatar:'https://i.pravatar.cc/80?img=4',extFields:[{key:'创作者',value:'笔墨江湖',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/403/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/403/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/403/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/403/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/403/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/403/1179/2556'}]},
+      {id:305,title:'决斗场之王',catId:2,thumb:'https://picsum.photos/id/104/400/225',orient:'h',status:true,sort:5,date:'2026/04/05',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=5',extFields:[{key:'创作者',value:'像素匠人',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/404/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/404/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/404/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/404/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/404/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/404/1179/2556'}]},
+      {id:306,title:'赫伊斯的黄昏',catId:2,thumb:'https://picsum.photos/id/105/400/225',orient:'h',status:true,sort:6,date:'2026/04/06',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=6',extFields:[{key:'创作者',value:'幻想画廊',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/405/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/405/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/405/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/405/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/405/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/405/1179/2556'}]},
+      {id:307,title:'天界机械狂潮',catId:2,thumb:'https://picsum.photos/id/106/400/700',orient:'v',status:true,sort:7,date:'2026/04/07',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=7',extFields:[{key:'创作者',value:'钢铁画师',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/406/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/406/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/406/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/406/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/406/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/406/1179/2556'}]},
+      {id:308,title:'魔法少女的茶会',catId:2,thumb:'https://picsum.photos/id/107/400/225',orient:'h',status:true,sort:8,date:'2026/04/08',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=8',extFields:[{key:'创作者',value:'糖果工坊',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/407/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/407/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/407/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/407/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/407/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/407/1179/2556'}]},
+      {id:309,title:'鬼剑士之魂',catId:2,thumb:'https://picsum.photos/id/108/400/225',orient:'h',status:true,sort:9,date:'2026/04/09',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=9',extFields:[{key:'创作者',value:'阿拉德之魂',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/408/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/408/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/408/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/408/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/408/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/408/1179/2556'}]},
+      {id:310,title:'格斗家的修行',catId:2,thumb:'https://picsum.photos/id/109/400/700',orient:'v',status:true,sort:10,date:'2026/03/10',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=10',extFields:[{key:'创作者',value:'暴风绘师',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/409/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/409/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/409/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/409/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/409/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/409/1179/2556'}]},
+      {id:311,title:'神枪手黎明',catId:2,thumb:'https://picsum.photos/id/110/400/225',orient:'h',status:true,sort:11,date:'2026/03/11',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=11',extFields:[{key:'创作者',value:'星辰画匠',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/410/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/410/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/410/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/410/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/410/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/410/1179/2556'}]},
+      {id:312,title:'魔法师星空',catId:2,thumb:'https://picsum.photos/id/111/400/225',orient:'h',status:true,sort:12,date:'2026/03/12',badge:'精选',authorAvatar:'https://i.pravatar.cc/80?img=12',extFields:[{key:'创作者',value:'梦境创作者',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/411/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/411/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/411/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/411/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/411/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/411/1179/2556'}]},
+      {id:313,title:'圣职者祈祷',catId:2,thumb:'https://picsum.photos/id/112/400/700',orient:'v',status:true,sort:13,date:'2026/03/13',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=1',extFields:[{key:'创作者',value:'画师小A',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/412/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/412/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/412/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/412/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/412/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/412/1179/2556'}]},
+      {id:314,title:'暗夜精灵',catId:2,thumb:'https://picsum.photos/id/113/400/225',orient:'h',status:true,sort:14,date:'2026/03/14',badge:'精选',authorAvatar:'https://i.pravatar.cc/80?img=2',extFields:[{key:'创作者',value:'colg_大触',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/413/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/413/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/413/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/413/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/413/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/413/1179/2556'}]},
+      {id:315,title:'守护者之盾',catId:2,thumb:'https://picsum.photos/id/114/400/225',orient:'h',status:true,sort:15,date:'2026/03/15',badge:'精选',authorAvatar:'https://i.pravatar.cc/80?img=3',extFields:[{key:'创作者',value:'夜光绘',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/414/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/414/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/414/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/414/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/414/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/414/1179/2556'}]},
+      {id:316,title:'黑暗武士',catId:2,thumb:'https://picsum.photos/id/115/400/700',orient:'v',status:true,sort:16,date:'2026/03/16',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=4',extFields:[{key:'创作者',value:'笔墨江湖',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/415/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/415/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/415/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/415/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/415/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/415/1179/2556'}]},
+      {id:317,title:'创世之神',catId:2,thumb:'https://picsum.photos/id/116/400/225',orient:'h',status:true,sort:17,date:'2026/03/17',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=5',extFields:[{key:'创作者',value:'像素匠人',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/416/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/416/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/416/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/416/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/416/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/416/1179/2556'}]},
+      {id:318,title:'阿修罗之眼',catId:2,thumb:'https://picsum.photos/id/117/400/225',orient:'h',status:true,sort:18,date:'2026/03/18',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=6',extFields:[{key:'创作者',value:'幻想画廊',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/417/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/417/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/417/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/417/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/417/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/417/1179/2556'}]},
+      {id:319,title:'大枪炮的黄昏',catId:2,thumb:'https://picsum.photos/id/118/400/700',orient:'v',status:true,sort:19,date:'2026/02/19',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=7',extFields:[{key:'创作者',value:'钢铁画师',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/418/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/418/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/418/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/418/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/418/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/418/1179/2556'}]},
+      {id:320,title:'漫游枪手',catId:2,thumb:'https://picsum.photos/id/119/400/225',orient:'h',status:true,sort:20,date:'2026/02/20',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=8',extFields:[{key:'创作者',value:'糖果工坊',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/419/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/419/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/419/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/419/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/419/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/419/1179/2556'}]},
+      {id:321,title:'气功师冥想',catId:2,thumb:'https://picsum.photos/id/120/400/225',orient:'h',status:true,sort:21,date:'2026/02/21',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=9',extFields:[{key:'创作者',value:'阿拉德之魂',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/420/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/420/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/420/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/420/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/420/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/420/1179/2556'}]},
+      {id:322,title:'柔道家之力',catId:2,thumb:'https://picsum.photos/id/121/400/700',orient:'v',status:true,sort:22,date:'2026/02/22',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=10',extFields:[{key:'创作者',value:'暴风绘师',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/421/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/421/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/421/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/421/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/421/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/421/1179/2556'}]},
+      {id:323,title:'街霸怒拳',catId:2,thumb:'https://picsum.photos/id/122/400/225',orient:'h',status:true,sort:23,date:'2026/02/23',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=11',extFields:[{key:'创作者',value:'星辰画匠',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/422/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/422/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/422/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/422/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/422/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/422/1179/2556'}]},
+      {id:324,title:'毒王暗影',catId:2,thumb:'https://picsum.photos/id/123/400/225',orient:'h',status:true,sort:24,date:'2026/02/24',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=12',extFields:[{key:'创作者',value:'梦境创作者',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/423/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/423/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/423/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/423/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/423/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/423/1179/2556'}]},
+      {id:325,title:'元素爆破',catId:2,thumb:'https://picsum.photos/id/124/400/700',orient:'v',status:true,sort:25,date:'2026/02/25',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=1',extFields:[{key:'创作者',value:'画师小A',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/424/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/424/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/424/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/424/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/424/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/424/1179/2556'}]},
+      {id:326,title:'魔道学者',catId:2,thumb:'https://picsum.photos/id/125/400/225',orient:'h',status:true,sort:26,date:'2026/02/26',badge:'精选',authorAvatar:'https://i.pravatar.cc/80?img=2',extFields:[{key:'创作者',value:'colg_大触',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/425/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/425/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/425/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/425/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/425/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/425/1179/2556'}]},
+      {id:327,title:'召唤师契约',catId:2,thumb:'https://picsum.photos/id/126/400/225',orient:'h',status:true,sort:27,date:'2026/02/27',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=3',extFields:[{key:'创作者',value:'夜光绘',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/426/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/426/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/426/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/426/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/426/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/426/1179/2556'}]},
+      {id:328,title:'战斗法师',catId:2,thumb:'https://picsum.photos/id/127/400/700',orient:'v',status:true,sort:28,date:'2026/01/28',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=4',extFields:[{key:'创作者',value:'笔墨江湖',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/427/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/427/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/427/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/427/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/427/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/427/1179/2556'}]},
+      {id:329,title:'冰结师冰原',catId:2,thumb:'https://picsum.photos/id/128/400/225',orient:'h',status:true,sort:29,date:'2026/01/28',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=5',extFields:[{key:'创作者',value:'像素匠人',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/428/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/428/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/428/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/428/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/428/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/428/1179/2556'}]},
+      {id:330,title:'血法师之血',catId:2,thumb:'https://picsum.photos/id/129/400/225',orient:'h',status:true,sort:30,date:'2026/01/28',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=6',extFields:[{key:'创作者',value:'幻想画廊',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/429/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/429/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/429/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/429/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/429/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/429/1179/2556'}]},
+      {id:331,title:'次元行者',catId:2,thumb:'https://picsum.photos/id/130/400/700',orient:'v',status:true,sort:31,date:'2026/01/28',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=7',extFields:[{key:'创作者',value:'钢铁画师',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/430/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/430/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/430/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/430/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/430/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/430/1179/2556'}]},
+      {id:332,title:'忍者疾风',catId:2,thumb:'https://picsum.photos/id/131/400/225',orient:'h',status:true,sort:32,date:'2026/01/28',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=8',extFields:[{key:'创作者',value:'糖果工坊',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/431/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/431/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/431/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/431/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/431/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/431/1179/2556'}]},
+      {id:333,title:'缭乱舞姬',catId:2,thumb:'https://picsum.photos/id/132/400/225',orient:'h',status:true,sort:33,date:'2026/01/28',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=9',extFields:[{key:'创作者',value:'阿拉德之魂',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/432/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/432/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/432/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/432/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/432/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/432/1179/2556'}]},
+      {id:334,title:'刺客月影',catId:2,thumb:'https://picsum.photos/id/133/400/700',orient:'v',status:true,sort:34,date:'2026/01/28',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=10',extFields:[{key:'创作者',value:'暴风绘师',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/433/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/433/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/433/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/433/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/433/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/433/1179/2556'}]},
+      {id:335,title:'女弹药',catId:2,thumb:'https://picsum.photos/id/134/400/225',orient:'h',status:true,sort:35,date:'2026/01/28',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=11',extFields:[{key:'创作者',value:'星辰画匠',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/434/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/434/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/434/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/434/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/434/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/434/1179/2556'}]},
+      {id:336,title:'机械战神',catId:2,thumb:'https://picsum.photos/id/135/400/225',orient:'h',status:true,sort:36,date:'2026/01/28',badge:'',authorAvatar:'https://i.pravatar.cc/80?img=12',extFields:[{key:'创作者',value:'梦境创作者',show:true}],resFiles:[{label:'1920×1080',type:'横版',url:'https://picsum.photos/id/435/1920/1080'},{label:'2560×1440',type:'横版',url:'https://picsum.photos/id/435/2560/1440'},{label:'3840×2160',type:'横版',url:'https://picsum.photos/id/435/3840/2160'},{label:'1080×1920',type:'竖版',url:'https://picsum.photos/id/435/1080/1920'},{label:'1080×2340',type:'竖版',url:'https://picsum.photos/id/435/1080/2340'},{label:'1179×2556',type:'竖版',url:'https://picsum.photos/id/435/1179/2556'}]},
+    ],
+    notices:[
+      {id:1,text:'同人画廊投稿规则更新，新增"漫画"类别',date:'2026/04/08',tag:'',status:true,sort:1,content:'为丰富同人画廊内容形式，现新增"漫画"投稿类别。\n\n【新增内容】\n· 支持多格漫画投稿（最多20页）\n· 漫画作品将在画廊中以独立标签展示\n· 漫画投稿同样需遵循现有投稿规则\n\n【生效时间】\n即日起生效，欢迎各位创作者踊跃投稿！'},
+      {id:2,text:'2026年Q2精选同人作品征集中，截止5月31日',date:'2026/04/01',tag:'new',status:true,sort:2,content:'2026年第二季度精选同人作品征集正式启动！\n\n【征集时间】\n2026年4月1日 - 2026年5月31日\n\n【参与方式】\n通过投稿邮箱提交作品，邮件标题注明"Q2精选投稿"\n\n【评选规则】\n· 由官方运营团队从所有投稿中评选\n· 入选作品将获得"精选"标签和首页推荐位\n· 每季度评选10-15幅优秀作品\n\n【奖励】\n入选作者将获得DNF限定周边礼包一份'},
+      {id:3,text:'恭喜画师"幻想画廊"获得3月最佳同人奖',date:'2026/03/20',tag:'',status:true,sort:3,content:'经过社区投票和官方评审，画师"幻想画廊"凭借作品《赫伊斯的黄昏》获得2026年3月最佳同人奖！\n\n【获奖作品】\n《赫伊斯的黄昏》- 以暖色调描绘了赫伊斯城镇的黄昏景色，画面细腻，氛围感极佳。\n\n【关于月度最佳】\n每月由官方从精选作品中评选一幅最佳同人作品，获奖者将获得：\n· 官方认证"月度最佳"徽章\n· DNF限定实体周边一套\n· 作品在Banner轮播位展示一个月'},
+    ],
+    activities:[
+      {id:1,text:'DNF同人创作大赛 · 第三季 火热进行中',date:'2026/04/10',tag:'hot',status:true,sort:1,content:'DNF同人创作大赛第三季正式开启！\n\n【大赛主题】\n"我的阿拉德故事" —— 用画笔描绘你心中的DNF世界\n\n【参赛时间】\n2026年4月10日 - 2026年6月30日\n\n【参赛方式】\n1. 通过壁纸站投稿邮箱提交作品\n2. 邮件标题格式：【第三季大赛】作品名-作者名\n3. 每位作者最多提交3幅作品\n\n【奖项设置】\n· 金奖1名：奖金5000元 + DNF限定大礼包\n· 银奖3名：奖金2000元 + DNF周边礼包\n· 铜奖5名：奖金1000元 + DNF周边\n· 人气奖10名：DNF限定周边一套\n\n【评审方式】\n初审（官方）→ 社区投票（30%）→ 专家评审（70%）'},
+      {id:2,text:'周年庆同人作品有奖征集 · 赢取限定周边',date:'2026/03/15',tag:'new',status:true,sort:2,content:'DNF即将迎来18周年庆典，现面向全体创作者征集周年庆主题同人作品！\n\n【征集主题】\n以"18周年"为主题的DNF同人创作（插画/壁纸/漫画均可）\n\n【征集时间】\n2026年3月15日 - 2026年5月15日\n\n【入选福利】\n· 作品将在周年庆期间于官网壁纸站首页展示\n· 获赠18周年限定实体周边套装\n· 优秀作品有机会制作为官方周边商品'},
+      {id:3,text:'同人画师入驻计划 · 长期招募中',date:'2026/02/01',tag:'',status:true,sort:3,content:'DNF官方壁纸站现开启"同人画师入驻计划"，面向所有热爱DNF的创作者长期招募！\n\n【入驻权益】\n· 专属创作者认证标识\n· 作品优先获得首页推荐\n· 每月固定稿费（根据作品质量和数量）\n· 受邀参加DNF线下创作者活动\n· 官方资源支持（素材库权限等）\n\n【入驻条件】\n· 拥有原创DNF同人作品5幅以上\n· 作品质量达到画廊精选水平\n· 能保持每月至少1幅新作产出\n\n【申请方式】\n发送个人作品集（不少于5幅）至投稿邮箱，标题注明"画师入驻申请-昵称"'},
     ],
     submitConfig: {
       catId:2,
@@ -461,10 +397,11 @@ function getDefaultData(){
 }
 
 // ===== Load/Save =====
+const DATA_VERSION = 'v2.3';
 let DATA;
 function load(){
-  try{ DATA = JSON.parse(localStorage.getItem(STORE_KEY)) || getDefaultData(); }
-  catch(e){ DATA = getDefaultData(); }
+  try{ DATA = JSON.parse(localStorage.getItem(STORE_KEY)); } catch(e){}
+  if(!DATA || DATA._ver !== DATA_VERSION){ DATA = getDefaultData(); save(); }
 }
 function save(){
   localStorage.setItem(STORE_KEY, JSON.stringify(DATA));
@@ -491,7 +428,7 @@ let editingItem = null;
 function switchTab(tab){
   currentTab = tab;
   document.querySelectorAll('.sidebar-link').forEach(l=>l.classList.toggle('active',l.dataset.tab===tab));
-  const titles = {banner:'Banner管理',category:'分类管理',wallpaper:'壁纸管理',submit:'投稿配置'};
+  const titles = {banner:'Banner管理',category:'分类管理',wallpaper:'壁纸管理',notice:'公告管理',activity:'活动管理',submit:'投稿配置'};
   document.getElementById('tabTitle').textContent = titles[tab];
   document.getElementById('addBtn').style.display = (tab==='submit')?'none':'';
   renderCurrentTab();
@@ -503,6 +440,8 @@ function renderCurrentTab(){
     case 'banner': c.innerHTML = renderBannerTab(); break;
     case 'category': c.innerHTML = renderCategoryTab(); break;
     case 'wallpaper': c.innerHTML = renderWallpaperTab(); break;
+    case 'notice': c.innerHTML = renderInfoTab('notice'); break;
+    case 'activity': c.innerHTML = renderInfoTab('activity'); break;
     case 'submit': c.innerHTML = renderSubmitTab(); break;
   }
 }
@@ -658,10 +597,12 @@ function renderWallpaperTab(){
   
   const rows = filtered.map(w=>{
     const extStr = (w.extFields||[]).filter(e=>e.show).map(e=>`${e.key}: ${e.value}`).join(' · ') || '-';
+    const orientLabel = w.orient==='v'?'竖版':'横版';
     return `<tr>
       <td><img class="td-img" src="${w.thumb}" onerror="this.style.background='#e0e2ea'"></td>
       <td><strong>${w.title}</strong></td>
       <td>${getCatPath(w.catId)}</td>
+      <td><span class="tag ${w.orient==='v'?'tag-orange':'tag-blue'}">${orientLabel}</span></td>
       <td style="font-size:11px;color:#888;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${extStr}</td>
       <td>${w.badge?`<span class="tag tag-blue">${w.badge}</span>`:'-'}</td>
       <td><span class="status-dot ${w.status?'status-on':'status-off'}"></span>${w.status?'上线':'下线'}</td>
@@ -675,14 +616,14 @@ function renderWallpaperTab(){
     <span class="card-title">壁纸列表（${filtered.length} / ${DATA.wallpapers.length}）</span>
     <select class="form-select" style="width:200px" onchange="wpFilterCatId=parseInt(this.value);renderCurrentTab()">${catFilterOpts}</select>
   </div>
-    <div class="table-wrap"><table><thead><tr><th>缩略图</th><th>标题</th><th>所属分类</th><th>扩展信息</th><th>角标</th><th>状态</th><th width="140">操作</th></tr></thead>
-    <tbody>${rows||'<tr><td colspan="7"><div class="empty-state">暂无壁纸</div></td></tr>'}</tbody></table></div></div>`;
+    <div class="table-wrap"><table><thead><tr><th>缩略图</th><th>标题</th><th>所属分类</th><th>方向</th><th>扩展信息</th><th>角标</th><th>状态</th><th width="140">操作</th></tr></thead>
+    <tbody>${rows||'<tr><td colspan="8"><div class="empty-state">暂无壁纸</div></td></tr>'}</tbody></table></div></div>`;
 }
 function editWP(id){ editingItem=DATA.wallpapers.find(w=>w.id===id); openWPModal(); }
 function delWP(id){ if(!confirm('确定删除？'))return; DATA.wallpapers=DATA.wallpapers.filter(w=>w.id!==id); save(); renderCurrentTab(); toast('已删除'); }
 
 function openWPModal(){
-  const w = editingItem || {title:'',catId:'',thumb:'',status:true,sort:DATA.wallpapers.length+1,date:'',badge:'',extFields:[],resFiles:[],originalImg:'',authorAvatar:''};
+  const w = editingItem || {title:'',catId:'',thumb:'',orient:'h',status:true,sort:DATA.wallpapers.length+1,date:'',badge:'',extFields:[],resFiles:[],originalImg:'',authorAvatar:''};
   const catOpts = getAllCatOptions().map(o=>`<option value="${o.id}" ${w.catId===o.id?'selected':''}>${o.label}</option>`).join('');
   const extRows = (w.extFields||[]).map((e,i)=>`
     <div class="ext-row">
@@ -708,7 +649,13 @@ function openWPModal(){
       <div class="form-group"><label class="form-label">角标文字</label><input class="form-input" id="f_badge" value="${w.badge}" placeholder="可选，如 NEW、HOT、精选"></div>
     </div>
     <div class="form-row">
+      <div class="form-group"><label class="form-label">图片方向<span class="req">*</span></label>
+        <select class="form-select" id="f_orient"><option value="h" ${(w.orient||'h')==='h'?'selected':''}>横版</option><option value="v" ${w.orient==='v'?'selected':''}>竖版</option></select>
+        <div class="form-hint">横版(h)=16:9，竖版(v)=竖屏比例，影响前台瀑布流布局</div>
+      </div>
       <div class="form-group"><label class="form-label">排序<span class="req">*</span></label><input class="form-input" id="f_sort" type="number" value="${w.sort}"></div>
+    </div>
+    <div class="form-row">
       <div class="form-group"><label class="form-label">状态<span class="req">*</span></label>
         <select class="form-select" id="f_status"><option value="true" ${w.status?'selected':''}>上线</option><option value="false" ${!w.status?'selected':''}>下线</option></select>
       </div>
@@ -747,7 +694,8 @@ const RES_PRESETS = [
   {label:'1920×1080',type:'横版'},{label:'1920×1200',type:'横版'},
   {label:'2560×1440',type:'横版'},{label:'3840×2160',type:'横版'},
   {label:'750×1334',type:'竖版'},{label:'1080×1920',type:'竖版'},
-  {label:'1080×2160',type:'竖版'},{label:'1125×2436',type:'竖版'},
+  {label:'1080×2340',type:'竖版'},{label:'1125×2436',type:'竖版'},
+  {label:'1179×2556',type:'竖版'},
 ];
 
 function refreshPresets(){
@@ -775,6 +723,119 @@ function addResRow(label, type){
     <input type="text" class="form-input res-url" value="" placeholder="图片URL" style="flex:1">
     <button class="btn btn-sm btn-danger" onclick="this.parentElement.remove();refreshPresets()">×</button>`;
   list.appendChild(div);
+}
+
+// =============================
+// Notice / Activity Tab (通用)
+// =============================
+function getInfoArr(type){ return type==='notice' ? (DATA.notices||(DATA.notices=[])) : (DATA.activities||(DATA.activities=[])); }
+function getInfoTitle(type){ return type==='notice' ? '公告' : '活动'; }
+
+function renderInfoTab(type){
+  const arr = getInfoArr(type);
+  const title = getInfoTitle(type);
+  const rows = arr.filter(a=>true).sort((a,b)=>(a.sort||99)-(b.sort||99)).map(item=>`
+    <tr>
+      <td><strong>${item.text}</strong></td>
+      <td>${item.tag?`<span class="tag tag-blue">${item.tag.toUpperCase()}</span>`:'-'}</td>
+      <td>${item.date||'-'}</td>
+      <td>${item.sort!=null?item.sort:'-'}</td>
+      <td><span class="status-dot ${item.status?'status-on':'status-off'}"></span>${item.status?'上线':'下线'}</td>
+      <td>
+        <button class="btn btn-sm" onclick="editInfo('${type}',${item.id})">编辑</button>
+        <button class="btn btn-sm btn-danger" onclick="delInfo('${type}',${item.id})">删除</button>
+      </td>
+    </tr>
+  `).join('');
+  return `<div class="card"><div class="card-header"><span class="card-title">${title}列表（${arr.length}）</span></div>
+    <div class="table-wrap"><table><thead><tr><th>标题</th><th>标签</th><th>日期</th><th>排序</th><th>状态</th><th width="140">操作</th></tr></thead>
+    <tbody>${rows||`<tr><td colspan="6"><div class="empty-state">暂无${title}</div></td></tr>`}</tbody></table></div></div>`;
+}
+
+function editInfo(type,id){ editingItem=getInfoArr(type).find(i=>i.id===id); openInfoModal(type); }
+function delInfo(type,id){ if(!confirm('确定删除？'))return; const arr=getInfoArr(type); const idx=arr.findIndex(i=>i.id===id); if(idx>-1)arr.splice(idx,1); save(); renderCurrentTab(); toast('已删除'); }
+
+function openInfoModal(type){
+  const title = getInfoTitle(type);
+  const item = editingItem || {text:'',date:'',tag:'',sort:'',status:true,content:''};
+  const defSort = editingItem ? item.sort : (getInfoArr(type).length + 1);
+  // 兼容旧纯文本数据：如果content不含HTML标签，则将换行转为<br>
+  let contentHtml = item.content || '';
+  if(contentHtml && !/<[a-z][\s\S]*>/i.test(contentHtml)){
+    contentHtml = contentHtml.replace(/\n/g,'<br>');
+  }
+  document.getElementById('modalTitle').textContent = editingItem?`编辑${title}`:`新增${title}`;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="form-group"><label class="form-label">标题<span class="req">*</span></label><input class="form-input" id="f_text" value="${item.text}"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">日期<span class="req">*</span></label><input class="form-input" id="f_date" value="${item.date}" placeholder="如 2026/04/10"></div>
+      <div class="form-group"><label class="form-label">标签</label><input class="form-input" id="f_tag" value="${item.tag||''}" placeholder="可选：new、hot"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">排序<span class="req">*</span></label><input class="form-input" id="f_sort" type="number" value="${defSort}" placeholder="数字越小越靠前"></div>
+      <div class="form-group"><label class="form-label">状态<span class="req">*</span></label>
+        <select class="form-select" id="f_status"><option value="true" ${item.status?'selected':''}>上线</option><option value="false" ${!item.status?'selected':''}>下线</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">详情内容<span class="req">*</span></label>
+      <div class="form-hint">支持富文本编辑：加粗、斜体、标题、列表、插入图片等</div>
+      <div class="rte-wrap">
+        <div class="rte-toolbar">
+          <button class="rte-btn" title="加粗" onclick="rteCmd('bold')"><b>B</b></button>
+          <button class="rte-btn" title="斜体" onclick="rteCmd('italic')"><i>I</i></button>
+          <button class="rte-btn" title="下划线" onclick="rteCmd('underline')"><u>U</u></button>
+          <span class="rte-sep"></span>
+          <button class="rte-btn" title="标题" onclick="rteCmd('formatBlock','H3')" style="font-size:12px">H</button>
+          <button class="rte-btn" title="引用" onclick="rteCmd('formatBlock','BLOCKQUOTE')" style="font-size:14px">❝</button>
+          <span class="rte-sep"></span>
+          <button class="rte-btn" title="无序列表" onclick="rteCmd('insertUnorderedList')" style="font-size:14px">•≡</button>
+          <button class="rte-btn" title="有序列表" onclick="rteCmd('insertOrderedList')" style="font-size:12px">1.</button>
+          <span class="rte-sep"></span>
+          <button class="rte-btn" title="插入图片" onclick="rteInsertImage()" style="font-size:14px">🖼</button>
+          <button class="rte-btn" title="插入链接" onclick="rteInsertLink()" style="font-size:13px">🔗</button>
+          <span class="rte-sep"></span>
+          <button class="rte-btn" title="文字颜色" onclick="rteColor()" style="font-size:13px;color:#e04040">A</button>
+          <button class="rte-btn" title="清除格式" onclick="rteCmd('removeFormat')" style="font-size:12px">✕</button>
+        </div>
+        <div class="rte-body" id="f_content_rte" contenteditable="true" data-placeholder="请输入详情内容...">${contentHtml}</div>
+      </div>
+    </div>`;
+  document.getElementById('adminModal').classList.add('show');
+}
+
+function saveInfo(type){
+  const arr = getInfoArr(type);
+  const obj = {
+    id: editingItem ? editingItem.id : nextId(arr),
+    text: document.getElementById('f_text').value,
+    date: document.getElementById('f_date').value,
+    tag: document.getElementById('f_tag').value,
+    sort: parseInt(document.getElementById('f_sort').value)||1,
+    status: document.getElementById('f_status').value==='true',
+    content: document.getElementById('f_content_rte').innerHTML.trim(),
+  };
+  if(!obj.text){toast('请填写标题');return}
+  if(editingItem){ Object.assign(editingItem, obj); }
+  else{ arr.push(obj); }
+  save(); closeAdminModal(); renderCurrentTab(); toast('已保存');
+}
+
+// ===== Rich Text Editor Helpers =====
+function rteCmd(cmd, val){
+  document.execCommand(cmd, false, val||null);
+  document.getElementById('f_content_rte').focus();
+}
+function rteInsertImage(){
+  const url = prompt('请输入图片URL：');
+  if(url) document.execCommand('insertImage', false, url);
+}
+function rteInsertLink(){
+  const url = prompt('请输入链接URL：','https://');
+  if(url) document.execCommand('createLink', false, url);
+}
+function rteColor(){
+  const color = prompt('请输入颜色值（如 #e04040、red）：','#e04040');
+  if(color) document.execCommand('foreColor', false, color);
 }
 
 // =============================
@@ -818,6 +879,8 @@ function handleAdd(){
     case 'banner': openBannerModal(); break;
     case 'category': openCatModal(); break;
     case 'wallpaper': openWPModal(); break;
+    case 'notice': openInfoModal('notice'); break;
+    case 'activity': openInfoModal('activity'); break;
   }
 }
 
@@ -826,6 +889,8 @@ function handleSave(){
     case 'banner': saveBanner(); break;
     case 'category': saveCat(); break;
     case 'wallpaper': saveWP(); break;
+    case 'notice': saveInfo('notice'); break;
+    case 'activity': saveInfo('activity'); break;
   }
 }
 
@@ -874,6 +939,7 @@ function saveWP(){
     title: document.getElementById('f_title').value,
     catId: parseInt(document.getElementById('f_catId').value),
     thumb: document.getElementById('f_thumb').value,
+    orient: document.getElementById('f_orient').value,
     originalImg: document.getElementById('f_originalImg').value,
     authorAvatar: document.getElementById('f_authorAvatar').value,
     date: document.getElementById('f_date').value,
