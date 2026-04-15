@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#6C5CE7">
+    <title>2026 演出经纪人资格证 · 刷题宝</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #6C5CE7;
+            --primary-light: #A29BFE;
+            --primary-dark: #5A4BD1;
+            --success: #00B894;
+            --danger: #E17055;
+            --warning: #FDCB6E;
+            --bg: #F8F9FE;
+            --card: #FFFFFF;
+            --text: #2D3436;
+            --text-light: #636E72;
+            --border: #DFE6E9;
+            --shadow: 0 4px 20px rgba(108, 92, 231, 0.08);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        html { height: 100%; -webkit-text-size-adjust: 100%; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: calc(64px + var(--safe-bottom));
+            overscroll-behavior-y: contain;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+            color: white;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3);
+        }
+
+        .header-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .header h1 span {
+            font-size: 12px;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            font-weight: 400;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.15);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .stat-item .num { font-weight: 700; font-size: 15px; }
+
+        /* Main Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Mode Selector */
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            background: var(--card);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .mode-btn:hover { border-color: var(--primary-light); color: var(--primary); }
+        .mode-btn.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        }
+
+        .mode-btn .icon { font-size: 22px; display: block; margin-bottom: 4px; }
+
+        /* Subject Filter */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 20px;
+            background: var(--card);
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            color: var(--text-light);
+        }
+
+        .filter-btn:hover { border-color: var(--primary-light); }
+        .filter-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Question Card */
+        .question-card {
+            background: var(--card);
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .q-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .q-badge {
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-single { background: #E8F5E9; color: #2E7D32; }
+        .badge-multi { background: #FFF3E0; color: #E65100; }
+        .badge-judge { background: #E3F2FD; color: #1565C0; }
+        .badge-subject { background: #F3E5F5; color: #7B1FA2; }
+        .badge-regular { background: #E0F2F1; color: #00695C; }
+        .badge-current { background: #FFF8E1; color: #F57F17; }
+
+        .q-number {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-left: auto;
+        }
+
+        .q-text {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        /* Options */
+        .options { display: flex; flex-direction: column; gap: 10px; }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .option:hover:not(.disabled) {
+            border-color: var(--primary-light);
+            background: #F8F7FF;
+        }
+
+        .option .opt-label {
+            min-width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #F0F0F5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--text-light);
+            flex-shrink: 0;
+            transition: all 0.25s;
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: #F0EDFF;
+        }
+        .option.selected .opt-label {
+            background: var(--primary);
+            color: white;
+        }
+
+        .option.correct {
+            border-color: var(--success) !important;
+            background: #E6FAF5 !important;
+        }
+        .option.correct .opt-label {
+            background: var(--success) !important;
+            color: white !important;
+        }
+
+        .option.wrong {
+            border-color: var(--danger) !important;
+            background: #FFEEE8 !important;
+        }
+        .option.wrong .opt-label {
+            background: var(--danger) !important;
+            color: white !important;
+        }
+
+        .option.disabled { cursor: default; }
+
+        /* Answer Section */
+        .answer-section {
+            margin-top: 20px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .answer-correct {
+            background: linear-gradient(135deg, #E6FAF5, #D4EFDF);
+            border-left: 4px solid var(--success);
+        }
+
+        .answer-wrong {
+            background: linear-gradient(135deg, #FFEEE8, #FCE4EC);
+            border-left: 4px solid var(--danger);
+        }
+
+        .answer-section .label {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .answer-section .detail {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-light);
+        }
+
+        /* Buttons */
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4); }
+
+        .btn-outline {
+            background: var(--card);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .btn-outline:hover { background: #F0EDFF; }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #00B894, #55EFC4);
+            color: white;
+        }
+
+        /* Progress Bar */
+        .progress-wrap {
+            background: #E8E6F0;
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6C5CE7, #A29BFE);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        /* Home Screen */
+        .home-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .home-screen .emoji { font-size: 64px; margin-bottom: 16px; }
+        .home-screen h2 { font-size: 24px; margin-bottom: 8px; }
+        .home-screen p { color: var(--text-light); margin-bottom: 24px; font-size: 15px; }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(108, 92, 231, 0.15); }
+        .feature-card .f-icon { font-size: 32px; margin-bottom: 10px; }
+        .feature-card .f-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+        .feature-card .f-desc { font-size: 12px; color: var(--text-light); }
+
+        /* Result Screen */
+        .result-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .result-screen .score-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .score-pass { background: linear-gradient(135deg, #00B894, #55EFC4); }
+        .score-fail { background: linear-gradient(135deg, #E17055, #FAB1A0); }
+
+        .score-circle .label { font-size: 13px; font-weight: 400; opacity: 0.9; }
+
+        .result-detail {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0 30px;
+        }
+
+        .result-detail .item { text-align: center; }
+        .result-detail .val { font-size: 24px; font-weight: 700; }
+        .result-detail .lbl { font-size: 12px; color: var(--text-light); }
+
+        /* Wrong list */
+        .wrong-list {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .wrong-list h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: var(--danger);
+        }
+
+        .wrong-item {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .wrong-item .wi-q { font-weight: 600; margin-bottom: 6px; }
+        .wrong-item .wi-ans { color: var(--success); }
+        .wrong-item .wi-your { color: var(--danger); }
+
+        /* Favorites */
+        .fav-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .fav-btn:hover { transform: scale(1.2); }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .header-inner { flex-direction: column; gap: 8px; }
+            .feature-grid { grid-template-columns: repeat(2, 1fr); }
+            .question-card { padding: 16px; }
+            .stats-bar { font-size: 12px; }
+            .mode-btn { min-width: 100px; }
+            .q-text { font-size: 14px; }
+            .option { padding: 11px 12px; font-size: 13px; }
+            .option .opt-label { min-width: 24px; height: 24px; font-size: 11px; }
+            .btn { padding: 12px; font-size: 14px; }
+        }
+
+        @media (min-width: 769px) {
+            .bottom-nav { display: none; }
+            body { padding-bottom: 20px; }
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--card); border-top: 1px solid var(--border);
+            display: flex; justify-content: space-around;
+            padding: 5px 0 calc(5px + var(--safe-bottom));
+            z-index: 100; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 1px;
+            padding: 4px 10px; border: none; background: none; cursor: pointer;
+            font-size: 10px; color: var(--text-light); transition: color 0.2s; min-width: 50px;
+        }
+        .nav-item .nav-icon { font-size: 20px; }
+        .nav-item.active { color: var(--primary); font-weight: 700; }
+
+        /* Login & Account Styles */
+        .login-card {
+            background: var(--card); border-radius: 18px; padding: 28px 22px;
+            box-shadow: var(--shadow); max-width: 360px; margin: 30px auto;
+            text-align: center;
+        }
+        .login-card h2 { margin-bottom: 6px; font-size: 20px; }
+        .login-card p { color: var(--text-light); font-size: 13px; margin-bottom: 18px; }
+        .input-field {
+            width: 100%; padding: 12px 14px; border: 2px solid var(--border);
+            border-radius: 12px; font-size: 15px; outline: none;
+            transition: border-color 0.2s; background: var(--bg); margin-bottom: 12px;
+        }
+        .input-field:focus { border-color: var(--primary); }
+        .account-panel {
+            background: var(--card); border-radius: 16px; padding: 20px;
+            box-shadow: var(--shadow); margin-bottom: 14px;
+        }
+        .account-info { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+        .avatar {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(135deg, #6C5CE7, #A29BFE);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; color: white; font-weight: 700;
+        }
+        .sync-code-area {
+            background: var(--bg); border-radius: 10px; padding: 10px;
+            font-size: 11px; word-break: break-all; max-height: 80px;
+            overflow-y: auto; margin: 8px 0; line-height: 1.5;
+            font-family: monospace; color: var(--text-light);
+        }
+        .user-btn {
+            background: rgba(255,255,255,0.2); border: none; color: white;
+            padding: 4px 10px; border-radius: 14px; font-size: 12px;
+            cursor: pointer; white-space: nowrap; font-weight: 600;
+        }
+
+        /* Collection mode */
+        .q-card-wrapper { position: relative; }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            z-index: 999;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Exam timer */
+        .timer {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 14px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-inner">
+        <h1>🎭 演出经纪人刷题宝 <span>2026</span></h1>
+        <div style="display:flex;align-items:center;gap:8px">
+            <div class="stats-bar">
+                <div class="stat-item">✅ <span class="num" id="totalCorrect">0</span> 对</div>
+                <div class="stat-item">❌ <span class="num" id="totalWrong">0</span> 错</div>
+                <div class="stat-item">📊 <span class="num" id="accuracy">0%</span></div>
+            </div>
+            <button class="user-btn" id="userBtn" onclick="showAccountScreen()">登录</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="container" id="app">
+    <!-- Dynamic content -->
+</div>
+
+<div class="bottom-nav" id="bottomNav">
+    <button class="nav-item active" onclick="navTo('home')" data-nav="home"><span class="nav-icon">🏠</span><span>首页</span></button>
+    <button class="nav-item" onclick="navTo('practice')" data-nav="practice"><span class="nav-icon">📝</span><span>刷题</span></button>
+    <button class="nav-item" onclick="navTo('wrong')" data-nav="wrong"><span class="nav-icon">🔴</span><span>错题</span></button>
+    <button class="nav-item" onclick="navTo('fav')" data-nav="fav"><span class="nav-icon">⭐</span><span>收藏</span></button>
+    <button class="nav-item" onclick="navTo('me')" data-nav="me"><span class="nav-icon">👤</span><span>我的</span></button>
+</div>
+
+<script>
+// ========== 题库数据 ==========
+const questionBank = [
+    // ===== 科目一：思想政治与法律基础 - 单选题 =====
+    // tag: 'regular'=常规知识题(法规/政策/艺术), 'current'=时政题(时事新闻/会议)
+    {id:1, subject:1, type:'single', tag:'regular', q:'"表演内容含危害国家安全，或损害国家荣誉和利益的"行为属于违反《营业性演出管理条例》第（ ）条规定。', opts:['十五','二十','二十五','三十'], answer:'C'},
+    {id:2, subject:1, type:'single', tag:'regular', q:'临时搭建舞台的安全防范对象主要针对（ ）。', opts:['舞台台面','观众席','通道','看台附属设施'], answer:'A'},
+    {id:3, subject:1, type:'single', tag:'regular', q:'必须坚持国家利益至上，以（ ）为宗旨，以（ ）为根本。', opts:['人民安全，政治安全','政治安全，人民安全','人民安全，国家安全','国家安全，人民安全'], answer:'A'},
+    {id:4, subject:1, type:'single', tag:'regular', q:'五年来，我国统筹推进（ ）总体布局、协调推进（ ）战略布局。', opts:['五位一体，四个全面','四位一体，五个全面','五个全面，四位一体','四个全面，五位一体'], answer:'A'},
+    {id:5, subject:1, type:'single', tag:'regular', q:'法人的民事权利能力和民事行为能力，从法人（ ）时产生。', opts:['登记','批准','申请','成立'], answer:'D'},
+    {id:6, subject:1, type:'single', tag:'regular', q:'审批临时搭建舞台、看台的营业性演出时，不由文化主管部门核验的文件有（ ）。', opts:['依法验收后取得的演出场所合格证明','安全保卫工作方案和灭火、应急疏散预案','舞台、看台搭建公司资质证明','依法取得的安全、消防批准文件'], answer:'C'},
+    {id:7, subject:1, type:'single', tag:'regular', q:'（ ）是立足于社会层面培育社会主义核心价值所提出的价值目标和现实要求。', opts:['富强、民主、文明、和谐','自由、平等、公正、法治','爱国、敬业、诚信、友善','勤学、修德、明辨、笃实'], answer:'B'},
+    {id:8, subject:1, type:'single', tag:'regular', q:'要尊重世界文明多样性，以（ ）超越文明隔阂、（ ）超越文明冲突、文明共存超越（ ）。', opts:['文明交流，文明互鉴，文明优越','文化交流，文化互鉴，文化优势','文明发展，文明交流，文明分歧','文化发展，文化鉴赏，文化对话'], answer:'A'},
+    {id:9, subject:1, type:'single', tag:'regular', q:'党的十九大报告当中文化建设部分的关键词是（ ）。', opts:['坚定先进的文化理念','坚定文化自信','坚持创新性发展','坚持为人民服务'], answer:'B'},
+    {id:10, subject:1, type:'single', tag:'regular', q:'（ ）大型维修工程的验收，应有第三方的安全认证。', opts:['3年及3年以上','5年及5年以上','5年10年以下','5年15年以下'], answer:'B'},
+    {id:11, subject:1, type:'single', tag:'regular', q:'剧场工艺不符合剧场工艺安全相应标准的要求属于（ ）。', opts:['系统安全缺陷','功能缺陷','装置缺陷','器材缺陷'], answer:'B'},
+    {id:12, subject:1, type:'single', tag:'regular', q:'认定为严重失信主体不满（ ）个月的、认定为轻微失信主体不满（ ）个月的，不予信用修复。', opts:['7,5','5,5','6,3','6,6'], answer:'C'},
+    {id:13, subject:1, type:'single', tag:'regular', q:'安全生产工作应当以人为本，坚持（ ），坚持安全第一、预防为主、综合治理的方针。', opts:['安全发展','经济发展','社会发展','和谐发展'], answer:'A'},
+    {id:14, subject:1, type:'single', tag:'regular', q:'根据《营业性演出管理条例》规定，举办营业性演出，应当向演出所在地（ ）提出申请。', opts:['县级人民政府文化主管部门','市级人民政府文化主管部门','省级人民政府文化主管部门','国务院文化主管部门'], answer:'A'},
+    {id:15, subject:1, type:'single', tag:'regular', q:'习近平总书记指出：文艺创作方法有一百条、一千条，但最根本的方法是（ ）。', opts:['扎根人民','提升技术','寻找创作灵感','提升内涵'], answer:'A'},
+    {id:16, subject:1, type:'single', tag:'regular', q:'经过长期努力，（ ）这是我国发展新的历史方位。', opts:['中国特色社会主义进入了新时代','社会主义现代化建设进入新时代','改革开放进入了新时代','全面决胜小康社会进入决胜时期'], answer:'A'},
+    {id:17, subject:1, type:'single', tag:'regular', q:'大型群众性活动的承办者对其承办活动的安全负责，承办者的主要负责人为大型群众性活动的（ ）。', opts:['项目管理者','安全负责人','法定代表人','场地管理员'], answer:'B'},
+    {id:18, subject:1, type:'single', tag:'regular', q:'网络表演经纪机构为（ ）周岁以上的未成年人提供网络表演经纪服务的，应当对其身份信息进行认证，并经其监护人书面同意。', opts:['12','14','16','10'], answer:'C'},
+    {id:19, subject:1, type:'single', tag:'regular', q:'社会主义核心价值观是在（ ）提出的。', opts:['党的十六大','党的十七大','党的十八大','党的十九大'], answer:'C'},
+    {id:20, subject:1, type:'single', tag:'regular', q:'演出前应有风险预案。风险预案中应不包括（ ）。', opts:['防舞台机械意外坠落','防火','防滑','防演职人员意外跌落'], answer:'C'},
+    {id:21, subject:1, type:'single', tag:'regular', q:'任何组织或者个人不得招用未满（ ）的未成年人，国家另有规定的除外。', opts:['12周岁','14周岁','16周岁','18周岁'], answer:'C'},
+    {id:22, subject:1, type:'single', tag:'regular', q:'加快构建以（ ）为主体，（ ）相互促进的新发展格局。', opts:['国内小循环、国际国内单循环','国内小循环、国际国内双循环','国内大循环、国内国际单循环','国内大循环、国内国际双循环'], answer:'D'},
+    {id:23, subject:1, type:'single', tag:'regular', q:'外国人入境从事涉外营业性演出，在境内停留不超过（ ）日，视为短期工作任务。', opts:['30','60','90','120'], answer:'C'},
+    {id:24, subject:1, type:'single', tag:'regular', q:'演出开始入场验票时，当入场观众达到核准数量仍有观众等待入场的，正确做法是（ ）。', opts:['持票观众仍可放行进入','应立即终止验票并向演出所在地县级人民政府公安部门报告','应当拒绝其入场并向演出所在地县级人民政府报告','应报告演出所在地文化主管部门'], answer:'B'},
+    {id:25, subject:1, type:'single', tag:'regular', q:'（ ）是国家的根本法。', opts:['《民法典》','《宪法》','《刑法》','《税法》'], answer:'B'},
+    {id:26, subject:1, type:'single', tag:'current', q:'2021年7月1日，庆祝中国共产党成立100周年大会在（ ）隆重举行。', opts:['人民大会堂','故宫天坛','鸟巢','天安门广场'], answer:'D'},
+    {id:27, subject:1, type:'single', tag:'regular', q:'剧院和演出院团应建立演出安全（ ），警示演职人员安全意识。', opts:['管理制度','巡检制度','教育制度','禁止声明'], answer:'C'},
+    {id:28, subject:1, type:'single', tag:'regular', q:'应按照（ ）检测剧场工艺，剧场工艺应符合剧场工艺安全相应标准的要求。', opts:['演出功能','演出对象','演出性质','演出类型'], answer:'A'},
+    {id:29, subject:1, type:'single', tag:'regular', q:'传承中华文化，要实现中华文化的（ ）。', opts:['坚持突出本来、防范外来、面向未来','促进百花齐放、百家争鸣','坚持全面继承和发展','创造性转化、创新性发展'], answer:'D'},
+    {id:30, subject:1, type:'single', tag:'regular', q:'5年以上的舞台幕布应（ ）。', opts:['进行安全检测','必要的安全检修','检测防火性能','应有第三方的安全认证'], answer:'C'},
+    {id:31, subject:1, type:'single', tag:'regular', q:'鼓励各地探索对重点营业性演出门票销售实行（ ）管理。', opts:['人工智能','计算机','实名制','网络化'], answer:'C'},
+    {id:32, subject:1, type:'single', tag:'regular', q:'营业性演出冠以"中国"等字样的，由县级文化主管部门责令改正，没收违法所得，并处违法所得（ ）的罚款。', opts:['3倍以上5倍以下','5倍以上8倍以下','5倍以上10倍以下','8倍以上10倍以下'], answer:'A'},
+    {id:33, subject:1, type:'single', tag:'regular', q:'舞台机械（ ）年以上应进行安全检测和必要的安全检修。', opts:['3','5','10','15'], answer:'B'},
+    {id:34, subject:1, type:'single', tag:'regular', q:'消防安全重点单位应当确定（ ），组织实施本单位的消防安全管理工作。', opts:['应急管理人员','消防队伍','安全人员','消防安全管理人'], answer:'D'},
+    {id:35, subject:1, type:'single', tag:'regular', q:'下列可以提议宪法修改的是（ ）。', opts:['全国人大常委会','国务院','全国人大主席团','十分之一以上的全国人大代表'], answer:'A'},
+
+    // ===== 科目一：思想政治与法律基础 - 多选题 =====
+    {id:101, subject:1, type:'multi', tag:'regular', q:'下面选项中哪些属于十四个坚持？', opts:['坚持全面从严治党','坚持人与自然和谐共生','坚持改革开放','坚持党对人民军队的绝对领导'], answer:'ABD'},
+    {id:102, subject:1, type:'multi', tag:'regular', q:'任何单位和个人不得（ ）演出经纪资格证书。', opts:['伪造','变造','出租','出借'], answer:'ABCD'},
+    {id:103, subject:1, type:'multi', tag:'regular', q:'以下属于《著作权法》中的作品的有（ ）。', opts:['美术作品','建筑作品','摄影作品','舞蹈作品'], answer:'ABCD'},
+    {id:104, subject:1, type:'multi', tag:'regular', q:'三个坚持（ ）是新时代文化建设的基本要求。', opts:['坚持为人民服务，为社会主义服务','坚持创造性转化、创新性发展','坚持百花齐放、百家争鸣','坚持科教兴国、大力发展科学技术'], answer:'ABC'},
+    {id:105, subject:1, type:'multi', tag:'regular', q:'人民的需要是文艺存在的根本价值所在。能不能搞出优秀作品，最根本的决定于是否能（ ）。', opts:['为人民抒情','为人民抒怀','为人民抒写','为人民抒心'], answer:'ABC'},
+    {id:106, subject:1, type:'multi', tag:'regular', q:'演出经纪人员在演出经纪活动中应当遵守（ ）的原则。', opts:['公平','公开','公正','诚信'], answer:'ABCD'},
+    {id:107, subject:1, type:'multi', tag:'regular', q:'审批临时搭建舞台、看台的营业性演出时，文化主管部门应当核验的文件包括（ ）。', opts:['依法验收后取得的演出场所合格证明','安全保卫工作方案和灭火、应急疏散预案','消防安全设施检查记录','依法取得的安全、消防批准文件'], answer:'ABD'},
+    {id:108, subject:1, type:'multi', tag:'regular', q:'临时搭建舞台、看台风险类型包括（ ）。', opts:['火灾','触电','漏水','踩踏'], answer:'ABD'},
+    {id:109, subject:1, type:'multi', tag:'regular', q:'短期工作人员申请入境工作的申请工作许可包括（ ）。', opts:['申请人力资源社会保障部门许可证书及工作证明','申请财政部主管部门资金流水证明','申请文化主管部门演出流程','申请文化主管部门批准文书及工作证明'], answer:'AD'},
+    {id:110, subject:1, type:'multi', tag:'regular', q:'依法登记的演出经纪机构申请从事营业性演出活动，应当符合的条件有（ ）。', opts:['3名以上专职演出经纪人员','与其业务相适应的资金','与其演出业务相适应的专职演员和器材设备','5名以上演职人员'], answer:'AB'},
+
+    // ===== 科目一：判断题 =====
+    {id:201, subject:1, type:'judge', tag:'regular', q:'我国把文化市场作为社会主义精神文明建设重要阵地的根本原因是因为文化商品具有意识形态属性。', opts:['正确','错误'], answer:'A'},
+    {id:202, subject:1, type:'judge', tag:'regular', q:'演出活动许可制度包括：演出项目的许可，演出内容的许可，演出经营行为的许可。', opts:['正确','错误'], answer:'B', explanation:'还应包括对演出活动安全保证的许可。'},
+    {id:203, subject:1, type:'judge', tag:'regular', q:'经纪人的佣金可来自经纪合同外的第三方。', opts:['正确','错误'], answer:'B', explanation:'只有经纪合同中规定的经纪业务的委托方才有支付佣金的义务。'},
+    {id:204, subject:1, type:'judge', tag:'regular', q:'所谓演出经纪人，指在演出市场上为实现演出产品的交易进行中介服务并获取佣金的文化商人。', opts:['正确','错误'], answer:'A'},
+    {id:205, subject:1, type:'judge', tag:'regular', q:'谈判是一个循序渐进的过程，复杂的谈判一般有开局、摸底、报价、磋商、成交和签约五个阶段。', opts:['正确','错误'], answer:'A'},
+    {id:206, subject:1, type:'judge', tag:'regular', q:'文化主管部门审批营业性演出活动，应当核验负责该项业务演出经纪人员的身份证明。', opts:['正确','错误'], answer:'B', explanation:'应当核验演出经纪资格证书，而非身份证明。'},
+    {id:207, subject:1, type:'judge', tag:'regular', q:'文化市场的运行并不完全适用市场经济规律。', opts:['正确','错误'], answer:'B', explanation:'文化市场的运行必须符合市场经济规律。'},
+    {id:208, subject:1, type:'judge', tag:'regular', q:'文化市场运行必须以社会效益为最高准则。', opts:['正确','错误'], answer:'A'},
+
+    // ===== 科目二：演出市场政策与经纪实务 - 单选题 =====
+    {id:301, subject:2, type:'single', tag:'regular', q:'市场机制的基本要素是（ ）。', opts:['政府调控机制、价格机制、供求机制','政府调控机制、供求机制、竞争机制','政府调控机制、价格机制、竞争机制','价格机制、供求机制、竞争机制'], answer:'D'},
+    {id:302, subject:2, type:'single', tag:'regular', q:'以下关于演出市场的描述不正确的是（ ）。', opts:['演出市场的主体是从事演出交易活动的组织和个人','演出市场的运行必须遵守市场经济规律以经济效益为最高准则','文化市场运行过程中产生的娱乐及文化积累效果体现了其经济效益','演出场所、演员和观众都是演出市场的组成部分'], answer:'B', explanation:'文化市场运行必须以社会效益为最高准则。'},
+    {id:303, subject:2, type:'single', tag:'regular', q:'以下对演出主要特征描述不正确的是（ ）。', opts:['演出的非物质形态决定了不能先消费后付款','每一场演出都是表演者艺术生产和艺术再创作的过程','随着宣传渠道的扩展，现场演出的受众面可以是无限的','一场演出的有效经营活动都应在演出开始前完成'], answer:'C', explanation:'演出具有时效性和消费群体的有限性。'},
+    {id:304, subject:2, type:'single', tag:'regular', q:'舞台管理组的总负责人是（ ）。', opts:['导演','制片人','舞台监督','艺术总监'], answer:'C'},
+    {id:305, subject:2, type:'single', tag:'regular', q:'演出市场营销的前提与核心是（ ）。', opts:['演出经营策略','观众需求','演出表演者','文化主管部门'], answer:'B'},
+    {id:306, subject:2, type:'single', tag:'regular', q:'某演出项目总成本150万，可售票款总额250万，风险系数和类型是（ ）。', opts:['30%低风险项目','40%中等风险项目','60%中等风险项目','70%高风险项目'], answer:'C', explanation:'风险系数=150万/250万=60%，50%左右属于中等风险。'},
+    {id:307, subject:2, type:'single', tag:'regular', q:'设立文艺表演团体，应当向哪一级主管部门提出申请（ ）。', opts:['县级人民政府文化主管部门','省、自治区、直辖市人民政府文化主管部门','国务院文化主管部门','省级工商主管部门'], answer:'A'},
+    {id:308, subject:2, type:'single', tag:'regular', q:'个体演出经纪人应自领取营业执照之日起（ ）内向所在地县级文化主管部门备案。', opts:['10日','15日','20日','30日'], answer:'C'},
+    {id:309, subject:2, type:'single', tag:'regular', q:'关于假唱、假演奏，说法错误的是（ ）。', opts:['营业性演出不得以假唱、假演奏等手段欺骗观众','假唱是指使用事先录制好的歌曲代替现场演唱的行为','演出举办单位应对演唱、演奏行为作出记录备查','文化主管单位应对演唱、演奏行为进行监督、作出记录备查'], answer:'D', explanation:'应由演出举办单位派专人监督。'},
+    {id:310, subject:2, type:'single', tag:'regular', q:'文艺表演团体和演出经纪机构的营业性演出许可证有效期为（ ）。', opts:['1年','2年','3年','4年'], answer:'B'},
+    {id:311, subject:2, type:'single', tag:'regular', q:'大型群众性活动的安全责任人是（ ）。', opts:['演出团体的主要负责人','舞台搭建公司的主要负责人','演出场所经营单位的主要负责人','承办单位的主要负责人'], answer:'D'},
+    {id:312, subject:2, type:'single', tag:'regular', q:'表演者部分权利保护期为五十年，以下不受保护期限制的是（ ）。', opts:['保护表演形象不受歪曲','许可他人从现场直播其现场表演并获得报酬','许可他人录音录像并获得报酬','许可他人通过信息网络向公众传播其表演并获得报酬'], answer:'A'},
+    {id:313, subject:2, type:'single', tag:'regular', q:'演出经纪资格证书的有效期为（ ）。', opts:['3年','4年','5年','6年'], answer:'C'},
+    {id:314, subject:2, type:'single', tag:'regular', q:'演出经纪人员在持有演出经纪资格证期间应参加不少于（ ）学时继续教育。', opts:['12','18','24','30'], answer:'C'},
+    {id:315, subject:2, type:'single', tag:'regular', q:'注销演出经纪资格证书后，自注销之日起（ ）年内不得重新申请。', opts:['1','2','3','5'], answer:'D'},
+    {id:316, subject:2, type:'single', tag:'regular', q:'经纪公司为旗下艺人开发动漫形象的周边产品，这种授权形式属于（ ）。', opts:['演出授权','作品授权','肖像授权','以上都不是'], answer:'C'},
+    {id:317, subject:2, type:'single', tag:'regular', q:'大型群众活动中发生安全事故，安全责任人不立即启动应急预案的罚款金额为（ ）。', opts:['5千元以上5万元以下','5千元以上10万元以下','1万元以上5万元以下','1万元以上10万元以下'], answer:'A'},
+    {id:318, subject:2, type:'single', tag:'regular', q:'大型演出的观众数量和区域划分应当由（ ）核准确定。', opts:['省级文化主管部门','演出所在地文化主管部门','演出场所经营单位','演出所在地公安部门'], answer:'D'},
+    {id:319, subject:2, type:'single', tag:'regular', q:'以下不属于演出经纪机构的是（ ）。', opts:['个体演出经纪人','演出票务代理公司','演出项目营销单位','演员经纪公司'], answer:'A'},
+    {id:320, subject:2, type:'single', tag:'regular', q:'证书有效期到期（ ）仍未提交换证申请，该证书作废。', opts:['半年','一年','两年','三年'], answer:'B'},
+
+    // ===== 科目二：多选题 =====
+    {id:401, subject:2, type:'multi', tag:'regular', q:'以下属于文化市场范畴的包括（ ）。', opts:['演出市场、娱乐市场','音像市场、电影市场','网络文化市场、书报刊市场','艺术品市场、文物市场'], answer:'ABCD'},
+    {id:402, subject:2, type:'multi', tag:'regular', q:'属于营业性演出的是（ ）。', opts:['某企业包场的话剧作品演出','歌手为宣传唱片举办的歌友会','某大学师生在学校礼堂举办校园联欢晚会','某报社年底举办的客户答谢晚会'], answer:'ABD'},
+    {id:403, subject:2, type:'multi', tag:'regular', q:'我国演出市场的基本制度是（ ）。', opts:['营业性演出行政许可制度','文化主管部门审核制度','演出经纪制度','演出合同制度'], answer:'ACD'},
+    {id:404, subject:2, type:'multi', tag:'regular', q:'经纪人的权利包括（ ）。', opts:['依照法律法规及合同获得的信息费','依照法律法规及合同约定获得的佣金','通过合法途径了解、核实委托方提供的资信材料','在法律法规允许的范围内开展经纪活动'], answer:'BCD'},
+    {id:405, subject:2, type:'multi', tag:'regular', q:'经纪人不得从事的行为包括（ ）。', opts:['采取胁迫、欺诈、贿赂和恶意串通等手段促成交易','伪造、涂改、买卖各种商业交易文件和凭证','向当事人索取佣金以外的酬劳','超越核准的经纪业务范围'], answer:'ABCD'},
+    {id:406, subject:2, type:'multi', tag:'regular', q:'演出经纪人的基本工作包括（ ）。', opts:['经纪业务相关信息的获取和整理','确定经纪对象和经纪项目，进行业务谈判','签订经纪业务合同、管理，严格履行合同并取得佣金收入','经纪业务总结和评估管理'], answer:'ABCD'},
+    {id:407, subject:2, type:'multi', tag:'regular', q:'根据《著作权法》，表演者对其表演享有下列权利（ ）。', opts:['表明表演者身份、保护表演形象不受歪曲','许可他人从现场直播和公开传送其现场表演并获得报酬','许可他人录音录像并获得报酬','许可他人复制、发行录有其表演的录音录像制品并获得报酬'], answer:'ABCD'},
+    {id:408, subject:2, type:'multi', tag:'regular', q:'设立演出场所经营单位的描述中正确的是（ ）。', opts:['应依法到工商行政管理部门办理注册登记，领取营业执照','应自领取营业执照之日起20日内向所在地县级文化主管部门备案','应依照有关消防、卫生管理等法律法规办理审批手续','应自县级文化主管部门备案后依法到工商行政管理部门领取营业执照'], answer:'ABC'},
+
+    // ===== 科目二：判断题 =====
+    {id:501, subject:2, type:'judge', tag:'regular', q:'票务公司在演出项目未经审批时不得进行销售，只能接受预定。', opts:['正确','错误'], answer:'B', explanation:'不得擅自预订、销售未经审批的演出活动门票。'},
+    {id:502, subject:2, type:'judge', tag:'regular', q:'合作作品可以分割使用，作者对各自创作的部分不单独享有著作权。', opts:['正确','错误'], answer:'B', explanation:'作者对各自创作的部分可以单独享有著作权。'},
+    {id:503, subject:2, type:'judge', tag:'regular', q:'对于成熟的演出项目不用考虑价格因素，应尽快签约占据先机。', opts:['正确','错误'], answer:'B', explanation:'对于成熟的项目，要注意控制签约金额，避免价格虚高。'},
+    {id:504, subject:2, type:'judge', tag:'regular', q:'演出主办单位应定期对场馆固定设施设备进行安全检查。', opts:['正确','错误'], answer:'B', explanation:'应由演出场馆负责定期检查固定设施。'},
+    {id:505, subject:2, type:'judge', tag:'regular', q:'宣传预算应根据项目情况确定，一般都应加大宣传力度，广泛投放。', opts:['正确','错误'], answer:'B', explanation:'宣传预算应根据市场定位和受众群体确定，并非都要广泛投放。'},
+    {id:506, subject:2, type:'judge', tag:'regular', q:'最高票价一般代表着该演出项目的规格档次和水平，因此越高越好。', opts:['正确','错误'], answer:'B', explanation:'票价需要根据市场和观众承受能力合理确定。'},
+    {id:507, subject:2, type:'judge', tag:'regular', q:'外国投资者可设立外资经营的文艺表演团体、演出经纪机构。', opts:['正确','错误'], answer:'B', explanation:'外国投资者不得设立外资经营的文艺表演团体、演出经纪机构、演出场所经营单位。'},
+];
+
+// ========== 账号系统 ==========
+let currentUser = localStorage.getItem('ycjjr_user') || '';
+
+function getKey(k) { return currentUser ? `ycjjr_${currentUser}_${k}` : `ycjjr_${k}`; }
+
+// ========== 应用状态 ==========
+let state = {
+    screen: 'home',
+    mode: 'practice',
+    subjectFilter: 0,
+    typeFilter: 'all',
+    tagFilter: 'all', // 'all', 'regular', 'current'
+    currentQuestions: [],
+    currentIndex: 0,
+    userAnswers: {},
+    answered: {},
+    showAnswer: {},
+    favorites: JSON.parse(localStorage.getItem(getKey('fav')) || '[]'),
+    wrongIds: JSON.parse(localStorage.getItem(getKey('wrong')) || '[]'),
+    stats: JSON.parse(localStorage.getItem(getKey('stats')) || '{"correct":0,"wrong":0}'),
+    examTimer: null,
+    examTimeLeft: 0,
+};
+
+function saveState() {
+    localStorage.setItem(getKey('fav'), JSON.stringify(state.favorites));
+    localStorage.setItem(getKey('wrong'), JSON.stringify(state.wrongIds));
+    localStorage.setItem(getKey('stats'), JSON.stringify(state.stats));
+}
+
+function updateHeader() {
+    document.getElementById('totalCorrect').textContent = state.stats.correct;
+    document.getElementById('totalWrong').textContent = state.stats.wrong;
+    const total = state.stats.correct + state.stats.wrong;
+    const acc = total > 0 ? Math.round(state.stats.correct / total * 100) : 0;
+    document.getElementById('accuracy').textContent = acc + '%';
+    document.getElementById('userBtn').textContent = currentUser || '登录';
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function getFilteredQuestions() {
+    let qs = [...questionBank];
+    if (state.subjectFilter > 0) qs = qs.filter(q => q.subject === state.subjectFilter);
+    if (state.typeFilter !== 'all') qs = qs.filter(q => q.type === state.typeFilter);
+    if (state.tagFilter !== 'all') qs = qs.filter(q => q.tag === state.tagFilter);
+    return qs;
+}
+
+// ========== 底部导航 ==========
+function navTo(t) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelector(`[data-nav="${t}"]`)?.classList.add('active');
+    if (t === 'home') goHome();
+    else if (t === 'practice') startRandom();
+    else if (t === 'wrong') startWrong();
+    else if (t === 'fav') startFavorite();
+    else if (t === 'me') showAccountScreen();
+}
+
+function setActiveNav(n) {
+    document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+    document.querySelector(`[data-nav="${n}"]`)?.classList.add('active');
+}
+
+// ========== 渲染函数 ==========
+function render() {
+    updateHeader();
+    const app = document.getElementById('app');
+    switch(state.screen) {
+        case 'home': renderHome(app); setActiveNav('home'); break;
+        case 'practice': renderQuestion(app); break;
+        case 'exam': renderQuestion(app); break;
+        case 'result': renderResult(app); break;
+        case 'account': renderAccountScreen(app); setActiveNav('me'); break;
+    }
+}
+
+function renderHome(app) {
+    const totalQ = questionBank.length;
+    const s1 = questionBank.filter(q => q.subject === 1).length;
+    const s2 = questionBank.filter(q => q.subject === 2).length;
+    const reg = questionBank.filter(q => q.tag === 'regular').length;
+    const cur = questionBank.filter(q => q.tag === 'current').length;
+
+    app.innerHTML = `
+        <div class="home-screen">
+            <div class="emoji">🎭</div>
+            <h2>2026 演出经纪人刷题宝</h2>
+            <p>共 ${totalQ} 题 · 科目一 ${s1}题 · 科目二 ${s2}题<br>📚 常规题 ${reg}题 · 📰 时政题 ${cur}题</p>
+            <div class="feature-grid">
+                <div class="feature-card" onclick="startPractice()">
+                    <div class="f-icon">📝</div>
+                    <div class="f-title">顺序练习</div>
+                    <div class="f-desc">逐题练习，即时看答案</div>
+                </div>
+                <div class="feature-card" onclick="startRandom()">
+                    <div class="f-icon">🎲</div>
+                    <div class="f-title">随机刷题</div>
+                    <div class="f-desc">随机打乱顺序刷题</div>
+                </div>
+                <div class="feature-card" onclick="startExam()">
+                    <div class="f-icon">📋</div>
+                    <div class="f-title">模拟考试</div>
+                    <div class="f-desc">限时90分钟模拟</div>
+                </div>
+                <div class="feature-card" onclick="startWrong()">
+                    <div class="f-icon">🔴</div>
+                    <div class="f-title">错题回顾</div>
+                    <div class="f-desc">共 ${state.wrongIds.length} 道错题</div>
+                </div>
+                <div class="feature-card" onclick="startFavorite()">
+                    <div class="f-icon">⭐</div>
+                    <div class="f-title">我的收藏</div>
+                    <div class="f-desc">共 ${state.favorites.length} 道收藏</div>
+                </div>
+                <div class="feature-card" onclick="startTagPractice('regular')">
+                    <div class="f-icon">📚</div>
+                    <div class="f-title">常规题专练</div>
+                    <div class="f-desc">法规/政策/艺术基础</div>
+                </div>
+                <div class="feature-card" onclick="startTagPractice('current')">
+                    <div class="f-icon">📰</div>
+                    <div class="f-title">时政题专练</div>
+                    <div class="f-desc">时事新闻/最新动态</div>
+                </div>
+                <div class="feature-card" onclick="showAccountScreen()">
+                    <div class="f-icon">👤</div>
+                    <div class="f-title">账号同步</div>
+                    <div class="f-desc">${currentUser ? '已登录: ' + currentUser : '登录同步数据'}</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function startPractice() {
+    state.screen = 'practice'; state.mode = 'practice'; state.tagFilter = 'all';
+    state.currentQuestions = getFilteredQuestions();
+    state.currentIndex = 0; state.userAnswers = {}; state.answered = {}; state.showAnswer = {};
+    render();
+}
+
+function startRandom() {
+    state.screen = 'practice'; state.mode = 'practice'; state.tagFilter = 'all';
+    state.currentQuestions = shuffle(getFilteredQuestions());
+    state.currentIndex = 0; state.userAnswers = {}; state.answered = {}; state.showAnswer = {};
+    render();
+}
+
+function startTagPractice(tag) {
+    state.tagFilter = tag; state.screen = 'practice'; state.mode = 'practice';
+    state.currentQuestions = shuffle(getFilteredQuestions());
+    if (state.currentQuestions.length === 0) { showToast('该分类暂无题目'); state.tagFilter = 'all'; return; }
+    state.currentIndex = 0; state.userAnswers = {}; state.answered = {}; state.showAnswer = {};
+    render();
+}
+
+function startExam() {
+    state.screen = 'exam';
+    state.mode = 'exam';
+    // 模拟考试：抽取100题（单选50 + 多选30 + 判断20）
+    let singles = shuffle(questionBank.filter(q => q.type === 'single'));
+    let multis = shuffle(questionBank.filter(q => q.type === 'multi'));
+    let judges = shuffle(questionBank.filter(q => q.type === 'judge'));
+    const examQs = [
+        ...singles.slice(0, Math.min(50, singles.length)),
+        ...multis.slice(0, Math.min(30, multis.length)),
+        ...judges.slice(0, Math.min(20, judges.length))
+    ];
+    state.currentQuestions = examQs;
+    state.currentIndex = 0;
+    state.userAnswers = {};
+    state.answered = {};
+    state.showAnswer = {};
+    state.examTimeLeft = 90 * 60; // 90 minutes
+    if (state.examTimer) clearInterval(state.examTimer);
+    state.examTimer = setInterval(() => {
+        state.examTimeLeft--;
+        const m = Math.floor(state.examTimeLeft / 60);
+        const s = state.examTimeLeft % 60;
+        const timerEl = document.getElementById('examTimer');
+        if (timerEl) timerEl.textContent = `⏱ ${m}:${s.toString().padStart(2,'0')}`;
+        if (state.examTimeLeft <= 0) {
+            clearInterval(state.examTimer);
+            finishExam();
+        }
+    }, 1000);
+    render();
+}
+
+function startWrong() {
+    const wrongQs = questionBank.filter(q => state.wrongIds.includes(q.id));
+    if (wrongQs.length === 0) { showToast('暂无错题 🎉'); return; }
+    state.screen = 'practice';
+    state.mode = 'wrong';
+    state.currentQuestions = shuffle(wrongQs);
+    state.currentIndex = 0;
+    state.userAnswers = {};
+    state.answered = {};
+    state.showAnswer = {};
+    render();
+}
+
+function startFavorite() {
+    const favQs = questionBank.filter(q => state.favorites.includes(q.id));
+    if (favQs.length === 0) { showToast('暂无收藏'); return; }
+    state.screen = 'practice';
+    state.mode = 'favorite';
+    state.currentQuestions = favQs;
+    state.currentIndex = 0;
+    state.userAnswers = {};
+    state.answered = {};
+    state.showAnswer = {};
+    render();
+}
+
+function renderQuestion(app) {
+    const qs = state.currentQuestions;
+    if (qs.length === 0) {
+        app.innerHTML = '<div class="home-screen"><div class="emoji">😅</div><h2>暂无题目</h2><p>请调整筛选条件</p><button class="btn btn-primary" onclick="goHome()" style="max-width:200px;margin:0 auto;">返回首页</button></div>';
+        return;
+    }
+    const q = qs[state.currentIndex];
+    const isExam = state.screen === 'exam';
+    const isAnswered = state.answered[q.id];
+    const userAns = state.userAnswers[q.id] || '';
+    const showAns = state.showAnswer[q.id];
+    const isFav = state.favorites.includes(q.id);
+
+    const labels = ['A','B','C','D','E','F'];
+    const typeName = {single:'单选题', multi:'多选题', judge:'判断题'};
+    const typeClass = {single:'badge-single', multi:'badge-multi', judge:'badge-judge'};
+    const subjectName = q.subject === 1 ? '思想政治与法律基础' : '演出市场政策与经纪实务';
+    const tagName = q.tag === 'current' ? '📰 时政' : '📚 常规';
+    const tagClass = q.tag === 'current' ? 'badge-current' : 'badge-regular';
+
+    const progress = ((state.currentIndex + 1) / qs.length * 100).toFixed(1);
+
+    let html = '';
+
+    // Filter bar (practice mode only)
+    if (!isExam) {
+        html += `
+        <div class="filter-bar">
+            <button class="filter-btn ${state.subjectFilter===0?'active':''}" onclick="setFilter('subject',0)">全部科目</button>
+            <button class="filter-btn ${state.subjectFilter===1?'active':''}" onclick="setFilter('subject',1)">科目一</button>
+            <button class="filter-btn ${state.subjectFilter===2?'active':''}" onclick="setFilter('subject',2)">科目二</button>
+            <button class="filter-btn ${state.typeFilter==='all'?'active':''}" onclick="setFilter('type','all')">全部题型</button>
+            <button class="filter-btn ${state.typeFilter==='single'?'active':''}" onclick="setFilter('type','single')">单选</button>
+            <button class="filter-btn ${state.typeFilter==='multi'?'active':''}" onclick="setFilter('type','multi')">多选</button>
+            <button class="filter-btn ${state.typeFilter==='judge'?'active':''}" onclick="setFilter('type','judge')">判断</button>
+            <button class="filter-btn ${state.tagFilter==='all'?'active':''}" onclick="setFilter('tag','all')">全部分类</button>
+            <button class="filter-btn ${state.tagFilter==='regular'?'active':''}" onclick="setFilter('tag','regular')">📚 常规题</button>
+            <button class="filter-btn ${state.tagFilter==='current'?'active':''}" onclick="setFilter('tag','current')">📰 时政题</button>
+        </div>`;
+    }
+
+    // Progress
+    html += `<div class="progress-wrap"><div class="progress-fill" style="width:${progress}%"></div></div>`;
+
+    // Exam timer
+    if (isExam) {
+        const m = Math.floor(state.examTimeLeft / 60);
+        const s = state.examTimeLeft % 60;
+        html += `<div style="text-align:center;margin-bottom:12px;"><span class="timer" id="examTimer">⏱ ${m}:${s.toString().padStart(2,'0')}</span></div>`;
+    }
+
+    // Question card
+    html += `<div class="q-card-wrapper">
+    <div class="question-card">
+        <button class="fav-btn" onclick="toggleFav(${q.id})">${isFav ? '⭐' : '☆'}</button>
+        <div class="q-meta">
+            <span class="q-badge ${typeClass[q.type]}">${typeName[q.type]}</span>
+            <span class="q-badge badge-subject">${subjectName}</span>
+            <span class="q-badge ${tagClass}">${tagName}</span>
+            <span class="q-number">${state.currentIndex + 1} / ${qs.length}</span>
+        </div>
+        <div class="q-text">${q.q}</div>
+        <div class="options">`;
+
+    q.opts.forEach((opt, i) => {
+        const label = labels[i];
+        let cls = 'option';
+        const isSelected = q.type === 'multi' ? userAns.includes(label) : userAns === label;
+        if (isSelected) cls += ' selected';
+
+        if (showAns && !isExam) {
+            cls += ' disabled';
+            const isCorrectOpt = q.answer.includes(label);
+            if (isCorrectOpt) cls += ' correct';
+            else if (isSelected && !isCorrectOpt) cls += ' wrong';
+        }
+
+        html += `<div class="${cls}" onclick="selectOption(${q.id},'${label}','${q.type}')">
+            <span class="opt-label">${label}</span>
+            <span>${opt}</span>
+        </div>`;
+    });
+
+    html += `</div>`;
+
+    // Multi-select submit button
+    if (q.type === 'multi' && !isAnswered && !isExam) {
+        html += `<div class="btn-row" style="margin-top:16px"><button class="btn btn-submit" onclick="submitMulti(${q.id})">确认提交</button></div>`;
+    }
+
+    // Answer reveal (practice mode)
+    if (showAns && !isExam) {
+        const isCorrect = userAns === q.answer || (q.type === 'multi' && sortStr(userAns) === sortStr(q.answer));
+        html += `<div class="answer-section ${isCorrect ? 'answer-correct' : 'answer-wrong'}">
+            <div class="label">${isCorrect ? '✅ 回答正确！' : '❌ 回答错误'}</div>
+            <div class="detail">
+                <strong>正确答案：</strong>${q.answer}<br>
+                <strong>你的答案：</strong>${userAns || '未作答'}
+                ${q.explanation ? '<br><strong>解析：</strong>' + q.explanation : ''}
+            </div>
+        </div>`;
+    }
+
+    html += `</div></div>`;
+
+    // Navigation buttons
+    html += `<div class="btn-row">
+        <button class="btn btn-outline" onclick="goHome()">🏠 首页</button>
+        ${state.currentIndex > 0 ? '<button class="btn btn-outline" onclick="prevQ()">← 上一题</button>' : ''}
+        ${state.currentIndex < qs.length - 1 ? '<button class="btn btn-primary" onclick="nextQ()">下一题 →</button>' : ''}
+        ${isExam ? '<button class="btn btn-submit" onclick="finishExam()">交卷</button>' : ''}
+    </div>`;
+
+    app.innerHTML = html;
+}
+
+function selectOption(qId, label, type) {
+    const q = state.currentQuestions.find(x => x.id === qId);
+    if (!q) return;
+    const isExam = state.screen === 'exam';
+
+    if (!isExam && state.answered[qId]) return;
+
+    if (type === 'multi') {
+        let cur = state.userAnswers[qId] || '';
+        if (cur.includes(label)) cur = cur.replace(label, '');
+        else cur += label;
+        state.userAnswers[qId] = cur;
+        if (isExam) state.answered[qId] = true;
+        render();
+        return;
+    }
+
+    // Single / Judge
+    state.userAnswers[qId] = label;
+    state.answered[qId] = true;
+
+    if (!isExam) {
+        state.showAnswer[qId] = true;
+        const isCorrect = label === q.answer;
+        if (isCorrect) {
+            state.stats.correct++;
+            // Remove from wrong if was wrong before
+            state.wrongIds = state.wrongIds.filter(id => id !== qId);
+        } else {
+            state.stats.wrong++;
+            if (!state.wrongIds.includes(qId)) state.wrongIds.push(qId);
+        }
+        saveState();
+    }
+    render();
+}
+
+function submitMulti(qId) {
+    const q = state.currentQuestions.find(x => x.id === qId);
+    if (!q) return;
+    const userAns = state.userAnswers[qId] || '';
+    if (!userAns) { showToast('请至少选择一个选项'); return; }
+
+    state.answered[qId] = true;
+    state.showAnswer[qId] = true;
+
+    const isCorrect = sortStr(userAns) === sortStr(q.answer);
+    if (isCorrect) {
+        state.stats.correct++;
+        state.wrongIds = state.wrongIds.filter(id => id !== qId);
+    } else {
+        state.stats.wrong++;
+        if (!state.wrongIds.includes(qId)) state.wrongIds.push(qId);
+    }
+    saveState();
+    render();
+}
+
+function sortStr(s) { return s.split('').sort().join(''); }
+
+function nextQ() {
+    if (state.currentIndex < state.currentQuestions.length - 1) {
+        state.currentIndex++;
+        render();
+        window.scrollTo(0, 0);
+    }
+}
+
+function prevQ() {
+    if (state.currentIndex > 0) {
+        state.currentIndex--;
+        render();
+        window.scrollTo(0, 0);
+    }
+}
+
+function goHome() {
+    if (state.examTimer) { clearInterval(state.examTimer); state.examTimer = null; }
+    state.screen = 'home';
+    render();
+}
+
+function toggleFav(qId) {
+    if (state.favorites.includes(qId)) {
+        state.favorites = state.favorites.filter(id => id !== qId);
+        showToast('已取消收藏');
+    } else {
+        state.favorites.push(qId);
+        showToast('已收藏 ⭐');
+    }
+    saveState();
+    render();
+}
+
+function setFilter(type, val) {
+    if (type === 'subject') state.subjectFilter = val;
+    else if (type === 'type') state.typeFilter = val;
+    else if (type === 'tag') state.tagFilter = val;
+    state.currentQuestions = state.mode === 'practice' ? getFilteredQuestions() : shuffle(getFilteredQuestions());
+    state.currentIndex = 0;
+    state.userAnswers = {};
+    state.answered = {};
+    state.showAnswer = {};
+    render();
+}
+
+function finishExam() {
+    if (state.examTimer) { clearInterval(state.examTimer); state.examTimer = null; }
+    // Calculate results
+    let correct = 0, wrong = 0, unanswered = 0;
+    const wrongList = [];
+
+    state.currentQuestions.forEach(q => {
+        const userAns = state.userAnswers[q.id] || '';
+        if (!userAns) {
+            unanswered++;
+            if (!state.wrongIds.includes(q.id)) state.wrongIds.push(q.id);
+            wrongList.push({ q: q.q, correctAns: q.answer, userAns: '未作答' });
+            return;
+        }
+        const isCorrect = q.type === 'multi'
+            ? sortStr(userAns) === sortStr(q.answer)
+            : userAns === q.answer;
+        if (isCorrect) {
+            correct++;
+            state.stats.correct++;
+            state.wrongIds = state.wrongIds.filter(id => id !== q.id);
+        } else {
+            wrong++;
+            state.stats.wrong++;
+            if (!state.wrongIds.includes(q.id)) state.wrongIds.push(q.id);
+            wrongList.push({ q: q.q, correctAns: q.answer, userAns: userAns });
+        }
+    });
+
+    saveState();
+
+    state.screen = 'result';
+    state._examResult = { correct, wrong, unanswered, total: state.currentQuestions.length, wrongList, score: correct };
+    render();
+}
+
+function renderResult(app) {
+    const r = state._examResult;
+    const pass = r.score >= 60;
+    const pct = Math.round(r.score / r.total * 100);
+
+    let html = `<div class="result-screen">
+        <div class="score-circle ${pass ? 'score-pass' : 'score-fail'}">
+            <span>${r.score}</span>
+            <span class="label">/ ${r.total} 分</span>
+        </div>
+        <h2 style="margin:16px 0 8px">${pass ? '🎉 恭喜通过！' : '💪 继续加油！'}</h2>
+        <p style="color:var(--text-light)">正确率 ${pct}% · ${pass ? '达到' : '未达到'}合格标准（预估60分）</p>
+        <div class="result-detail">
+            <div class="item"><div class="val" style="color:var(--success)">${r.correct}</div><div class="lbl">正确</div></div>
+            <div class="item"><div class="val" style="color:var(--danger)">${r.wrong}</div><div class="lbl">错误</div></div>
+            <div class="item"><div class="val" style="color:var(--warning)">${r.unanswered}</div><div class="lbl">未答</div></div>
+        </div>
+        <div class="btn-row" style="max-width:400px;margin:0 auto">
+            <button class="btn btn-outline" onclick="goHome()">返回首页</button>
+            <button class="btn btn-primary" onclick="startExam()">再考一次</button>
+        </div>`;
+
+    if (r.wrongList.length > 0) {
+        html += `<div class="wrong-list"><h3>📋 错题回顾（${r.wrongList.length}题）</h3>`;
+        r.wrongList.forEach((w, i) => {
+            html += `<div class="wrong-item">
+                <div class="wi-q">${i+1}. ${w.q.substring(0, 80)}${w.q.length > 80 ? '...' : ''}</div>
+                <div class="wi-ans">正确答案：${w.correctAns}</div>
+                <div class="wi-your">你的答案：${w.userAns}</div>
+            </div>`;
+        });
+        html += `</div>`;
+    }
+
+    html += `</div>`;
+    app.innerHTML = html;
+}
+
+// ========== 账号与同步 ==========
+function showAccountScreen() { state.screen = 'account'; render(); }
+
+function renderAccountScreen(app) {
+    const total = state.stats.correct + state.stats.wrong;
+    const acc = total > 0 ? Math.round(state.stats.correct / total * 100) : 0;
+
+    if (!currentUser) {
+        app.innerHTML = `<div class="login-card">
+            <div style="font-size:48px;margin-bottom:12px">👤</div>
+            <h2>登录账号</h2>
+            <p>输入用户名即可登录，数据按账号独立存储<br>支持生成同步码在其他设备导入</p>
+            <input class="input-field" id="loginName" placeholder="输入用户名（至少2个字符）" maxlength="20">
+            <div class="btn-row"><button class="btn btn-primary" onclick="doLogin()">登录</button></div>
+        </div>`;
+        return;
+    }
+
+    const initial = currentUser.charAt(0).toUpperCase();
+    app.innerHTML = `
+    <div style="padding:8px 0">
+        <div class="account-panel">
+            <div class="account-info">
+                <div class="avatar">${initial}</div>
+                <div>
+                    <div style="font-size:16px;font-weight:700">${currentUser}</div>
+                    <div style="font-size:12px;color:var(--text-light)">已做 ${total} 题 · 正确率 ${acc}% · 错题 ${state.wrongIds.length} · 收藏 ${state.favorites.length}</div>
+                </div>
+            </div>
+        </div>
+        <div class="account-panel">
+            <div style="font-weight:700;margin-bottom:10px">📤 数据同步</div>
+            <p style="font-size:12px;color:var(--text-light);margin-bottom:10px">生成同步码，在其他设备粘贴导入即可同步数据</p>
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="exportSyncCode()">生成同步码</button>
+                <button class="btn btn-outline" onclick="showImportUI()">导入同步码</button>
+            </div>
+            <div id="syncArea"></div>
+        </div>
+        <div class="account-panel">
+            <div class="btn-row">
+                <button class="btn btn-outline" onclick="resetStats()">🔄 重置数据</button>
+                <button class="btn btn-outline" style="border-color:var(--danger);color:var(--danger)" onclick="doLogout()">退出登录</button>
+            </div>
+        </div>
+    </div>`;
+}
+
+function doLogin() {
+    const name = document.getElementById('loginName')?.value?.trim();
+    if (!name || name.length < 2) { showToast('用户名至少2个字符'); return; }
+    currentUser = name.toLowerCase();
+    localStorage.setItem('ycjjr_user', currentUser);
+    // 加载该用户数据
+    state.favorites = JSON.parse(localStorage.getItem(getKey('fav')) || '[]');
+    state.wrongIds = JSON.parse(localStorage.getItem(getKey('wrong')) || '[]');
+    state.stats = JSON.parse(localStorage.getItem(getKey('stats')) || '{"correct":0,"wrong":0}');
+    showToast('欢迎 ' + currentUser + ' 🎉');
+    render();
+}
+
+function doLogout() {
+    if (!confirm('确定退出登录？数据已保存在本地。')) return;
+    currentUser = '';
+    localStorage.removeItem('ycjjr_user');
+    state.favorites = JSON.parse(localStorage.getItem(getKey('fav')) || '[]');
+    state.wrongIds = JSON.parse(localStorage.getItem(getKey('wrong')) || '[]');
+    state.stats = JSON.parse(localStorage.getItem(getKey('stats')) || '{"correct":0,"wrong":0}');
+    showToast('已退出登录');
+    render();
+}
+
+function resetStats() {
+    if (confirm('确定要清空所有练习记录、错题和收藏吗？')) {
+        state.stats = { correct: 0, wrong: 0 };
+        state.wrongIds = [];
+        state.favorites = [];
+        saveState();
+        render();
+        showToast('数据已重置');
+    }
+}
+
+function exportSyncCode() {
+    const data = { u: currentUser, f: state.favorites, w: state.wrongIds, s: state.stats, t: Date.now() };
+    const code = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    const area = document.getElementById('syncArea');
+    area.innerHTML = `<div class="sync-code-area" id="codeBox">${code}</div>
+        <button class="btn btn-submit" style="margin-top:6px;font-size:12px;padding:8px" onclick="copyCode()">📋 复制同步码</button>`;
+}
+
+function copyCode() {
+    const code = document.getElementById('codeBox')?.textContent;
+    if (code) {
+        navigator.clipboard?.writeText(code).then(() => showToast('已复制到剪贴板')).catch(() => {
+            // fallback
+            const ta = document.createElement('textarea');
+            ta.value = code; document.body.appendChild(ta); ta.select();
+            document.execCommand('copy'); document.body.removeChild(ta);
+            showToast('已复制到剪贴板');
+        });
+    }
+}
+
+function showImportUI() {
+    const area = document.getElementById('syncArea');
+    area.innerHTML = `<textarea class="input-field" id="importCode" placeholder="粘贴同步码..." style="height:80px;margin-top:8px;font-size:12px;font-family:monospace"></textarea>
+        <button class="btn btn-submit" style="margin-top:6px;font-size:13px;padding:10px" onclick="doImport()">导入数据</button>`;
+}
+
+function doImport() {
+    const code = document.getElementById('importCode')?.value?.trim();
+    if (!code) { showToast('请粘贴同步码'); return; }
+    try {
+        const data = JSON.parse(decodeURIComponent(escape(atob(code))));
+        if (data && data.s) {
+            state.favorites = data.f || [];
+            state.wrongIds = data.w || [];
+            state.stats = data.s || { correct: 0, wrong: 0 };
+            saveState();
+            showToast('导入成功 🎉');
+            render();
+        } else { showToast('同步码格式错误'); }
+    } catch(e) { showToast('同步码无效'); }
+}
+
+// ========== 初始化 ==========
+render();
+
+// 键盘快捷键
+document.addEventListener('keydown', (e) => {
+    if (state.screen !== 'practice' && state.screen !== 'exam') return;
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextQ(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevQ(); }
+});
+
+// 移动端滑动手势
+let touchStartX = 0, touchStartY = 0;
+document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+document.addEventListener('touchend', (e) => {
+    if (state.screen !== 'practice' && state.screen !== 'exam') return;
+    const dx = e.changedTouches[0].screenX - touchStartX;
+    const dy = e.changedTouches[0].screenY - touchStartY;
+    if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+    if (dx < -60) nextQ();
+    else if (dx > 60) prevQ();
+}, { passive: true });
+</script>
+
+</body>
+</html>
