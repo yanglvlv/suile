@@ -784,6 +784,10 @@ function setActiveNav(n) {
 function render() {
     updateHeader();
     const app = document.getElementById('app');
+    // 未登录强制显示登录页
+    if (!currentUser && state.screen !== 'account') {
+        state.screen = 'account';
+    }
     switch(state.screen) {
         case 'home': renderHome(app); setActiveNav('home'); break;
         case 'practice': renderQuestion(app); break;
