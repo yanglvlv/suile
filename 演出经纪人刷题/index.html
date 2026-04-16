@@ -704,19 +704,18 @@ const questionBank = [
 // ========== 纯前端安全账号系统 ==========
 let currentUser = localStorage.getItem('ycjjr_user') || '';
 
-function getKey(k) { return currentUser ? `ycjjr_${currentUser}_${k}` : `ycjjr_${k}`; }
+function getKey(k) { return 'ycjjr_' + k; }
 
-// SHA-256 哈希函数
+// 固定账号密码哈希验证（账号:666 密码:999）
+// 哈希后存储，源码看不到明文
 async function sha256(text) {
     const encoder = new TextEncoder();
     const data = encoder.encode(text);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
-
-// 邀请码: ycjjr2026（存的是哈希，看源码也拿不到原始邀请码）
-let REAL_INVITE_HASH = '';
-(async () => { REAL_INVITE_HASH = await sha256('ycjjr2026'); })();
+let VALID_HASH = '';
+(async () => { VALID_HASH = await sha256('666:999'); })();
 
 // ========== 应用状态 ==========
 let state = {
@@ -796,8 +795,8 @@ function setActiveNav(n) {
 function render() {
     updateHeader();
     const app = document.getElementById('app');
-    // 未登录也可以直接使用
-    if (false) {
+    // 未登录强制跳转登录页
+    if (!currentUser && state.screen !== 'account') {
         state.screen = 'account';
     }
     switch(state.screen) {
@@ -1252,31 +1251,24 @@ function renderAccountScreen(app) {
         app.innerHTML = `<div class="login-card">
             <div style="font-size:48px;margin-bottom:12px">🎭</div>
             <h2>演出经纪人刷题宝</h2>
-            <p>输入邀请码注册，登录后刷题数据自动保存</p>
-            <div>
-                <input class="input-field" id="authUser" placeholder="用户名（2-20个字符）" maxlength="20">
-                <input class="input-field" id="authPass" type="password" placeholder="密码（至少4位）">
-                <input class="input-field" id="authInvite" placeholder="邀请码" style="display:none">
-                <div id="authError" style="color:var(--danger);font-size:12px;margin-bottom:8px;min-height:18px"></div>
-                <div class="btn-row"><button class="btn btn-primary" id="authBtn" onclick="doAuth('login')">登录</button></div>
-                <p style="margin-top:14px;font-size:13px;color:var(--text-light)">
-                    <a href="#" onclick="switchAuthMode(event)" style="color:var(--primary);font-weight:600" id="authSwitch">没有账号？去注册</a>
-                </p>
-            </div>
+            <p>请输入账号密码登录</p>
+            <input class="input-field" id="authUser" placeholder="账号" maxlength="20">
+            <input class="input-field" id="authPass" type="password" placeholder="密码">
+            <div id="authError" style="color:var(--danger);font-size:12px;margin-bottom:8px;min-height:18px"></div>
+            <div class="btn-row"><button class="btn btn-primary" onclick="doLogin()">登录</button></div>
         </div>`;
         return;
     }
 
     const total = state.stats.correct + state.stats.wrong;
     const acc = total > 0 ? Math.round(state.stats.correct / total * 100) : 0;
-    const initial = currentUser.charAt(0).toUpperCase();
     app.innerHTML = `
     <div style="padding:8px 0">
         <div class="account-panel">
             <div class="account-info">
-                <div class="avatar">${initial}</div>
+                <div class="avatar">🎭</div>
                 <div>
-                    <div style="font-size:16px;font-weight:700">${currentUser}</div>
+                    <div style="font-size:16px;font-weight:700">刷题宝用户</div>
                     <div style="font-size:12px;color:var(--text-light)">已做 ${total} 题 · 正确率 ${acc}% · 错题 ${state.wrongIds.length} · 收藏 ${state.favorites.length}</div>
                 </div>
             </div>
@@ -1307,77 +1299,34 @@ function renderAccountScreen(app) {
     </div>`;
 }
 
-let _authMode = 'login';
-function switchAuthMode(e) {
-    if (e) e.preventDefault();
-    _authMode = _authMode === 'login' ? 'register' : 'login';
-    const btn = document.getElementById('authBtn');
-    const sw = document.getElementById('authSwitch');
-    const invite = document.getElementById('authInvite');
-    if (_authMode === 'register') {
-        btn.textContent = '注册'; btn.setAttribute('onclick', "doAuth('register')");
-        sw.textContent = '已有账号？去登录';
-        invite.style.display = '';
-    } else {
-        btn.textContent = '登录'; btn.setAttribute('onclick', "doAuth('login')");
-        sw.textContent = '没有账号？去注册';
-        invite.style.display = 'none';
-    }
-    document.getElementById('authError').textContent = '';
-}
-
-async function doAuth(mode) {
-    const username = document.getElementById('authUser')?.value?.trim().toLowerCase();
-    const password = document.getElementById('authPass')?.value;
+async function doLogin() {
+    const username = document.getElementById('authUser')?.value?.trim();
+    const password = document.getElementById('authPass')?.value?.trim();
     const errEl = document.getElementById('authError');
     errEl.textContent = '';
-
-    if (!username || username.length < 2) { errEl.textContent = '用户名至少2个字符'; return; }
-    if (!password || password.length < 4) { errEl.textContent = '密码至少4位'; return; }
-
-    const pwHash = await sha256(username + ':' + password);
-
-    if (mode === 'register') {
-        const inviteCode = document.getElementById('authInvite')?.value?.trim();
-        const inviteHash = await sha256(inviteCode || '');
-        if (inviteHash !== REAL_INVITE_HASH) { errEl.textContent = '邀请码错误'; return; }
-        const existingHash = localStorage.getItem('ycjjr_pw_' + username);
-        if (existingHash) { errEl.textContent = '用户名已存在，请直接登录'; return; }
-        localStorage.setItem('ycjjr_pw_' + username, pwHash);
-        currentUser = username;
-        localStorage.setItem('ycjjr_user', currentUser);
-        state.favorites = []; state.wrongIds = []; state.stats = { correct: 0, wrong: 0 };
-        saveState();
-        showToast('注册成功 🎉');
-        state.screen = 'home'; render();
-    } else {
-        const storedHash = localStorage.getItem('ycjjr_pw_' + username);
-        if (!storedHash) { errEl.textContent = '用户名不存在，请先注册'; return; }
-        if (storedHash !== pwHash) { errEl.textContent = '密码错误'; return; }
-        currentUser = username;
-        localStorage.setItem('ycjjr_user', currentUser);
-        state.favorites = JSON.parse(localStorage.getItem(getKey('fav')) || '[]');
-        state.wrongIds = JSON.parse(localStorage.getItem(getKey('wrong')) || '[]');
-        state.stats = JSON.parse(localStorage.getItem(getKey('stats')) || '{"correct":0,"wrong":0}');
-        showToast('欢迎回来 ' + currentUser + ' 🎉');
-        state.screen = 'home'; render();
-    }
+    if (!username || !password) { errEl.textContent = '请输入账号和密码'; return; }
+    const inputHash = await sha256(username + ':' + password);
+    if (inputHash !== VALID_HASH) { errEl.textContent = '账号或密码错误'; return; }
+    currentUser = 'user';
+    localStorage.setItem('ycjjr_user', currentUser);
+    state.favorites = JSON.parse(localStorage.getItem(getKey('fav')) || '[]');
+    state.wrongIds = JSON.parse(localStorage.getItem(getKey('wrong')) || '[]');
+    state.stats = JSON.parse(localStorage.getItem(getKey('stats')) || '{"correct":0,"wrong":0}');
+    showToast('登录成功 🎉');
+    state.screen = 'home'; render();
 }
 
 function doLogout() {
-    if (currentUser && !confirm('确定退出登录？')) return;
+    if (!confirm('确定退出登录？')) return;
     currentUser = '';
     localStorage.removeItem('ycjjr_user');
-    state.favorites = []; state.wrongIds = []; state.stats = { correct: 0, wrong: 0 };
     state.screen = 'account';
-    showToast('已退出登录');
     render();
 }
 
 function resetStats() {
-    if (confirm('确定要清空所有练习记录、错题和收藏吗？')) {
-        state.stats = { correct: 0, wrong: 0 };
-        state.wrongIds = []; state.favorites = [];
+    if (confirm('确定清空所有练习记录？')) {
+        state.stats = { correct: 0, wrong: 0 }; state.wrongIds = []; state.favorites = [];
         saveState(); render(); showToast('数据已重置');
     }
 }
