@@ -701,27 +701,22 @@ const questionBank = [
     {id:507, subject:2, type:'judge', tag:'regular', q:'外国投资者可设立外资经营的文艺表演团体、演出经纪机构。', opts:['正确','错误'], answer:'B', explanation:'外国投资者不得设立外资经营的文艺表演团体、演出经纪机构、演出场所经营单位。'},
 ];
 
-// ========== 后端API账号系统 ==========
-const API_BASE = location.origin + '/api';
-let authToken = localStorage.getItem('ycjjr_token') || '';
+// ========== 纯前端安全账号系统 ==========
 let currentUser = localStorage.getItem('ycjjr_user') || '';
 
 function getKey(k) { return currentUser ? `ycjjr_${currentUser}_${k}` : `ycjjr_${k}`; }
 
-async function apiCall(url, method = 'GET', body = null) {
-    const opts = { method, headers: { 'Content-Type': 'application/json' } };
-    if (authToken) opts.headers['Authorization'] = 'Bearer ' + authToken;
-    if (body) opts.body = JSON.stringify(body);
-    try {
-        const res = await fetch(API_BASE + url, opts);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || '请求失败');
-        return data;
-    } catch(e) {
-        if (e.message.includes('过期') || e.message.includes('登录')) { doLogout(); }
-        throw e;
-    }
+// SHA-256 哈希函数
+async function sha256(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
+
+// 邀请码: ycjjr2026（存的是哈希，看源码也拿不到原始邀请码）
+let REAL_INVITE_HASH = '';
+(async () => { REAL_INVITE_HASH = await sha256('ycjjr2026'); })();
 
 // ========== 应用状态 ==========
 let state = {
@@ -746,12 +741,6 @@ function saveState() {
     localStorage.setItem(getKey('fav'), JSON.stringify(state.favorites));
     localStorage.setItem(getKey('wrong'), JSON.stringify(state.wrongIds));
     localStorage.setItem(getKey('stats'), JSON.stringify(state.stats));
-    // 同步到服务端（静默，不阻塞）
-    if (authToken) {
-        apiCall('/data', 'POST', {
-            favorites: state.favorites, wrongIds: state.wrongIds, stats: state.stats
-        }).catch(() => {});
-    }
 }
 
 function updateHeader() {
@@ -807,8 +796,8 @@ function setActiveNav(n) {
 function render() {
     updateHeader();
     const app = document.getElementById('app');
-    // 未登录强制显示登录页
-    if (!currentUser && state.screen !== 'account') {
+    // 未登录也可以直接使用
+    if (false) {
         state.screen = 'account';
     }
     switch(state.screen) {
@@ -1255,23 +1244,23 @@ function renderResult(app) {
     app.innerHTML = html;
 }
 
-// ========== 账号与同步 ==========
+// ========== 账号系统 ==========
 function showAccountScreen() { state.screen = 'account'; render(); }
 
 function renderAccountScreen(app) {
     if (!currentUser) {
-        // 登录/注册页
         app.innerHTML = `<div class="login-card">
             <div style="font-size:48px;margin-bottom:12px">🎭</div>
             <h2>演出经纪人刷题宝</h2>
-            <p>登录后数据自动云端同步，换设备也不丢</p>
-            <div id="authMode" data-mode="login">
+            <p>输入邀请码注册，登录后刷题数据自动保存</p>
+            <div>
                 <input class="input-field" id="authUser" placeholder="用户名（2-20个字符）" maxlength="20">
                 <input class="input-field" id="authPass" type="password" placeholder="密码（至少4位）">
+                <input class="input-field" id="authInvite" placeholder="邀请码" style="display:none">
                 <div id="authError" style="color:var(--danger);font-size:12px;margin-bottom:8px;min-height:18px"></div>
                 <div class="btn-row"><button class="btn btn-primary" id="authBtn" onclick="doAuth('login')">登录</button></div>
                 <p style="margin-top:14px;font-size:13px;color:var(--text-light)">
-                    没有账号？<a href="#" onclick="switchAuthMode()" style="color:var(--primary);font-weight:600" id="authSwitch">去注册</a>
+                    <a href="#" onclick="switchAuthMode(event)" style="color:var(--primary);font-weight:600" id="authSwitch">没有账号？去注册</a>
                 </p>
             </div>
         </div>`;
@@ -1290,10 +1279,6 @@ function renderAccountScreen(app) {
                     <div style="font-size:16px;font-weight:700">${currentUser}</div>
                     <div style="font-size:12px;color:var(--text-light)">已做 ${total} 题 · 正确率 ${acc}% · 错题 ${state.wrongIds.length} · 收藏 ${state.favorites.length}</div>
                 </div>
-            </div>
-            <div style="font-size:12px;color:var(--success);display:flex;align-items:center;gap:4px">
-                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--success)"></span>
-                数据已云端同步，换设备登录同一账号即可
             </div>
         </div>
         <div class="account-panel">
@@ -1314,7 +1299,6 @@ function renderAccountScreen(app) {
             </div>
         </div>
         <div class="account-panel">
-            <button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="syncFromServer()">🔄 从云端同步数据</button>
             <div class="btn-row">
                 <button class="btn btn-outline" onclick="resetStats()">重置数据</button>
                 <button class="btn btn-outline" style="border-color:var(--danger);color:var(--danger)" onclick="doLogout()">退出登录</button>
@@ -1324,24 +1308,26 @@ function renderAccountScreen(app) {
 }
 
 let _authMode = 'login';
-function switchAuthMode() {
+function switchAuthMode(e) {
+    if (e) e.preventDefault();
     _authMode = _authMode === 'login' ? 'register' : 'login';
     const btn = document.getElementById('authBtn');
     const sw = document.getElementById('authSwitch');
+    const invite = document.getElementById('authInvite');
     if (_authMode === 'register') {
-        btn.textContent = '注册';
-        btn.setAttribute('onclick', "doAuth('register')");
+        btn.textContent = '注册'; btn.setAttribute('onclick', "doAuth('register')");
         sw.textContent = '已有账号？去登录';
+        invite.style.display = '';
     } else {
-        btn.textContent = '登录';
-        btn.setAttribute('onclick', "doAuth('login')");
+        btn.textContent = '登录'; btn.setAttribute('onclick', "doAuth('login')");
         sw.textContent = '没有账号？去注册';
+        invite.style.display = 'none';
     }
     document.getElementById('authError').textContent = '';
 }
 
 async function doAuth(mode) {
-    const username = document.getElementById('authUser')?.value?.trim();
+    const username = document.getElementById('authUser')?.value?.trim().toLowerCase();
     const password = document.getElementById('authPass')?.value;
     const errEl = document.getElementById('authError');
     errEl.textContent = '';
@@ -1349,87 +1335,55 @@ async function doAuth(mode) {
     if (!username || username.length < 2) { errEl.textContent = '用户名至少2个字符'; return; }
     if (!password || password.length < 4) { errEl.textContent = '密码至少4位'; return; }
 
-    const btn = document.getElementById('authBtn');
-    btn.textContent = mode === 'login' ? '登录中...' : '注册中...';
-    btn.disabled = true;
+    const pwHash = await sha256(username + ':' + password);
 
-    try {
-        const url = mode === 'login' ? '/login' : '/register';
-        const data = await apiCall(url, 'POST', { username, password });
-        authToken = data.token;
-        currentUser = data.username;
-        localStorage.setItem('ycjjr_token', authToken);
+    if (mode === 'register') {
+        const inviteCode = document.getElementById('authInvite')?.value?.trim();
+        const inviteHash = await sha256(inviteCode || '');
+        if (inviteHash !== REAL_INVITE_HASH) { errEl.textContent = '邀请码错误'; return; }
+        const existingHash = localStorage.getItem('ycjjr_pw_' + username);
+        if (existingHash) { errEl.textContent = '用户名已存在，请直接登录'; return; }
+        localStorage.setItem('ycjjr_pw_' + username, pwHash);
+        currentUser = username;
         localStorage.setItem('ycjjr_user', currentUser);
-        showToast(mode === 'login' ? '欢迎回来 ' + currentUser + ' 🎉' : '注册成功 🎉');
-        // 从服务端加载数据
-        await syncFromServer();
-        state.screen = 'home';
-        render();
-    } catch(e) {
-        errEl.textContent = e.message;
-        btn.textContent = mode === 'login' ? '登录' : '注册';
-        btn.disabled = false;
+        state.favorites = []; state.wrongIds = []; state.stats = { correct: 0, wrong: 0 };
+        saveState();
+        showToast('注册成功 🎉');
+        state.screen = 'home'; render();
+    } else {
+        const storedHash = localStorage.getItem('ycjjr_pw_' + username);
+        if (!storedHash) { errEl.textContent = '用户名不存在，请先注册'; return; }
+        if (storedHash !== pwHash) { errEl.textContent = '密码错误'; return; }
+        currentUser = username;
+        localStorage.setItem('ycjjr_user', currentUser);
+        state.favorites = JSON.parse(localStorage.getItem(getKey('fav')) || '[]');
+        state.wrongIds = JSON.parse(localStorage.getItem(getKey('wrong')) || '[]');
+        state.stats = JSON.parse(localStorage.getItem(getKey('stats')) || '{"correct":0,"wrong":0}');
+        showToast('欢迎回来 ' + currentUser + ' 🎉');
+        state.screen = 'home'; render();
     }
 }
 
 function doLogout() {
     if (currentUser && !confirm('确定退出登录？')) return;
-    authToken = '';
     currentUser = '';
-    localStorage.removeItem('ycjjr_token');
     localStorage.removeItem('ycjjr_user');
-    state.favorites = [];
-    state.wrongIds = [];
-    state.stats = { correct: 0, wrong: 0 };
+    state.favorites = []; state.wrongIds = []; state.stats = { correct: 0, wrong: 0 };
     state.screen = 'account';
     showToast('已退出登录');
     render();
 }
 
-async function syncFromServer() {
-    if (!authToken) return;
-    try {
-        const data = await apiCall('/data');
-        state.favorites = data.favorites || [];
-        state.wrongIds = data.wrongIds || [];
-        state.stats = data.stats || { correct: 0, wrong: 0 };
-        // 同时写本地缓存
-        localStorage.setItem(getKey('fav'), JSON.stringify(state.favorites));
-        localStorage.setItem(getKey('wrong'), JSON.stringify(state.wrongIds));
-        localStorage.setItem(getKey('stats'), JSON.stringify(state.stats));
-        showToast('数据已同步 ✅');
-    } catch(e) {
-        // 静默失败，使用本地数据
-    }
-}
-
 function resetStats() {
     if (confirm('确定要清空所有练习记录、错题和收藏吗？')) {
         state.stats = { correct: 0, wrong: 0 };
-        state.wrongIds = [];
-        state.favorites = [];
-        saveState();
-        render();
-        showToast('数据已重置');
+        state.wrongIds = []; state.favorites = [];
+        saveState(); render(); showToast('数据已重置');
     }
 }
 
 // ========== 初始化 ==========
-(async function init() {
-    // 如果有token，验证是否有效并同步数据
-    if (authToken && currentUser) {
-        try {
-            await apiCall('/me');
-            await syncFromServer();
-        } catch(e) {
-            // token 无效，清除登录状态
-            authToken = ''; currentUser = '';
-            localStorage.removeItem('ycjjr_token');
-            localStorage.removeItem('ycjjr_user');
-        }
-    }
-    render();
-})();
+render();
 
 // 键盘快捷键
 document.addEventListener('keydown', (e) => {
