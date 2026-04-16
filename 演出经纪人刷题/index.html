@@ -799,10 +799,15 @@ const questionBank = [
 // ========== 纯前端安全账号系统 ==========
 let currentUser = localStorage.getItem('ycjjr_user') || '';
 
-function getKey(k) { return 'ycjjr_' + k; }
+function getKey(k) { return currentUser ? `ycjjr_${currentUser}_${k}` : 'ycjjr_' + k; }
 
-// 开放注册+登录模式，密码SHA-256哈希存储
-let VALID_HASH = ''; // 不再使用固定账号
+// SHA-256 哈希函数（密码加密用）
+async function sha256(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
 
 // ========== 应用状态 ==========
 let state = {
