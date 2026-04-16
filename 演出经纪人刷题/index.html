@@ -601,20 +601,20 @@
 const questionBank = [
     // ===== 科目一：思想政治与法律基础 - 单选题 =====
     // tag: 'regular'=常规知识题(法规/政策/艺术), 'current'=时政题(时事新闻/会议)
-    {id:1, subject:1, type:'single', tag:'regular', q:'"表演内容含危害国家安全，或损害国家荣誉和利益的"行为属于违反《营业性演出管理条例》第（ ）条规定。', opts:['十五','二十','二十五','三十'], answer:'C'},
-    {id:2, subject:1, type:'single', tag:'regular', q:'临时搭建舞台的安全防范对象主要针对（ ）。', opts:['舞台台面','观众席','通道','看台附属设施'], answer:'A'},
-    {id:3, subject:1, type:'single', tag:'regular', q:'必须坚持国家利益至上，以（ ）为宗旨，以（ ）为根本。', opts:['人民安全，政治安全','政治安全，人民安全','人民安全，国家安全','国家安全，人民安全'], answer:'A'},
-    {id:4, subject:1, type:'single', tag:'regular', q:'五年来，我国统筹推进（ ）总体布局、协调推进（ ）战略布局。', opts:['五位一体，四个全面','四位一体，五个全面','五个全面，四位一体','四个全面，五位一体'], answer:'A'},
-    {id:5, subject:1, type:'single', tag:'regular', q:'法人的民事权利能力和民事行为能力，从法人（ ）时产生。', opts:['登记','批准','申请','成立'], answer:'D'},
-    {id:6, subject:1, type:'single', tag:'regular', q:'审批临时搭建舞台、看台的营业性演出时，不由文化主管部门核验的文件有（ ）。', opts:['依法验收后取得的演出场所合格证明','安全保卫工作方案和灭火、应急疏散预案','舞台、看台搭建公司资质证明','依法取得的安全、消防批准文件'], answer:'C'},
-    {id:7, subject:1, type:'single', tag:'regular', q:'（ ）是立足于社会层面培育社会主义核心价值所提出的价值目标和现实要求。', opts:['富强、民主、文明、和谐','自由、平等、公正、法治','爱国、敬业、诚信、友善','勤学、修德、明辨、笃实'], answer:'B'},
+    {id:1, subject:1, type:'single', tag:'regular', q:'"表演内容含危害国家安全，或损害国家荣誉和利益的"行为属于违反《营业性演出管理条例》第（ ）条规定。', opts:['十五','二十','二十五','三十'], answer:'C', explanation:'《营业性演出管理条例》第二十五条明确规定了营业性演出不得有的情形，包括危害国家安全、损害国家荣誉和利益等内容。'},
+    {id:2, subject:1, type:'single', tag:'regular', q:'临时搭建舞台的安全防范对象主要针对（ ）。', opts:['舞台台面','观众席','通道','看台附属设施'], answer:'A', explanation:'临时搭建舞台的安全隐患主要集中在舞台台面本身，包括承重、稳固性等方面，是安全防范的首要对象。'},
+    {id:3, subject:1, type:'single', tag:'regular', q:'必须坚持国家利益至上，以（ ）为宗旨，以（ ）为根本。', opts:['人民安全，政治安全','政治安全，人民安全','人民安全，国家安全','国家安全，人民安全'], answer:'A', explanation:'总体国家安全观要求以人民安全为宗旨、以政治安全为根本。人民安全是最终目的，政治安全是根本保障。'},
+    {id:4, subject:1, type:'single', tag:'regular', q:'五年来，我国统筹推进（ ）总体布局、协调推进（ ）战略布局。', opts:['五位一体，四个全面','四位一体，五个全面','五个全面，四位一体','四个全面，五位一体'], answer:'A', explanation:'"五位一体"指经济、政治、文化、社会、生态文明建设总体布局；"四个全面"指全面建设社会主义现代化国家、全面深化改革、全面依法治国、全面从严治党。'},
+    {id:5, subject:1, type:'single', tag:'regular', q:'法人的民事权利能力和民事行为能力，从法人（ ）时产生。', opts:['登记','批准','申请','成立'], answer:'D', explanation:'根据《民法典》规定，法人的民事权利能力和民事行为能力自法人成立时产生，至法人终止时消灭。注意是"成立"而非"登记"。'},
+    {id:6, subject:1, type:'single', tag:'regular', q:'审批临时搭建舞台、看台的营业性演出时，不由文化主管部门核验的文件有（ ）。', opts:['依法验收后取得的演出场所合格证明','安全保卫工作方案和灭火、应急疏散预案','舞台、看台搭建公司资质证明','依法取得的安全、消防批准文件'], answer:'C', explanation:'文化主管部门核验的是演出场所合格证明、安全保卫方案、安全消防批准文件。搭建公司的资质证明不属于文化主管部门核验范围。'},
+    {id:7, subject:1, type:'single', tag:'regular', q:'（ ）是立足于社会层面培育社会主义核心价值所提出的价值目标和现实要求。', opts:['富强、民主、文明、和谐','自由、平等、公正、法治','爱国、敬业、诚信、友善','勤学、修德、明辨、笃实'], answer:'B', explanation:'社会主义核心价值观分三个层面：国家层面（富强民主文明和谐）、社会层面（自由平等公正法治）、个人层面（爱国敬业诚信友善）。本题问的是社会层面。'},
     {id:8, subject:1, type:'single', tag:'regular', q:'要尊重世界文明多样性，以（ ）超越文明隔阂、（ ）超越文明冲突、文明共存超越（ ）。', opts:['文明交流，文明互鉴，文明优越','文化交流，文化互鉴，文化优势','文明发展，文明交流，文明分歧','文化发展，文化鉴赏，文化对话'], answer:'A'},
     {id:9, subject:1, type:'single', tag:'regular', q:'党的十九大报告当中文化建设部分的关键词是（ ）。', opts:['坚定先进的文化理念','坚定文化自信','坚持创新性发展','坚持为人民服务'], answer:'B'},
     {id:10, subject:1, type:'single', tag:'regular', q:'（ ）大型维修工程的验收，应有第三方的安全认证。', opts:['3年及3年以上','5年及5年以上','5年10年以下','5年15年以下'], answer:'B'},
     {id:11, subject:1, type:'single', tag:'regular', q:'剧场工艺不符合剧场工艺安全相应标准的要求属于（ ）。', opts:['系统安全缺陷','功能缺陷','装置缺陷','器材缺陷'], answer:'B'},
-    {id:12, subject:1, type:'single', tag:'regular', q:'认定为严重失信主体不满（ ）个月的、认定为轻微失信主体不满（ ）个月的，不予信用修复。', opts:['7,5','5,5','6,3','6,6'], answer:'C'},
-    {id:13, subject:1, type:'single', tag:'regular', q:'安全生产工作应当以人为本，坚持（ ），坚持安全第一、预防为主、综合治理的方针。', opts:['安全发展','经济发展','社会发展','和谐发展'], answer:'A'},
-    {id:14, subject:1, type:'single', tag:'regular', q:'根据《营业性演出管理条例》规定，举办营业性演出，应当向演出所在地（ ）提出申请。', opts:['县级人民政府文化主管部门','市级人民政府文化主管部门','省级人民政府文化主管部门','国务院文化主管部门'], answer:'A'},
+    {id:12, subject:1, type:'single', tag:'regular', q:'认定为严重失信主体不满（ ）个月的、认定为轻微失信主体不满（ ）个月的，不予信用修复。', opts:['7,5','5,5','6,3','6,6'], answer:'C', explanation:'根据《文化和旅游市场信用管理规定》，严重失信主体不满6个月、轻微失信主体不满3个月的不予信用修复。记忆技巧：严6轻3。'},
+    {id:13, subject:1, type:'single', tag:'regular', q:'安全生产工作应当以人为本，坚持（ ），坚持安全第一、预防为主、综合治理的方针。', opts:['安全发展','经济发展','社会发展','和谐发展'], answer:'A', explanation:'《安全生产法》明确规定安全生产工作坚持安全发展理念，而非经济发展或其他。'},
+    {id:14, subject:1, type:'single', tag:'regular', q:'根据《营业性演出管理条例》规定，举办营业性演出，应当向演出所在地（ ）提出申请。', opts:['县级人民政府文化主管部门','市级人民政府文化主管部门','省级人民政府文化主管部门','国务院文化主管部门'], answer:'A', explanation:'一般营业性演出向县级文化主管部门申请；涉外演出向省级申请；涉台演出向国务院规定的机关申请。这是高频考点！'},
     {id:15, subject:1, type:'single', tag:'regular', q:'习近平总书记指出：文艺创作方法有一百条、一千条，但最根本的方法是（ ）。', opts:['扎根人民','提升技术','寻找创作灵感','提升内涵'], answer:'A'},
     {id:16, subject:1, type:'single', tag:'regular', q:'经过长期努力，（ ）这是我国发展新的历史方位。', opts:['中国特色社会主义进入了新时代','社会主义现代化建设进入新时代','改革开放进入了新时代','全面决胜小康社会进入决胜时期'], answer:'A'},
     {id:17, subject:1, type:'single', tag:'regular', q:'大型群众性活动的承办者对其承办活动的安全负责，承办者的主要负责人为大型群众性活动的（ ）。', opts:['项目管理者','安全负责人','法定代表人','场地管理员'], answer:'B'},
@@ -660,11 +660,14 @@ const questionBank = [
     {id:208, subject:1, type:'judge', tag:'regular', q:'文化市场运行必须以社会效益为最高准则。', opts:['正确','错误'], answer:'A'},
 
     // ===== 科目二：演出市场政策与经纪实务 - 单选题 =====
-    {id:301, subject:2, type:'single', tag:'regular', q:'市场机制的基本要素是（ ）。', opts:['政府调控机制、价格机制、供求机制','政府调控机制、供求机制、竞争机制','政府调控机制、价格机制、竞争机制','价格机制、供求机制、竞争机制'], answer:'D'},
+    {id:301, subject:2, type:'single', tag:'regular', q:'市场机制的基本要素是（ ）。', opts:['政府调控机制、价格机制、供求机制','政府调控机制、供求机制、竞争机制','政府调控机制、价格机制、竞争机制','价格机制、供求机制、竞争机制'], answer:'D', explanation:'市场机制三大基本要素是价格机制、供求机制、竞争机制。注意：政府调控不属于市场机制，属于宏观调控。'},
     {id:302, subject:2, type:'single', tag:'regular', q:'以下关于演出市场的描述不正确的是（ ）。', opts:['演出市场的主体是从事演出交易活动的组织和个人','演出市场的运行必须遵守市场经济规律以经济效益为最高准则','文化市场运行过程中产生的娱乐及文化积累效果体现了其经济效益','演出场所、演员和观众都是演出市场的组成部分'], answer:'B', explanation:'文化市场运行必须以社会效益为最高准则。'},
     {id:303, subject:2, type:'single', tag:'regular', q:'以下对演出主要特征描述不正确的是（ ）。', opts:['演出的非物质形态决定了不能先消费后付款','每一场演出都是表演者艺术生产和艺术再创作的过程','随着宣传渠道的扩展，现场演出的受众面可以是无限的','一场演出的有效经营活动都应在演出开始前完成'], answer:'C', explanation:'演出具有时效性和消费群体的有限性。'},
-    {id:304, subject:2, type:'single', tag:'regular', q:'舞台管理组的总负责人是（ ）。', opts:['导演','制片人','舞台监督','艺术总监'], answer:'C'},
-    {id:305, subject:2, type:'single', tag:'regular', q:'演出市场营销的前提与核心是（ ）。', opts:['演出经营策略','观众需求','演出表演者','文化主管部门'], answer:'B'},
+    {id:304, subject:2, type:'single', tag:'regular', q:'舞台管理组的总负责人是（ ）。', opts:['导演','制片人','舞台监督','艺术总监'], answer:'C', explanation:'舞台管理组总负责人是舞台监督（不是导演）。舞台监督负责协调各部门、监督进度。高频易错题！'},
+    {id:305, subject:2, type:'single', tag:'regular', q:'演出市场营销的前提与核心是（ ）。', opts:['演出经营策略','观众需求','演出表演者','文化主管部门'], answer:'B', explanation:'演出市场营销的一切活动都围绕观众需求展开。'},
+    {id:306, subject:2, type:'single', tag:'regular', q:'某演出项目总成本150万，可售票款总额250万，风险系数和类型是（ ）。', opts:['30%低风险','40%中等风险','60%中等风险','70%高风险'], answer:'C', explanation:'风险系数=总成本÷可售票款=150÷250=60%。30%以下低风险，30%-70%中等风险，70%以上高风险。'},
+    {id:307, subject:2, type:'single', tag:'regular', q:'设立文艺表演团体，应当向哪一级主管部门提出申请（ ）。', opts:['县级人民政府文化主管部门','省、自治区、直辖市人民政府文化主管部门','国务院文化主管部门','省级工商主管部门'], answer:'A', explanation:'文艺表演团体→县级；演出经纪机构→省级。记住"团县纪省"。'},
+    {id:308, subject:2, type:'single', tag:'regular', q:'个体演出经纪人应自领取营业执照之日起（ ）内向所在地县级文化主管部门备案。', opts:['10日','15日','20日','30日'], answer:'C', explanation:'条例规定个体演员和个体经纪人自领取营业执照之日起20日内备案。'},
     {id:306, subject:2, type:'single', tag:'regular', q:'某演出项目总成本150万，可售票款总额250万，风险系数和类型是（ ）。', opts:['30%低风险项目','40%中等风险项目','60%中等风险项目','70%高风险项目'], answer:'C', explanation:'风险系数=150万/250万=60%，50%左右属于中等风险。'},
     {id:307, subject:2, type:'single', tag:'regular', q:'设立文艺表演团体，应当向哪一级主管部门提出申请（ ）。', opts:['县级人民政府文化主管部门','省、自治区、直辖市人民政府文化主管部门','国务院文化主管部门','省级工商主管部门'], answer:'A'},
     {id:308, subject:2, type:'single', tag:'regular', q:'个体演出经纪人应自领取营业执照之日起（ ）内向所在地县级文化主管部门备案。', opts:['10日','15日','20日','30日'], answer:'C'},
@@ -798,16 +801,8 @@ let currentUser = localStorage.getItem('ycjjr_user') || '';
 
 function getKey(k) { return 'ycjjr_' + k; }
 
-// 固定账号密码哈希验证（账号:666 密码:999）
-// 哈希后存储，源码看不到明文
-async function sha256(text) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(text);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
-let VALID_HASH = '';
-(async () => { VALID_HASH = await sha256('666:999'); })();
+// 开放注册+登录模式，密码SHA-256哈希存储
+let VALID_HASH = ''; // 不再使用固定账号
 
 // ========== 应用状态 ==========
 let state = {
@@ -895,6 +890,7 @@ function render() {
         case 'home': renderHome(app); setActiveNav('home'); break;
         case 'practice': renderQuestion(app); break;
         case 'exam': renderQuestion(app); break;
+        case 'read': renderReadMode(app); break;
         case 'result': renderResult(app); break;
         case 'account': renderAccountScreen(app); setActiveNav('me'); break;
     }
@@ -943,10 +939,10 @@ function renderHome(app) {
                     <div class="f-title">常规题专练</div>
                     <div class="f-desc">法规/政策/艺术基础</div>
                 </div>
-                <div class="feature-card" onclick="startTagPractice('current')">
-                    <div class="f-icon">📰</div>
-                    <div class="f-title">时政题专练</div>
-                    <div class="f-desc">时事新闻/最新动态</div>
+                <div class="feature-card" onclick="startReadMode()">
+                    <div class="f-icon">📖</div>
+                    <div class="f-title">读题模式</div>
+                    <div class="f-desc">浏览题目+答案+解析</div>
                 </div>
                 <div class="feature-card" onclick="showAccountScreen()">
                     <div class="f-icon">👤</div>
@@ -977,6 +973,13 @@ function startTagPractice(tag) {
     state.currentQuestions = shuffle(getFilteredQuestions());
     if (state.currentQuestions.length === 0) { showToast('该分类暂无题目'); state.tagFilter = 'all'; return; }
     state.currentIndex = 0; state.userAnswers = {}; state.answered = {}; state.showAnswer = {};
+    render();
+}
+
+function startReadMode() {
+    state.screen = 'read'; state.mode = 'read'; state.tagFilter = 'all';
+    state.currentQuestions = getFilteredQuestions();
+    state.currentIndex = 0;
     render();
 }
 
@@ -1137,7 +1140,7 @@ function renderQuestion(app) {
             <div class="detail">
                 <strong>正确答案：</strong>${q.answer}<br>
                 <strong>你的答案：</strong>${userAns || '未作答'}
-                ${q.explanation ? '<br><strong>解析：</strong>' + q.explanation : ''}
+                <br><strong>解析：</strong>${q.explanation || autoExplanation(q)}
             </div>
         </div>`;
     }
@@ -1229,6 +1232,92 @@ function prevQ() {
         render();
         window.scrollTo(0, 0);
     }
+}
+
+function renderReadMode(app) {
+    const qs = state.currentQuestions;
+    if (qs.length === 0) {
+        app.innerHTML = '<div class="home-screen"><div class="emoji">😅</div><h2>暂无题目</h2><div class="btn-row" style="max-width:200px;margin:0 auto"><button class="btn btn-primary" onclick="goHome()">返回首页</button></div></div>';
+        return;
+    }
+    const q = qs[state.currentIndex];
+    const labels = ['A','B','C','D','E','F'];
+    const typeName = {single:'单选题', multi:'多选题', judge:'判断题'};
+    const typeClass = {single:'badge-single', multi:'badge-multi', judge:'badge-judge'};
+    const subjectName = q.subject === 1 ? '科目一' : '科目二';
+    const tagName = q.tag === 'current' ? '📰 时政' : '📚 常规';
+    const tagClass = q.tag === 'current' ? 'badge-current' : 'badge-regular';
+    const progress = ((state.currentIndex + 1) / qs.length * 100).toFixed(1);
+
+    // 自动生成解析
+    const explanation = q.explanation || autoExplanation(q);
+
+    let html = `
+    <div style="text-align:center;margin-bottom:10px"><span style="background:linear-gradient(135deg,#6C5CE7,#A29BFE);color:#fff;padding:4px 14px;border-radius:16px;font-size:13px;font-weight:600">📖 读题模式</span></div>
+    <div class="filter-bar">
+        <button class="filter-btn ${state.subjectFilter===0?'active':''}" onclick="readFilter('subject',0)">全部科目</button>
+        <button class="filter-btn ${state.subjectFilter===1?'active':''}" onclick="readFilter('subject',1)">科目一</button>
+        <button class="filter-btn ${state.subjectFilter===2?'active':''}" onclick="readFilter('subject',2)">科目二</button>
+        <button class="filter-btn ${state.typeFilter==='all'?'active':''}" onclick="readFilter('type','all')">全部题型</button>
+        <button class="filter-btn ${state.typeFilter==='single'?'active':''}" onclick="readFilter('type','single')">单选</button>
+        <button class="filter-btn ${state.typeFilter==='multi'?'active':''}" onclick="readFilter('type','multi')">多选</button>
+        <button class="filter-btn ${state.typeFilter==='judge'?'active':''}" onclick="readFilter('type','judge')">判断</button>
+    </div>
+    <div class="progress-wrap"><div class="progress-fill" style="width:${progress}%"></div></div>
+    <div class="question-card">
+        <button class="fav-btn" onclick="toggleFav(${q.id})">${state.favorites.includes(q.id) ? '⭐' : '☆'}</button>
+        <div class="q-meta">
+            <span class="q-badge ${typeClass[q.type]}">${typeName[q.type]}</span>
+            <span class="q-badge badge-subject">${subjectName}</span>
+            <span class="q-badge ${tagClass}">${tagName}</span>
+            <span class="q-number">${state.currentIndex + 1}/${qs.length}</span>
+        </div>
+        <div class="q-text">${q.q}</div>
+        <div class="options">`;
+    q.opts.forEach((opt, i) => {
+        const label = labels[i];
+        const isCorrect = q.answer.includes(label);
+        html += `<div class="option disabled ${isCorrect ? 'correct' : ''}">
+            <span class="opt-label">${label}</span><span>${opt}</span>
+        </div>`;
+    });
+    html += `</div>
+        <div class="answer-section answer-correct" style="margin-top:14px">
+            <div class="label">✅ 正确答案：${q.answer}</div>
+            <div class="detail">${explanation}</div>
+        </div>
+    </div>
+    <div class="btn-row">
+        <button class="btn btn-outline" onclick="goHome()">🏠</button>
+        ${state.currentIndex > 0 ? '<button class="btn btn-outline" onclick="prevQ()">←</button>' : ''}
+        ${state.currentIndex < qs.length - 1 ? '<button class="btn btn-primary" onclick="nextQ()">下一题 →</button>' : '<button class="btn btn-primary" onclick="goHome()">读完了 🎉</button>'}
+    </div>`;
+    app.innerHTML = html;
+}
+
+function readFilter(type, val) {
+    if (type === 'subject') state.subjectFilter = val;
+    else if (type === 'type') state.typeFilter = val;
+    state.currentQuestions = getFilteredQuestions();
+    state.currentIndex = 0;
+    render();
+}
+
+// 自动生成解析（没有手动解析的题目）
+function autoExplanation(q) {
+    const labels = ['A','B','C','D','E','F'];
+    const ansLabels = q.answer.split('');
+    const ansTexts = ansLabels.map(l => {
+        const idx = labels.indexOf(l);
+        return idx >= 0 && q.opts[idx] ? `${l}.${q.opts[idx]}` : l;
+    });
+    if (q.type === 'judge') {
+        return q.answer === 'A' ? '本题说法正确。' : '本题说法错误。';
+    }
+    if (q.type === 'multi') {
+        return `正确选项为 ${ansTexts.join('、')}。注意多选题需要选全才算对。`;
+    }
+    return `正确答案为 ${ansTexts.join('')}。`;
 }
 
 function goHome() {
@@ -1343,11 +1432,15 @@ function renderAccountScreen(app) {
         app.innerHTML = `<div class="login-card">
             <div style="font-size:48px;margin-bottom:12px">🎭</div>
             <h2>演出经纪人刷题宝</h2>
-            <p>请输入账号密码登录</p>
-            <input class="input-field" id="authUser" placeholder="账号" maxlength="20">
-            <input class="input-field" id="authPass" type="password" placeholder="密码">
+            <p>登录后开始刷题，数据自动保存</p>
+            <input class="input-field" id="authUser" placeholder="用户名（2-20个字符）" maxlength="20">
+            <input class="input-field" id="authPass" type="password" placeholder="密码（至少4位）">
             <div id="authError" style="color:var(--danger);font-size:12px;margin-bottom:8px;min-height:18px"></div>
-            <div class="btn-row"><button class="btn btn-primary" onclick="doLogin()">登录</button></div>
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="doLogin()">登录</button>
+                <button class="btn btn-outline" onclick="doRegister()">注册</button>
+            </div>
+            <p style="margin-top:12px;font-size:11px;color:var(--text-light)">首次使用请先注册</p>
         </div>`;
         return;
     }
@@ -1358,9 +1451,9 @@ function renderAccountScreen(app) {
     <div style="padding:8px 0">
         <div class="account-panel">
             <div class="account-info">
-                <div class="avatar">🎭</div>
+                <div class="avatar">${currentUser.charAt(0).toUpperCase()}</div>
                 <div>
-                    <div style="font-size:16px;font-weight:700">刷题宝用户</div>
+                    <div style="font-size:16px;font-weight:700">${currentUser}</div>
                     <div style="font-size:12px;color:var(--text-light)">已做 ${total} 题 · 正确率 ${acc}% · 错题 ${state.wrongIds.length} · 收藏 ${state.favorites.length}</div>
                 </div>
             </div>
@@ -1391,20 +1484,42 @@ function renderAccountScreen(app) {
     </div>`;
 }
 
-async function doLogin() {
-    const username = document.getElementById('authUser')?.value?.trim();
-    const password = document.getElementById('authPass')?.value?.trim();
+async function doRegister() {
+    const username = document.getElementById('authUser')?.value?.trim().toLowerCase();
+    const password = document.getElementById('authPass')?.value;
     const errEl = document.getElementById('authError');
     errEl.textContent = '';
-    if (!username || !password) { errEl.textContent = '请输入账号和密码'; return; }
-    const inputHash = await sha256(username + ':' + password);
-    if (inputHash !== VALID_HASH) { errEl.textContent = '账号或密码错误'; return; }
-    currentUser = 'user';
+    if (!username || username.length < 2) { errEl.textContent = '用户名至少2个字符'; return; }
+    if (!password || password.length < 4) { errEl.textContent = '密码至少4位'; return; }
+    const existing = localStorage.getItem('ycjjr_pw_' + username);
+    if (existing) { errEl.textContent = '用户名已存在，请直接登录'; return; }
+    const pwHash = await sha256(username + ':' + password);
+    localStorage.setItem('ycjjr_pw_' + username, pwHash);
+    currentUser = username;
+    localStorage.setItem('ycjjr_user', currentUser);
+    state.favorites = []; state.wrongIds = []; state.stats = { correct: 0, wrong: 0 };
+    saveState();
+    showToast('注册成功 🎉 欢迎 ' + currentUser);
+    state.screen = 'home'; render();
+}
+
+async function doLogin() {
+    const username = document.getElementById('authUser')?.value?.trim().toLowerCase();
+    const password = document.getElementById('authPass')?.value;
+    const errEl = document.getElementById('authError');
+    errEl.textContent = '';
+    if (!username || username.length < 2) { errEl.textContent = '用户名至少2个字符'; return; }
+    if (!password || password.length < 4) { errEl.textContent = '密码至少4位'; return; }
+    const storedHash = localStorage.getItem('ycjjr_pw_' + username);
+    if (!storedHash) { errEl.textContent = '用户名不存在，请先注册'; return; }
+    const pwHash = await sha256(username + ':' + password);
+    if (storedHash !== pwHash) { errEl.textContent = '密码错误'; return; }
+    currentUser = username;
     localStorage.setItem('ycjjr_user', currentUser);
     state.favorites = JSON.parse(localStorage.getItem(getKey('fav')) || '[]');
     state.wrongIds = JSON.parse(localStorage.getItem(getKey('wrong')) || '[]');
     state.stats = JSON.parse(localStorage.getItem(getKey('stats')) || '{"correct":0,"wrong":0}');
-    showToast('登录成功 🎉');
+    showToast('欢迎回来 ' + currentUser + ' 🎉');
     state.screen = 'home'; render();
 }
 
