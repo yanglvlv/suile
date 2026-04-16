@@ -892,24 +892,35 @@
 
 <h2>四、埋点需求（待实现）</h2>
 
-<p style="font-size:12.5px">以下埋点事件已定义但<strong>尚未在代码中实现</strong>，需后续接入数据上报 SDK 后补充：</p>
+<p style="font-size:12.5px">以下埋点事件已定义但<strong>尚未在代码中实现</strong>，需后续接入数据上报 SDK 后补充。所有事件均上报 <code>open_id</code>（公共参数）。</p>
 
+<h3>4.1 基础功能埋点</h3>
 <table>
-<tr><th>事件</th><th>evcode</th><th>事件类型</th><th>参数</th></tr>
-<tr><td>进入壁纸站</td><td><code>pv_wallpaper_homepage</code></td><td>页面访问</td><td>client, origin, open_id</td></tr>
-<tr><td>一级分类Tab点击</td><td><code>click_wallpaper_category_l1</code></td><td>点击</td><td>client, origin, open_id, cat_id, cat_name</td></tr>
-<tr><td>二级分类Tab点击</td><td><code>click_wallpaper_category_l2</code></td><td>点击</td><td>client, origin, open_id, cat_id, cat_name, parent_cat_name</td></tr>
-<tr><td>壁纸查看（预览弹窗）</td><td><code>click_wallpaper_preview</code></td><td>点击</td><td>client, origin, open_id, wallpaper_id, wallpaper_title, cat_name</td></tr>
-<tr><td>壁纸下载</td><td><code>click_wallpaper_download</code></td><td>点击</td><td>client, origin, open_id, wallpaper_id, wallpaper_title, resolution, res_type, cat_name</td></tr>
-<tr><td>搜索</td><td><code>search_wallpaper</code></td><td>搜索</td><td>client, origin, open_id, keyword, result_count</td></tr>
+<tr><th>序号</th><th>事件</th><th>evcode</th><th>事件类型</th><th>参数（除 open_id 外）</th><th>说明</th></tr>
+<tr><td>1</td><td>进入壁纸站</td><td><code>pv_wallpaper_homepage</code></td><td>页面访问</td><td><code>number</code></td><td>页面编号标识（1=首页，2=公告列表，3=活动列表，4=公告详情，5=活动详情）</td></tr>
+<tr><td>2</td><td>一级分类Tab点击</td><td><code>click_category_l1</code></td><td>点击</td><td><code>number</code></td><td>一级分类序号（如 1=官方壁纸，2=同人作品，按实际顺序）</td></tr>
+<tr><td>3</td><td>二级分类Tab点击</td><td><code>click_category_l2</code></td><td>点击</td><td><code>number</code></td><td>二级分类序号（如 1=全部，2=版本KV，3=活动/节日壁纸，按实际顺序）</td></tr>
+<tr><td>4</td><td>壁纸查看（预览弹窗）</td><td><code>click_wallpaper_preview</code></td><td>点击</td><td><code>wallpaper_id</code></td><td>被预览的壁纸ID</td></tr>
+<tr><td>5</td><td>壁纸下载</td><td><code>click_wallpaper_download</code></td><td>点击</td><td><code>wallpaper_id</code>, <code>resolution</code></td><td>壁纸ID + 所选分辨率（如 "1920×1080"）</td></tr>
+<tr><td>6</td><td>搜索</td><td><code>search_wallpaper</code></td><td>搜索</td><td><code>keyword</code></td><td>用户输入的搜索关键词，原样上报</td></tr>
 </table>
 
-<h3>公共参数说明</h3>
+<h3>4.2 同人功能埋点</h3>
+<table>
+<tr><th>序号</th><th>事件</th><th>evcode</th><th>事件类型</th><th>参数（除 open_id 外）</th><th>说明</th></tr>
+<tr><td>7</td><td>点击投稿按钮</td><td><code>click_submit_entry</code></td><td>点击</td><td>—</td><td>用户点击"我要投稿"按钮</td></tr>
+<tr><td>8</td><td>查看投稿说明弹窗</td><td><code>view_submit_modal</code></td><td>曝光</td><td>—</td><td>投稿说明弹窗展示</td></tr>
+<tr><td>9</td><td>点击公告项</td><td><code>click_notice_item</code></td><td>点击</td><td><code>notice_id</code></td><td>被点击的公告ID</td></tr>
+<tr><td>10</td><td>点击公告"更多"</td><td><code>click_notice_more</code></td><td>点击</td><td>—</td><td>点击公告区"更多→"</td></tr>
+<tr><td>11</td><td>点击活动项</td><td><code>click_activity_item</code></td><td>点击</td><td><code>activity_id</code></td><td>被点击的活动ID</td></tr>
+<tr><td>12</td><td>点击活动"更多"</td><td><code>click_activity_more</code></td><td>点击</td><td>—</td><td>点击活动区"更多→"</td></tr>
+<tr><td>13</td><td>Banner点击</td><td><code>click_banner</code></td><td>点击</td><td><code>number</code></td><td>被点击Banner的序号（从1开始）</td></tr>
+</table>
+
+<h3>公共参数</h3>
 <table>
 <tr><th style="width:100px">参数</th><th>说明</th></tr>
-<tr><td><code>client</code></td><td>客户端标识（如 web / h5）</td></tr>
-<tr><td><code>origin</code></td><td>来源渠道（从 URL 参数获取）</td></tr>
-<tr><td><code>open_id</code></td><td>用户标识（如有登录体系）</td></tr>
+<tr><td><code>open_id</code></td><td>用户标识（所有事件必传）</td></tr>
 </table>
 
 
