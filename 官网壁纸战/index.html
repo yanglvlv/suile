@@ -54,7 +54,7 @@ img{display:block}
 .search-wrap{display:flex;align-items:center;background:#f0f2f6;border:1px solid #e4e8ee;border-radius:22px;padding:6px 16px;gap:8px;transition:all .3s}
 .search-wrap:focus-within{border-color:#3b7ddd;background:#fff;box-shadow:0 0 0 3px rgba(59,125,221,0.08)}
 .search-wrap svg{width:15px;height:15px;color:#a0a8b8;flex-shrink:0}
-.search-wrap input{background:none;border:none;outline:none;color:#333;font-size:13px;width:160px}
+.search-wrap input{background:none;border:none;outline:none;color:#333;font-size:13px;width:160px;min-width:0;flex:1}
 .search-wrap input::placeholder{color:#b0b8c8}
 
 /* Hero Carousel */
@@ -117,7 +117,7 @@ img{display:block}
 .ugc-item-tag.new{background:#eef3ff;color:#3b7ddd}
 .ugc-more-btn{margin-left:auto;font-size:12px;color:#3b7ddd;cursor:pointer;background:none;border:none;font-family:inherit;padding:2px 0;transition:opacity .2s}
 .ugc-more-btn:hover{opacity:0.7}
-.ugc-detail-content{width:560px;max-height:80vh;background:#fff;border-radius:16px;padding:28px 32px;box-shadow:0 20px 60px rgba(0,0,0,0.15);overflow-y:auto}
+.ugc-detail-content{width:560px;max-width:92vw;max-height:80vh;background:#fff;border-radius:16px;padding:28px 32px;box-shadow:0 20px 60px rgba(0,0,0,0.15);overflow-y:auto}
 .ugc-detail-content h3{font-size:18px;font-weight:700;color:#2c3e50;margin-bottom:16px;display:flex;align-items:center;gap:8px}
 .ugc-detail-item{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid #f0f2f5;cursor:pointer;transition:background .2s;margin:0 -8px;padding-left:8px;padding-right:8px;border-radius:8px}
 .ugc-detail-item:hover{background:#f7f9fc}
@@ -240,7 +240,7 @@ img{display:block}
 .dl-icon svg{width:14px;height:14px;color:#3b7ddd;transition:color .2s}
 
 /* Submit modal */
-.submit-modal-content{width:460px;background:#fff;border-radius:16px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+.submit-modal-content{width:460px;max-width:92vw;background:#fff;border-radius:16px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
 .submit-modal-content h3{font-size:18px;font-weight:700;color:#2c3e50;margin-bottom:6px}
 .submit-modal-content .sub-desc{font-size:13px;color:#8090a8;margin-bottom:20px}
 .submit-rule-box{margin-top:20px;padding:16px;border-radius:10px;background:#f7f9fc;border:1px solid #eaeef4;font-size:12px;color:#6a7a90;line-height:2;white-space:pre-line}
@@ -248,8 +248,113 @@ img{display:block}
 
 .footer{border-top:1px solid #e8ecf2;padding:28px;text-align:center;font-size:11px;color:#b0b8c8;letter-spacing:1px;background:#fff}
 
-@media(max-width:1100px){.wallpaper-grid.masonry{column-count:3} .search-result-flat{grid-template-columns:repeat(3,1fr)} .modal-layout{flex-direction:column} .modal-side{width:100%}}
-@media(max-width:768px){.header-inner{padding:0 16px} .main-nav{display:none} .hero-slide{width:80%;padding-top:45%} .hero-slide.center{left:10%} .hero-slide.left{left:-15%} .hero-slide.right{left:35%} .filter-bar,.grid-section,.submit-bar,.ugc-extra{padding-left:16px;padding-right:16px} .ugc-extra-inner{grid-template-columns:1fr} .grid-row{grid-template-columns:repeat(2,1fr);height:auto} .grid-row .wp-card-big{grid-column:span 2} .wallpaper-grid.masonry{column-count:2;column-gap:8px} .search-result-flat{grid-template-columns:repeat(2,1fr)} .masonry .wp-card{margin-bottom:8px} .submit-card{flex-direction:column;gap:12px;text-align:center}}
+/* 汉堡菜单 */
+.mobile-menu-btn{display:none;width:36px;height:36px;border-radius:8px;align-items:center;justify-content:center;background:none;border:1px solid #e4e8ee;color:#666;font-size:18px;cursor:pointer;flex-shrink:0}
+.mobile-nav-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:1500}
+.mobile-nav-overlay.show{display:block}
+.mobile-nav-panel{position:fixed;top:0;right:-280px;width:280px;max-width:80vw;height:100%;background:#fff;z-index:1501;transition:right .3s ease;box-shadow:-4px 0 20px rgba(0,0,0,0.1);display:flex;flex-direction:column}
+.mobile-nav-panel.show{right:0}
+.mobile-nav-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #f0f2f5}
+.mobile-nav-header span{font-size:14px;font-weight:600;color:#2c3e50}
+.mobile-nav-close{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:none;border:none;font-size:18px;color:#999;cursor:pointer}
+.mobile-nav-list{flex:1;overflow-y:auto;padding:8px 12px}
+.mobile-nav-item{display:flex;align-items:center;gap:8px;padding:12px 16px;border-radius:10px;font-size:14px;color:#555;cursor:pointer;transition:all .2s;border:none;background:none;width:100%;text-align:left;font-family:inherit;text-decoration:none}
+.mobile-nav-item:hover,.mobile-nav-item.active{background:rgba(59,125,221,0.06);color:#3b7ddd}
+.mobile-nav-item.active{font-weight:600}
+.mobile-nav-search{padding:12px 16px;border-top:1px solid #f0f2f5}
+.mobile-nav-search input{width:100%;padding:10px 14px;border-radius:10px;border:1px solid #e4e8ee;font-size:14px;outline:none;background:#f8f9fc}
+.mobile-nav-search input:focus{border-color:#3b7ddd;background:#fff}
+
+@media(max-width:1100px){
+  .wallpaper-grid.masonry{column-count:3}
+  .search-result-flat{grid-template-columns:repeat(3,1fr)}
+  .modal-layout{flex-direction:column;max-height:92vh;overflow-y:auto}
+  .modal-side{width:100%}
+}
+@media(max-width:768px){
+  .header-inner{padding:0 12px;height:52px}
+  .logo-text{font-size:14px}
+  .main-nav{display:none}
+  .mobile-menu-btn{display:flex}
+  .search-wrap{display:none}
+  .hero{margin-top:52px;padding:8px 0 4px}
+  .hero-track{padding-top:28%}
+  .hero-slide{width:80%;padding-top:45%}
+  .hero-slide.center{left:10%}
+  .hero-slide.left{left:-15%}
+  .hero-slide.right{left:35%}
+  .hero-nav-btn{width:30px;height:30px;font-size:14px}
+  .filter-bar,.grid-section,.submit-bar,.ugc-extra,.ugc-bottom-tip{padding-left:12px;padding-right:12px}
+  .filter-bar{padding-top:16px}
+  .category-tabs{gap:4px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .category-tabs::-webkit-scrollbar{display:none}
+  .cat-tab{padding:6px 14px;font-size:12px;white-space:nowrap;flex-shrink:0}
+  .ugc-extra-inner{grid-template-columns:1fr}
+  .grid-row{grid-template-columns:repeat(2,1fr);height:auto;gap:8px}
+  .grid-row .wp-card-big{grid-column:span 2}
+  .grid-row-flat{height:auto}
+  .wallpaper-grid.masonry{column-count:2;column-gap:8px}
+  .search-result-flat{grid-template-columns:repeat(2,1fr);gap:8px}
+  .search-result-flat .wp-card{height:120px}
+  .masonry .wp-card{margin-bottom:8px}
+  .submit-card{flex-direction:column;gap:12px;text-align:center;padding:16px}
+  .submit-card h4{font-size:14px}
+  .modal-close{top:12px;right:12px;width:36px;height:36px;font-size:18px}
+  .modal-layout{width:96%;max-height:94vh}
+  .modal-preview img{max-height:50vh}
+  .modal-arrow{width:32px;height:32px;font-size:14px}
+  .modal-arrow.prev{left:4px}
+  .modal-arrow.next{right:4px}
+  .modal-zoom-btn{width:32px;height:32px}
+  .modal-side{padding:16px;border-radius:14px 14px 0 0}
+  .dl-item{flex-direction:row}
+  .submit-modal-content{padding:20px;border-radius:14px}
+  .submit-modal-content h3{font-size:16px}
+  .submit-rule-box{padding:12px;font-size:11px}
+  .ugc-detail-content{padding:20px;border-radius:14px}
+  .route-page{padding:68px 16px 40px}
+  .route-page-title{font-size:18px}
+  .route-detail-body{padding:20px;font-size:13px}
+  .ugc-notice-card,.ugc-activity-card{padding:12px 14px;min-height:auto}
+  .ugc-card-header{font-size:13px;margin-bottom:8px;padding-bottom:8px}
+  .ugc-notice-item,.ugc-activity-item{font-size:12px;padding:6px 0}
+  .pagination{padding:20px 0 8px;gap:4px}
+  .page-btn{min-width:32px;height:32px;font-size:12px;padding:0 6px}
+  .footer{padding:20px 12px;font-size:10px}
+}
+@media(max-width:480px){
+  .header-inner{height:48px}
+  .logo-text{font-size:13px;letter-spacing:1px}
+  .logo-sub{display:none}
+  .hero-track{padding-top:32%}
+  .hero-slide{width:85%;padding-top:48%}
+  .hero-slide.center{left:7.5%}
+  .hero-slide.left{left:-20%}
+  .hero-slide.right{left:35%}
+  .hero-controls{bottom:6px;gap:5px}
+  .hero-dot{width:14px;height:2px}
+  .hero-dot.active{width:24px}
+  .grid-row{gap:6px}
+  .wallpaper-grid{gap:8px}
+  .wallpaper-grid.masonry{column-gap:6px}
+  .masonry .wp-card{margin-bottom:6px}
+  .search-result-flat{grid-template-columns:1fr}
+  .search-result-flat .wp-card{height:160px}
+  .wp-badge{font-size:9px;padding:1px 6px}
+  .wp-card-overlay .wp-card-title{font-size:11px}
+  .wp-card-overlay .wp-card-meta{font-size:9px}
+  .modal-layout{width:98%}
+  .modal-preview img{max-height:40vh}
+  .modal-zoom-bar{padding:4px 10px;gap:6px}
+  .modal-zoom-pct{font-size:11px}
+  .ugc-bottom-inner{padding:20px 16px}
+  .ugc-bottom-title{font-size:14px}
+  .ugc-bottom-desc{font-size:11px}
+  .submit-modal-content{padding:16px}
+  .ugc-detail-content{padding:16px}
+  .route-detail-title{font-size:17px}
+  .route-list-item{padding:14px 12px}
+}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
@@ -265,8 +370,24 @@ img{display:block}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         <input type="text" placeholder="搜索版本名称、作者..." id="searchInput" onkeyup="handleSearch(event)">
       </div>
+      <button class="mobile-menu-btn" onclick="openMobileNav()" aria-label="菜单">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
   </div>
 </header>
+
+<!-- 移动端导航 -->
+<div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="closeMobileNav()"></div>
+<div class="mobile-nav-panel" id="mobileNavPanel">
+  <div class="mobile-nav-header">
+    <span>导航菜单</span>
+    <button class="mobile-nav-close" onclick="closeMobileNav()">×</button>
+  </div>
+  <div class="mobile-nav-list" id="mobileNavList"></div>
+  <div class="mobile-nav-search">
+    <input type="text" placeholder="搜索壁纸..." id="mobileSearchInput" onkeyup="handleMobileSearch(event)">
+  </div>
+</div>
 
 <section class="hero" id="heroSection"></section>
 
@@ -332,7 +453,7 @@ img{display:block}
   </div>
 </div>
 
-<footer class="footer">© 2025 地下城与勇士 DNF · 壁纸站 · 更新于 2026-04-16 10:43:00</footer>
+<footer class="footer">© 2025 地下城与勇士 DNF · 壁纸站 · 更新于 2026-04-16 16:58:00</footer>
 
 <script>
 const STORE_KEY = 'dnf_wallpaper_config';
@@ -1093,6 +1214,36 @@ document.addEventListener('keydown',e=>{
 });
 document.getElementById('previewModal').addEventListener('click',e=>{if(e.target.id==='previewModal')closePreview()});
 document.getElementById('submitModal').addEventListener('click',e=>{if(e.target.id==='submitModal')closeSubmitModal()});
+
+// ===== Mobile Nav =====
+function openMobileNav(){
+  document.getElementById('mobileNavOverlay').classList.add('show');
+  document.getElementById('mobileNavPanel').classList.add('show');
+  document.body.style.overflow='hidden';
+  renderMobileNav();
+}
+function closeMobileNav(){
+  document.getElementById('mobileNavOverlay').classList.remove('show');
+  document.getElementById('mobileNavPanel').classList.remove('show');
+  document.body.style.overflow='';
+}
+function renderMobileNav(){
+  const cats = DATA.categories.filter(c=>c.status).sort((a,b)=>a.sort-b.sort);
+  const icons = {normal:'📁 ',ugc:'⭐ '};
+  document.getElementById('mobileNavList').innerHTML = cats.map(c=>{
+    if(c.link){
+      return `<a class="mobile-nav-item" href="${c.link}" target="_blank">${icons[c.type]||''}${c.name}</a>`;
+    }
+    return `<button class="mobile-nav-item ${c.id===activeCatId?'active':''}" onclick="switchCat(${c.id});closeMobileNav()">${icons[c.type]||''}${c.name}</button>`;
+  }).join('');
+}
+function handleMobileSearch(e){
+  if(e.key!=='Enter')return;
+  const kw=document.getElementById('mobileSearchInput').value.trim();
+  document.getElementById('searchInput').value=kw;
+  closeMobileNav();
+  handleSearch({key:'Enter'});
+}
 
 // Go
 init();
