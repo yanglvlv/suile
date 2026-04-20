@@ -3,23 +3,9 @@ node_modules/
 package-lock.json
 screenshots/
 
-# 私有项目（已移至 suile-private）
-generated-images/
-勇士评分/
-另一种人生/
-导出表格数据/
-数据看板/
-游可爱/
-电子签/
-自动结算/
-d助/D助专栏功能优化PRD.html
-d助/prd-images/
-d助/资讯导出增加关键词字段PRD.html
-d助/高光时刻-太初奖励展示PRD.html
-d助/高光时刻-太初奖励展示PRD.md
-d助/Dark_navy_blue_technology_back_2026-04-08T07-47-12.png
-d助/马上出发数据.xlsx
-d助/薅羊毛.html
-d助/薅羊毛功能PRD.html
-官网壁纸战/薅羊毛.html
-官网壁纸战/薅羊毛功能PRD.html
+# ===== 所有项目目录 =====
+d助/
+青梅系统/
+官网/
+个人项目/
+备份_20260420/
