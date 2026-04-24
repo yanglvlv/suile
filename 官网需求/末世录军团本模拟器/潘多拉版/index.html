@@ -577,8 +577,7 @@ function submitAnswer() {
   for (var i = 0; i < options.length; i++) {
     var key = options[i].getAttribute('data-key');
     options[i].classList.add('disabled');
-    if (key === stage.answer) options[i].classList.add('correct');
-    if (!correct && key === selectedOptionKey) options[i].classList.add('wrong');
+    if (correct && key === stage.answer) options[i].classList.add('correct');
   }
 
   if (correct) {
