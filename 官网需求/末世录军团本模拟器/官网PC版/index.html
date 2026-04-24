@@ -497,7 +497,6 @@ function openQuizPage(index, keepCurrentOrder) {
   selectedOptionKey = '';
   answerLocked = false;
   var stage = STAGES[index];
-  var cleared = !!state.stageCleared[stage.id];
   document.getElementById('detailNameQuiz').textContent = stage.name;
   document.getElementById('detailProgressQuiz').textContent = '第' + (index + 1) + '/' + STAGES.length + '关';
   document.getElementById('quizQuestion').textContent = stage.question;
@@ -506,16 +505,6 @@ function openQuizPage(index, keepCurrentOrder) {
     currentQuizOptions = stage.options.slice();
   }
   renderQuizOptions();
-  if (cleared) {
-    answerLocked = true;
-    var options = document.querySelectorAll('.option-item');
-    for (var i = 0; i < options.length; i++) {
-      var key = options[i].getAttribute('data-key');
-      options[i].classList.add('disabled');
-      if (key === stage.answer) options[i].classList.add('correct');
-    }
-    showAnalysis('已通关', stage.okText, true);
-  }
   showPage('quizPage');
 }
 
