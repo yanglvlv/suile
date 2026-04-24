@@ -115,9 +115,9 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#f6f6f7}
 .stage-heading{font-size:16px;margin-bottom:14px}
 .stage-grid{gap:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
 .stage-card:last-child:nth-child(odd){grid-column:1/-1}
-.stage-card{min-height:0;padding:12px 10px 8px;border-radius:12px}
+.stage-card{min-height:0;padding:16px 14px 12px;border-radius:12px}
 .stage-name{min-height:28px;font-size:14px}
-.stage-icon{width:64px;height:64px;margin-top:6px;font-size:12px}
+.stage-icon{width:80px;height:80px;margin-top:8px;font-size:12px}
 .reward-chip{margin-top:6px;padding:3px 8px;font-size:11px}
 .stage-actions{gap:8px}
 .video-entry{width:42px;padding:5px 0;font-size:11px}
@@ -130,7 +130,7 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#f6f6f7}
 .ghost-btn{height:30px;padding:0 14px;border-radius:999px;background:#eff3f8;color:#3c495a;border:1px solid #d8dfe8;box-shadow:none}
 .video-panel{margin-top:6px;padding:10px 0 12px;border-radius:14px}
 .video-wrap{width:min(100%,1200px);max-width:calc(100% - 40px);height:auto;aspect-ratio:1200/560;border-radius:14px}
-.quiz-wrap{padding:10px 28px 14px}
+.quiz-wrap{padding:10px 320px 14px}
 .quiz-title{font-size:18px;max-width:1120px;margin-bottom:8px}
 .option-grid{max-width:1200px;margin:0 auto;gap:8px}
 .option-item{min-height:44px;padding:10px 14px;font-size:13px;border-radius:10px}
@@ -273,7 +273,7 @@ var STAGES = [
   }
 ];
 
-var STORE_KEY = 'legion-simulator-pc-v3';
+var STORE_KEY = 'legion-simulator-pc-v4';
 var state = {
   stageCleared: {},
   stageRewarded: {},
@@ -408,7 +408,7 @@ function renderStageGrid() {
       '<div class="' + getStageCardClass(i) + '">' +
         '<div class="stage-name">' + stage.name + '</div>' +
         '<div class="' + iconClass + '">关卡\n头像' + (cleared ? '<span class="learned-mask">已学习</span>' : '') + '</div>' +
-        '<div class="' + rewardClass + '" onclick="clickReward(' + stage.id + ',' + cleared + ',' + rewarded + ')">' + rewardText + '</div>' +
+        '<div class="' + rewardClass + '" onclick="clickReward(' + stage.id + ')">' + rewardText + '</div>' +
         '<div class="stage-actions">' +
           '<button class="video-entry" onclick="openVideoPage(' + i + ')">视频<br>教学</button>' +
           '<button class="pill-btn enter-btn" onclick="openQuizPage(' + i + ')">进入</button>' +
@@ -462,13 +462,15 @@ function openVideoPage(index) {
   showPage('videoPage');
 }
 
-function clickReward(stageId, cleared, rewarded) {
+function clickReward(stageId) {
+  var cleared = !!state.stageCleared[stageId];
+  var rewarded = !!state.stageRewarded[stageId];
   if (!cleared) {
     showToast('请先完成该关卡教学！');
   } else if (rewarded) {
     showToast('已获得该奖励');
   } else {
-    showToast('奖励已自动发放');
+    showToast('请点击奖励图标领取');
   }
 }
 

@@ -74,7 +74,7 @@ button{font:inherit;border:none;background:none;color:inherit;cursor:pointer}
 .video-placeholder:before{background:linear-gradient(33deg,transparent calc(50% - 1px),#b0b5be calc(50% - 1px),#b0b5be calc(50% + 1px),transparent calc(50% + 1px))}
 .video-placeholder:after{background:linear-gradient(147deg,transparent calc(50% - 1px),#b0b5be calc(50% - 1px),#b0b5be calc(50% + 1px),transparent calc(50% + 1px))}
 .video-placeholder span{position:relative;z-index:1;padding:0 14px;background:rgba(239,239,239,.92)}
-.analysis-layer{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:9999}
+.analysis-layer{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:9999}
 .analysis-layer.show{display:flex}
 .analysis-card{width:min(520px,100%);padding:22px 22px 18px;border-radius:14px;border:1px solid #e0e4ea;background:rgba(255,255,255,.96);box-shadow:0 18px 34px rgba(15,23,42,.12)}
 .analysis-title{font-size:22px;line-height:1.2;font-weight:800;margin-bottom:12px}
@@ -90,7 +90,7 @@ button{font:inherit;border:none;background:none;color:inherit;cursor:pointer}
 .option-item.correct{border-color:#9ad0aa;background:linear-gradient(180deg,#f5fff8 0%,#e8faee 100%);color:#1d7441}
 .option-item.wrong{border-color:#f0b0b0;background:linear-gradient(180deg,#fff8f8 0%,#ffeaea 100%);color:#bb3030}
 .option-item.disabled{pointer-events:none}
-.toast{position:fixed;left:50%;top:42px;transform:translateX(-50%) translateY(-10px);padding:10px 16px;border-radius:999px;background:rgba(33,37,43,.9);color:#fff;font-size:12px;font-weight:700;opacity:0;transition:.2s ease;pointer-events:none;z-index:999}
+.toast{position:absolute;left:50%;top:42px;transform:translateX(-50%) translateY(-10px);padding:10px 16px;border-radius:999px;background:rgba(33,37,43,.9);color:#fff;font-size:12px;font-weight:700;opacity:0;transition:.2s ease;pointer-events:none;z-index:999}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 body{background:radial-gradient(circle at top,#324055 0%,#202a39 40%,#121821 100%);min-height:100vh}
 .pandora-demo{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:28px 16px}
@@ -102,9 +102,10 @@ body{background:radial-gradient(circle at top,#324055 0%,#202a39 40%,#121821 100
 .pandora-dots{display:flex;align-items:center;gap:6px}
 .pandora-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.22);display:block}
 .pandora-topbar strong{font-weight:800;letter-spacing:.05em}
-.pandora-screen{width:100%;aspect-ratio:600/540;border-radius:20px;overflow:hidden;background:linear-gradient(180deg,#f8fafb 0%,#eef2f6 100%);border:1px solid rgba(255,255,255,.16)}
+.pandora-screen{width:100%;aspect-ratio:600/540;border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(180deg,#f8fafb 0%,#eef2f6 100%);border:1px solid rgba(255,255,255,.16)}
 .pandora-screen > .app{width:100%;height:100%;border:none;border-radius:0;box-shadow:none;background:#f7f8f9;overflow:hidden}
 .page{height:100%;overflow:hidden}
+.page .quiz-content{overflow-y:auto}
 .page-inner{height:100%;display:flex;flex-direction:column;padding-bottom:0}
 .topbar{padding:0;text-align:center;background:linear-gradient(180deg,#2a1a3e 0%,#1a2a4a 50%,#1e3a5a 100%);color:#fff;position:relative;overflow:hidden}
 .topbar::before{content:'背景 Banner 占位';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:rgba(255,255,255,.15);font-weight:800;letter-spacing:4px;pointer-events:none}
@@ -125,9 +126,9 @@ body{background:radial-gradient(circle at top,#324055 0%,#202a39 40%,#121821 100
 .stage-heading{font-size:12px;margin-bottom:8px}
 .stage-grid{gap:8px;grid-template-columns:repeat(2,minmax(0,1fr))}
 .stage-card:last-child:nth-child(odd){grid-column:1/-1}
-.stage-card{min-height:0;padding:6px 4px 4px;border-radius:6px}
+.stage-card{min-height:0;padding:10px 6px 8px;border-radius:6px}
 .stage-name{min-height:20px;font-size:11px}
-.stage-icon{width:40px;height:40px;margin-top:3px;font-size:9px}
+.stage-icon{width:48px;height:48px;margin-top:4px;font-size:9px}
 .reward-chip{margin-top:3px;padding:2px 5px;font-size:9px}
 .stage-actions{gap:4px}
 .video-entry{width:30px;min-width:30px;padding:3px 0;font-size:9px}
@@ -138,7 +139,10 @@ body{background:radial-gradient(circle at top,#324055 0%,#202a39 40%,#121821 100
 .video-panel{border-radius:8px;padding:2px 0 4px}
 .option-item{border-radius:6px;min-height:32px;padding:6px 8px;font-size:11px}
 .quiz-title{font-size:13px;margin-bottom:4px}
-.quiz-wrap{padding:4px 10px 6px}
+.quiz-content{overflow-y:auto}
+.quiz-content .video-panel{flex:none}
+.quiz-content .video-wrap{height:auto;aspect-ratio:460/258}
+.quiz-wrap{padding:4px 10px 6px;flex:none}
 .detail-top{padding:4px 10px 0}
 .detail-bar{min-height:28px;padding:4px 6px;gap:4px;border-radius:6px}
 .detail-stage-icon{width:20px;height:20px;font-size:7px}
@@ -230,25 +234,24 @@ body{background:radial-gradient(circle at top,#324055 0%,#202a39 40%,#121821 100
               </div>
             </div>
 
-            <div class="content">
+            <div class="content quiz-content">
               <div class="video-panel">
                 <div class="video-wrap" id="quizVideoWrap">
                   <div class="analysis-layer" id="analysisLayer"></div>
                 </div>
               </div>
-            </div>
-
-            <div class="quiz-wrap">
-              <div class="quiz-title" id="quizQuestion"></div>
-              <div class="option-grid" id="quizOptions"></div>
+              <div class="quiz-wrap">
+                <div class="quiz-title" id="quizQuestion"></div>
+                <div class="option-grid" id="quizOptions"></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  <div class="toast" id="toast"></div>
 </div>
-<div class="toast" id="toast"></div>
+</div>
 <script>
 var TASKS = [
   { id: 'task1', name: '完成所有教学任务', reward: '奖励名称', condition: 'all' }
@@ -305,7 +308,7 @@ var STAGES = [
   }
 ];
 
-var STORE_KEY = 'legion-simulator-pandora-v3';
+var STORE_KEY = 'legion-simulator-pandora-v4';
 var state = {
   stageCleared: {},
   stageRewarded: {},
@@ -440,7 +443,7 @@ function renderStageGrid() {
       '<div class="' + getStageCardClass(i) + '">' +
         '<div class="stage-name">' + stage.name + '</div>' +
         '<div class="' + iconClass + '">关卡\n头像' + (cleared ? '<span class="learned-mask">已学习</span>' : '') + '</div>' +
-        '<div class="' + rewardClass + '" onclick="clickReward(' + stage.id + ',' + cleared + ',' + rewarded + ')">' + rewardText + '</div>' +
+        '<div class="' + rewardClass + '" onclick="clickReward(' + stage.id + ')">' + rewardText + '</div>' +
         '<div class="stage-actions">' +
           '<button class="video-entry" onclick="openVideoPage(' + i + ')">视频<br>教学</button>' +
           '<button class="pill-btn enter-btn" onclick="openQuizPage(' + i + ')">进入</button>' +
@@ -494,13 +497,15 @@ function openVideoPage(index) {
   showPage('videoPage');
 }
 
-function clickReward(stageId, cleared, rewarded) {
+function clickReward(stageId) {
+  var cleared = !!state.stageCleared[stageId];
+  var rewarded = !!state.stageRewarded[stageId];
   if (!cleared) {
     showToast('请先完成该关卡教学！');
   } else if (rewarded) {
     showToast('已获得该奖励');
   } else {
-    showToast('奖励已自动发放');
+    showToast('请点击奖励图标领取');
   }
 }
 

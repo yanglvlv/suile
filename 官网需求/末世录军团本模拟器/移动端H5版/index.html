@@ -285,7 +285,7 @@ var STAGES = [
   }
 ];
 
-var STORE_KEY = 'legion-simulator-h5-v3';
+var STORE_KEY = 'legion-simulator-h5-v4';
 var state = {
   stageCleared: {},
   stageRewarded: {},
@@ -420,7 +420,7 @@ function renderStageGrid() {
       '<div class="' + getStageCardClass(i) + '">' +
         '<div class="stage-name">' + stage.name + '</div>' +
         '<div class="' + iconClass + '">关卡\n头像' + (cleared ? '<span class="learned-mask">已学习</span>' : '') + '</div>' +
-        '<div class="' + rewardClass + '" onclick="clickReward(' + stage.id + ',' + cleared + ',' + rewarded + ')">' + rewardText + '</div>' +
+        '<div class="' + rewardClass + '" onclick="clickReward(' + stage.id + ')">' + rewardText + '</div>' +
         '<div class="stage-actions">' +
           '<button class="video-entry" onclick="openVideoPage(' + i + ')">视频<br>教学</button>' +
           '<button class="pill-btn enter-btn" onclick="openQuizPage(' + i + ')">进入</button>' +
@@ -474,13 +474,15 @@ function openVideoPage(index) {
   showPage('videoPage');
 }
 
-function clickReward(stageId, cleared, rewarded) {
+function clickReward(stageId) {
+  var cleared = !!state.stageCleared[stageId];
+  var rewarded = !!state.stageRewarded[stageId];
   if (!cleared) {
     showToast('请先完成该关卡教学！');
   } else if (rewarded) {
     showToast('已获得该奖励');
   } else {
-    showToast('奖励已自动发放');
+    showToast('请点击奖励图标领取');
   }
 }
 
