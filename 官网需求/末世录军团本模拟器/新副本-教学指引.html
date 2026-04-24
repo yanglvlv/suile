@@ -230,32 +230,35 @@ Stage X: 【关卡名称】
 <h2>5. 数据上报</h2>
 
 <table>
-<tr><th>活动名称</th><th>活动ID</th><th>页面位置</th><th>事件名称</th><th>事件类型</th><th>参数/属性</th></tr>
+<tr><th>主事件名称</th><th>主事件ID</th><th>页面/一级标题</th><th>模块/二级标题</th><th>事件显示名</th><th>evcode</th><th>事件类型</th><th>事件定义/描述</th><th>参数/属性</th></tr>
 <tr>
-  <td rowspan="4">末世录军团本模拟器</td>
-  <td rowspan="4" class="placeholder">待填：活动ID</td>
+  <td rowspan="3">末世录军团本模拟器</td>
+  <td rowspan="3">activity_colg_Doomsday</td>
   <td>活动页面</td>
-  <td>进入活动uv、pv</td>
+  <td></td>
+  <td>进入活动uv, pv</td>
+  <td>pv_Doomsday_homepage</td>
   <td>访问</td>
+  <td></td>
   <td>1、进入方式client:(pc,H5)<br>2、来源origin:(潘多拉,官网)<br>3、open_id</td>
 </tr>
 <tr>
   <td>关卡列表</td>
+  <td></td>
   <td>关卡进入按钮点击</td>
+  <td>pv_Doomsday_mission</td>
   <td>点击</td>
-  <td>stage_id: {关卡列表}</td>
-</tr>
-<tr>
-  <td>答题页</td>
-  <td>答题提交</td>
-  <td>点击</td>
-  <td>stage_id, answer, is_correct</td>
+  <td></td>
+  <td>1、进入方式client:(pc,H5)<br>2、来源origin:(潘多拉,官网)<br>3、open_id<br>4、关卡mission:{1, 2, 3, 4}</td>
 </tr>
 <tr>
   <td>领奖</td>
+  <td></td>
   <td>领奖点击</td>
+  <td>click_Doomsday_mission_receive</td>
   <td>点击</td>
-  <td>reward_type, stage_id</td>
+  <td></td>
+  <td>1、进入方式client:(pc,H5)<br>2、来源origin:(潘多拉,官网)<br>3、open_id<br>4、关卡mission:{1, 2, 3, 4}</td>
 </tr>
 </table>
 
