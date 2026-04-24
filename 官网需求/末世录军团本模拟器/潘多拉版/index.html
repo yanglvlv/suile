@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>末世录军团本模拟器-地下城与勇士:创新世纪-DNF-官方网站-腾讯游戏</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{font-family:"PingFang SC","Microsoft YaHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#1f2329}
+button{font:inherit;border:none;background:none;color:inherit;cursor:pointer}
+.app{position:relative;width:100%;background:#f6f6f7;overflow:hidden}
+.page{display:none}.page.active{display:block}
+.page-inner{padding-bottom:20px}
+.topbar{padding:18px 14px 10px;text-align:center}
+.activity-title{font-size:28px;line-height:1.25;font-weight:800;letter-spacing:.02em;color:#23262d}
+.activity-sub{margin-top:10px;font-size:14px;line-height:1.6;color:#545b66}
+.user-line{margin-top:14px;font-size:12px;line-height:1.6;color:#5d6470}
+.user-line a{color:#5d6470;text-decoration:none}
+.banner{height:54px;margin-top:14px;border-top:1px solid #e4e6ea;border-bottom:1px solid #e4e6ea;display:flex;align-items:center;justify-content:flex-end;padding:0 14px;color:#4f5560;background:linear-gradient(180deg,#fafafa 0%,#f5f5f6 100%);font-size:12px}
+.content{padding:10px 14px 18px}
+.card{background:#fff;border:1px solid #e0e3e8;border-radius:10px;box-shadow:0 4px 14px rgba(15,23,42,.05)}
+.task-board{display:grid;grid-template-columns:1fr;gap:10px}
+.task-item{min-height:72px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.task-main{flex:none;text-align:center}
+.task-name{font-size:14px;line-height:1.4;font-weight:700;color:#23262d}
+.task-reward{margin-top:6px;font-size:12px;color:#8b9199}
+.reward-icon,.detail-stage-icon,.stage-icon{position:relative;display:flex;align-items:center;justify-content:center;flex:0 0 auto;color:#666d78;background:#fbfbfb;border:1px solid #cfd5dd}
+.reward-icon{width:36px;height:36px;border-radius:4px;font-size:10px;line-height:1.2;text-align:center}
+.reward-icon:before,.reward-icon:after,.detail-stage-icon:before,.detail-stage-icon:after,.stage-icon:before,.stage-icon:after{display:none}
+.task-btn,.primary-btn,.ghost-btn,.pill-btn,.analysis-btn{height:34px;padding:0 18px;border-radius:999px;font-size:12px;font-weight:700;transition:.2s ease}
+.task-btn,.pill-btn,.analysis-btn{border:1px solid #d4d8df;background:linear-gradient(180deg,#fff 0%,#f5f5f5 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 4px 10px rgba(15,23,42,.06)}
+.task-btn.ready,.primary-btn,.analysis-btn.primary{color:#8c5300;border-color:#ffcf81;background:linear-gradient(180deg,#fff5df 0%,#ffe3b0 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 8px 18px rgba(255,177,59,.18)}
+.task-btn.done,.pill-btn.done{color:#9ca3ad;background:linear-gradient(180deg,#fafafa 0%,#f1f2f4 100%)}
+.task-btn.locked{color:#b5bac3;cursor:not-allowed}
+.primary-btn:hover,.analysis-btn.primary:hover,.task-btn.ready:hover,.pill-btn:hover,.ghost-btn:hover{transform:translateY(-1px)}
+.stage-section{margin-top:10px;padding:10px 10px 12px}
+.stage-heading{font-size:16px;line-height:1.5;font-weight:800;text-align:center;color:#252a32;margin-bottom:12px}
+.stage-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stage-card{padding:18px 16px 12px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.stage-card.wide{grid-column:span 2}
+.stage-name{font-size:16px;line-height:1.35;font-weight:800;color:#2b2f36}
+.stage-icon{width:82px;height:82px;margin-top:12px;border-radius:4px;font-size:15px;line-height:1.35;text-align:center;white-space:pre-line}
+.stage-icon.learned .learned-mask{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.72);color:#444b55;font-size:11px;font-weight:700}
+.reward-chip{margin-top:12px;padding:4px 10px;border-radius:999px;background:#fff4e0;font-size:12px;line-height:1.2;font-weight:700;color:#f49b16;cursor:pointer}
+.reward-chip.got{background:#f0f1f3;color:#9ea4ad}
+.stage-actions{margin-top:8px;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:10px}
+.stage-reward-icon{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;transition:transform .15s}
+.stage-reward-icon:hover{transform:scale(1.08)}
+.sri-box{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid #cfd5dd;background:#f5f5f5;color:#999;transition:all .2s}
+.sri-label{font-size:10px;font-weight:700;color:#999;white-space:nowrap}
+.stage-reward-icon.locked .sri-box{opacity:.4;cursor:not-allowed}
+.stage-reward-icon.locked:hover{transform:none}
+.stage-reward-icon.claimable .sri-box{border-color:#e74c3c;background:linear-gradient(135deg,#fff5f5,#ffe0e0);color:#e74c3c;box-shadow:0 0 8px rgba(231,76,60,.3);animation:rewardPulse 1.5s ease-in-out infinite}
+.stage-reward-icon.claimable .sri-label{color:#e74c3c}
+.stage-reward-icon.claimed .sri-box{border-color:#b8bec7;background:#eee;color:#999}
+.stage-reward-icon.claimed .sri-label{color:#999}
+@keyframes rewardPulse{0%,100%{box-shadow:0 0 8px rgba(231,76,60,.3)}50%{box-shadow:0 0 16px rgba(231,76,60,.5)}}
+.video-entry{width:42px;min-width:42px;padding:6px 0;border:1px solid #aeb4bd;border-radius:2px;background:#fff;box-shadow:0 4px 10px rgba(15,23,42,.05);font-size:12px;line-height:1.2;font-weight:700;color:#414854}
+.enter-btn{min-width:72px}
+.detail-top{padding:8px 14px 0}
+.detail-bar{min-height:42px;display:flex;align-items:center;gap:10px;padding:0 10px;border:1px solid #dfe2e7;border-radius:4px;background:#fff}
+.back-mobile{display:none}
+.detail-stage-icon{width:28px;height:28px;border-radius:2px;font-size:9px;line-height:1.1;text-align:center}
+.detail-name{font-size:14px;font-weight:800;color:#2b2f36}
+.detail-progress{font-size:12px;font-weight:700;color:#434a54}
+.detail-spacer{flex:1}
+.ghost-btn{height:28px;padding:0 14px;border:1px solid #71757e;border-radius:6px;background:#666a73;color:#fff;box-shadow:0 2px 6px rgba(15,23,42,.12)}
+.video-panel{margin-top:8px;padding:16px 0 18px;border:1px solid #e1e4e8;border-radius:4px;background:#f7f7f7;box-shadow:0 4px 12px rgba(15,23,42,.04)}
+.video-wrap{position:relative;width:560px;max-width:calc(100% - 24px);margin:0 auto;height:315px;border:1px solid #aeb4bd;background:#eceef1;overflow:hidden}
+.video-wrap video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+.video-placeholder{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#31353c;font-size:22px;font-weight:700;background:linear-gradient(180deg,#efefef 0%,#e9eaed 100%)}
+.video-placeholder:before,.video-placeholder:after{content:"";position:absolute;inset:0;pointer-events:none}
+.video-placeholder:before{background:linear-gradient(33deg,transparent calc(50% - 1px),#b0b5be calc(50% - 1px),#b0b5be calc(50% + 1px),transparent calc(50% + 1px))}
+.video-placeholder:after{background:linear-gradient(147deg,transparent calc(50% - 1px),#b0b5be calc(50% - 1px),#b0b5be calc(50% + 1px),transparent calc(50% + 1px))}
+.video-placeholder span{position:relative;z-index:1;padding:0 14px;background:rgba(239,239,239,.92)}
+.analysis-layer{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:9999}
+.analysis-layer.show{display:flex}
+.analysis-card{width:min(520px,100%);padding:22px 22px 18px;border-radius:14px;border:1px solid #e0e4ea;background:rgba(255,255,255,.96);box-shadow:0 18px 34px rgba(15,23,42,.12)}
+.analysis-title{font-size:22px;line-height:1.2;font-weight:800;margin-bottom:12px}
+.analysis-title.correct{color:#1f7a42}
+.analysis-title.wrong{color:#d84343}
+.analysis-text{font-size:14px;line-height:1.8;color:#4d5560;margin-bottom:18px}
+.quiz-wrap{padding:14px 14px 18px}
+.quiz-title{margin:2px auto 12px;max-width:980px;text-align:center;font-size:18px;line-height:1.55;font-weight:800;color:#2a2f36}
+.option-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.option-item{min-height:56px;padding:14px 16px;border:1px solid #dadfe6;border-radius:4px;background:linear-gradient(180deg,#fff 0%,#f9f9fa 100%);box-shadow:0 3px 10px rgba(15,23,42,.05);display:flex;align-items:center;justify-content:flex-start;font-size:14px;line-height:1.6;font-weight:700;color:#404651;text-align:left;transition:.18s ease}
+.option-item:hover{transform:translateY(-1px);border-color:#c7ced8;box-shadow:0 8px 18px rgba(15,23,42,.08)}
+.option-item.selected{border-color:#ffbe59;background:linear-gradient(180deg,#fff8e8 0%,#fff0ce 100%);color:#8b5300}
+.option-item.correct{border-color:#9ad0aa;background:linear-gradient(180deg,#f5fff8 0%,#e8faee 100%);color:#1d7441}
+.option-item.wrong{border-color:#f0b0b0;background:linear-gradient(180deg,#fff8f8 0%,#ffeaea 100%);color:#bb3030}
+.option-item.disabled{pointer-events:none}
+.toast{position:fixed;left:50%;top:42px;transform:translateX(-50%) translateY(-10px);padding:10px 16px;border-radius:999px;background:rgba(33,37,43,.9);color:#fff;font-size:12px;font-weight:700;opacity:0;transition:.2s ease;pointer-events:none;z-index:999}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+body{background:radial-gradient(circle at top,#324055 0%,#202a39 40%,#121821 100%);min-height:100vh}
+.pandora-demo{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:28px 16px}
+.pandora-caption{text-align:center;color:#d8e0eb}
+.pandora-title{font-size:20px;font-weight:800;letter-spacing:.05em}
+.pandora-sub{margin-top:4px;font-size:12px;color:rgba(216,224,235,.68)}
+.pandora-frame{width:min(680px,calc(100vw - 32px));padding:14px;border-radius:28px;background:linear-gradient(180deg,#1f2633 0%,#0f141c 100%);box-shadow:0 30px 80px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.08)}
+.pandora-topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 6px 12px;color:#d5dce8;font-size:12px}
+.pandora-dots{display:flex;align-items:center;gap:6px}
+.pandora-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.22);display:block}
+.pandora-topbar strong{font-weight:800;letter-spacing:.05em}
+.pandora-screen{width:100%;aspect-ratio:600/540;border-radius:20px;overflow:hidden;background:linear-gradient(180deg,#f8fafb 0%,#eef2f6 100%);border:1px solid rgba(255,255,255,.16)}
+.pandora-screen > .app{width:100%;height:100%;border:none;border-radius:0;box-shadow:none;background:#f7f8f9;overflow:hidden}
+.page{height:100%;overflow:hidden}
+.page-inner{height:100%;display:flex;flex-direction:column;padding-bottom:0}
+.topbar{padding:0;text-align:center;background:linear-gradient(180deg,#2a1a3e 0%,#1a2a4a 50%,#1e3a5a 100%);color:#fff;position:relative;overflow:hidden}
+.topbar::before{content:'背景 Banner 占位';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:rgba(255,255,255,.15);font-weight:800;letter-spacing:4px;pointer-events:none}
+.topbar-inner{position:relative;z-index:1;padding:60px 10px 42px}
+.activity-title{font-size:18px;color:#fff}
+.activity-sub{font-size:10px;margin-top:2px;color:rgba(255,255,255,.8)}
+.user-line{font-size:9px;margin-top:4px;color:rgba(255,255,255,.6)}
+.banner{display:none}
+.content{padding:4px 10px 6px;flex:1;display:flex;flex-direction:column}
+.stage-placeholder{display:none}
+.task-board{gap:4px}
+.task-item{min-height:36px;padding:6px 8px;justify-content:center}
+.task-name{font-size:11px}
+.task-reward{font-size:9px;margin-top:2px}
+.reward-icon{width:24px;height:24px;font-size:8px}
+.task-btn{height:24px;padding:0 10px;font-size:10px}
+.stage-section{margin-top:4px;padding:10px 10px 14px;border-radius:8px}
+.stage-heading{font-size:12px;margin-bottom:8px}
+.stage-grid{gap:8px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.stage-card:last-child:nth-child(odd){grid-column:1/-1}
+.stage-card{min-height:0;padding:6px 4px 4px;border-radius:6px}
+.stage-name{min-height:20px;font-size:11px}
+.stage-icon{width:40px;height:40px;margin-top:3px;font-size:9px}
+.reward-chip{margin-top:3px;padding:2px 5px;font-size:9px}
+.stage-actions{gap:4px}
+.video-entry{width:30px;min-width:30px;padding:3px 0;font-size:9px}
+.enter-btn{min-width:46px;font-size:10px;height:24px}
+.sri-box{width:24px;height:24px;font-size:12px;border-radius:4px}
+.sri-label{font-size:8px}
+.video-wrap{width:min(100%,460px);max-width:calc(100% - 16px);height:auto;aspect-ratio:460/258;border-radius:8px}
+.video-panel{border-radius:8px;padding:2px 0 4px}
+.option-item{border-radius:6px;min-height:32px;padding:6px 8px;font-size:11px}
+.quiz-title{font-size:13px;margin-bottom:4px}
+.quiz-wrap{padding:4px 10px 6px}
+.detail-top{padding:4px 10px 0}
+.detail-bar{min-height:28px;padding:4px 6px;gap:4px;border-radius:6px}
+.detail-stage-icon{width:20px;height:20px;font-size:7px}
+.detail-name{font-size:11px}
+.detail-progress{font-size:9px}
+.ghost-btn{height:22px;padding:0 8px;font-size:9px;border-radius:4px}
+.analysis-card{padding:12px;border-radius:10px}
+.analysis-title{font-size:14px;margin-bottom:6px}
+.analysis-text{font-size:11px;margin-bottom:8px}
+.analysis-btn{height:26px;font-size:10px}
+#quizTopbar{display:none}
+.toast{top:16px;font-size:10px;padding:6px 12px}
+@media(max-width:720px){
+  .pandora-frame{padding:10px;border-radius:22px}
+  .pandora-topbar{padding:0 2px 10px;font-size:11px}
+}
+</style>
+</head>
+<body>
+<div class="pandora-demo">
+  <div class="pandora-caption">
+    <div class="pandora-title">潘多拉版</div>
+    <div class="pandora-sub">600×540 · 视频 560×315</div>
+  </div>
+  <div class="pandora-frame">
+    <div class="pandora-topbar">
+      <div class="pandora-dots"><span></span><span></span><span></span></div>
+      <strong>Pandora 600×540</strong>
+      <span>视频 560×315</span>
+    </div>
+    <div class="pandora-screen">
+<div class="app">
+        <div class="page active" id="homePage">
+          <div class="page-inner">
+            <div class="topbar">
+              <div class="topbar-inner">
+              <div class="activity-title">末世录军团本模拟器</div>
+              <div class="activity-sub">熟悉机制，轻松通关</div>
+              </div>
+            </div>
+
+            <div class="content">
+              <div class="task-board" id="taskBoard"></div>
+              <div class="card stage-section">
+                <div class="stage-heading">完成教学关卡得奖励</div>
+                <div class="stage-grid" id="stageGrid"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page" id="videoPage">
+          <div class="page-inner">
+            <div class="detail-top">
+              <div class="detail-bar">
+                <button class="ghost-btn back-mobile" onclick="backHome()">返回首页</button>
+                <div class="detail-stage-icon">关卡<br>图标</div>
+                <div class="detail-name" id="detailNameVideo"></div>
+                <div class="detail-progress" id="detailProgressVideo"></div>
+                <div class="detail-spacer"></div>
+                <button class="ghost-btn back-desktop" onclick="backHome()">返回首页</button>
+              </div>
+            </div>
+            <div class="content">
+              <div class="video-panel">
+                <div class="video-wrap" id="videoTeachingWrap"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page" id="quizPage">
+          <div class="page-inner">
+            <div class="topbar" id="quizTopbar">
+              <div class="topbar-inner">
+              <div class="activity-title">末世录军团本模拟器</div>
+              <div class="activity-sub">熟悉机制，轻松通关</div>
+              </div>
+            </div>
+
+            <div class="detail-top">
+              <div class="detail-bar">
+                <button class="ghost-btn back-mobile" onclick="backHome()">返回首页</button>
+                <div class="detail-stage-icon">关卡<br>图标</div>
+                <div class="detail-name" id="detailNameQuiz"></div>
+                <div class="detail-progress" id="detailProgressQuiz"></div>
+                <div class="detail-spacer"></div>
+                <button class="ghost-btn back-desktop" onclick="backHome()">返回首页</button>
+              </div>
+            </div>
+
+            <div class="content">
+              <div class="video-panel">
+                <div class="video-wrap" id="quizVideoWrap">
+                  <div class="analysis-layer" id="analysisLayer"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="quiz-wrap">
+              <div class="quiz-title" id="quizQuestion"></div>
+              <div class="option-grid" id="quizOptions"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+var TASKS = [
+  { id: 'task1', name: '完成所有教学任务', reward: '奖励名称', condition: 'all' }
+];
+
+var STAGES = [
+  {
+    id: 1,
+    name: '关卡一',
+    reward: '雷米援助*5',
+    videoUrl: '',
+    question: '待填：关卡一的题目内容？',
+    options: [
+      { key: 'A', text: '待填：选项一' },
+      { key: 'B', text: '待填：选项二' },
+      { key: 'C', text: '待填：选项三' },
+      { key: 'D', text: '待填：选项四' }
+    ],
+    answer: 'A',
+    okText: '待填：关卡一正确解析',
+    errText: '待填：关卡一错误解析'
+  },
+  {
+    id: 2,
+    name: '关卡二',
+    reward: '雷米援助*5',
+    videoUrl: '',
+    question: '待填：关卡二的题目内容？',
+    options: [
+      { key: 'A', text: '待填：选项一' },
+      { key: 'B', text: '待填：选项二' },
+      { key: 'C', text: '待填：选项三' },
+      { key: 'D', text: '待填：选项四' }
+    ],
+    answer: 'B',
+    okText: '待填：关卡二正确解析',
+    errText: '待填：关卡二错误解析'
+  },
+  {
+    id: 3,
+    name: '关卡三',
+    reward: '雷米援助*5',
+    videoUrl: '',
+    question: '待填：关卡三的题目内容？',
+    options: [
+      { key: 'A', text: '待填：选项一' },
+      { key: 'B', text: '待填：选项二' },
+      { key: 'C', text: '待填：选项三' },
+      { key: 'D', text: '待填：选项四' }
+    ],
+    answer: 'C',
+    okText: '待填：关卡三正确解析',
+    errText: '待填：关卡三错误解析'
+  }
+];
+
+var STORE_KEY = 'legion-simulator-pandora-v3';
+var state = {
+  stageCleared: {},
+  stageRewarded: {},
+  taskClaimed: {}
+};
+var currentMode = 'pandora';
+var currentStageIndex = 0;
+var currentQuizOptions = [];
+var selectedOptionKey = '';
+var currentPageType = 'home';
+var answerLocked = false;
+
+function loadState() {
+  try {
+    var raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') state = parsed;
+    }
+  } catch (e) {}
+  if (!state.stageCleared) state.stageCleared = {};
+  if (!state.stageRewarded) state.stageRewarded = {};
+  if (!state.taskClaimed) state.taskClaimed = {};
+}
+
+function saveState() {
+  localStorage.setItem(STORE_KEY, JSON.stringify(state));
+}
+
+function showToast(text) {
+  var toast = document.getElementById('toast');
+  toast.textContent = text;
+  toast.classList.add('show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(function () {
+    toast.classList.remove('show');
+  }, 1800);
+}
+
+function shuffleArray(list) {
+  var arr = list.slice();
+  for (var i = arr.length - 1; i > 0; i--) {
+    var randomIndex = Math.floor(Math.random() * (i + 1));
+    var temp = arr[i];
+    arr[i] = arr[randomIndex];
+    arr[randomIndex] = temp;
+  }
+  return arr;
+}
+
+function isTaskComplete(task) {
+  var i;
+  if (task.condition === 'all') {
+    for (i = 0; i < STAGES.length; i++) {
+      if (!state.stageCleared[STAGES[i].id]) return false;
+    }
+    return true;
+  }
+  for (i = 0; i < task.condition.length; i++) {
+    if (!state.stageCleared[task.condition[i]]) return false;
+  }
+  return true;
+}
+
+function renderTaskBoard() {
+  var html = '';
+  for (var i = 0; i < TASKS.length; i++) {
+    var task = TASKS[i];
+    var complete = isTaskComplete(task);
+    var claimed = !!state.taskClaimed[task.id];
+    var buttonClass = 'task-btn locked';
+    var buttonText = '领取';
+    if (claimed) {
+      buttonClass = 'task-btn done';
+      buttonText = '已领取';
+    } else if (complete) {
+      buttonClass = 'task-btn ready';
+      buttonText = '领取';
+    }
+
+    html += '' +
+      '<div class="task-item card">' +
+        '<div class="task-main">' +
+          '<div class="task-name">' + task.name + '</div>' +
+          '<div class="task-reward">' + task.reward + '</div>' +
+        '</div>' +
+        '<div class="reward-icon">奖励<br>icon</div>' +
+        '<button class="' + buttonClass + '" onclick="claimTask(\'' + task.id + '\')">' + buttonText + '</button>' +
+      '</div>';
+  }
+  document.getElementById('taskBoard').innerHTML = html;
+}
+
+function claimTask(taskId) {
+  var task = null;
+  for (var i = 0; i < TASKS.length; i++) {
+    if (TASKS[i].id === taskId) {
+      task = TASKS[i];
+      break;
+    }
+  }
+  if (!task) return;
+  if (state.taskClaimed[taskId]) {
+    showToast('该奖励已领取');
+    return;
+  }
+  if (!isTaskComplete(task)) {
+    showToast('请先完成对应教学');
+    return;
+  }
+  state.taskClaimed[taskId] = true;
+  saveState();
+  renderTaskBoard();
+  showToast('领取成功');
+}
+
+function getStageCardClass(index) {
+  if (currentMode === 'mobile' && index === STAGES.length - 1 && STAGES.length % 2 === 1) return 'stage-card card wide';
+  return 'stage-card card';
+}
+
+function renderStageGrid() {
+  var html = '';
+  for (var i = 0; i < STAGES.length; i++) {
+    var stage = STAGES[i];
+    var cleared = !!state.stageCleared[stage.id];
+    var rewarded = !!state.stageRewarded[stage.id];
+    var rewardClass = rewarded ? 'reward-chip got' : 'reward-chip';
+    var rewardText = rewarded ? '已获得：' + stage.reward : '可获得：' + stage.reward;
+    var iconClass = cleared ? 'stage-icon learned' : 'stage-icon';
+    html += '' +
+      '<div class="' + getStageCardClass(i) + '">' +
+        '<div class="stage-name">' + stage.name + '</div>' +
+        '<div class="' + iconClass + '">关卡\n头像' + (cleared ? '<span class="learned-mask">已学习</span>' : '') + '</div>' +
+        '<div class="' + rewardClass + '" onclick="clickReward(' + stage.id + ',' + cleared + ',' + rewarded + ')">' + rewardText + '</div>' +
+        '<div class="stage-actions">' +
+          '<button class="video-entry" onclick="openVideoPage(' + i + ')">视频<br>教学</button>' +
+          '<button class="pill-btn enter-btn" onclick="openQuizPage(' + i + ')">进入</button>' +
+          '<div class="stage-reward-icon ' + (rewarded ? 'claimed' : (cleared ? 'claimable' : 'locked')) + '" onclick="claimStageReward(' + stage.id + ',' + i + ')">' +
+            '<div class="sri-box">' + (rewarded ? '✓' : '🎁') + '</div>' +
+            '<div class="sri-label">' + (rewarded ? '已领取' : (cleared ? '可领取' : '')) + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+  document.getElementById('stageGrid').innerHTML = html;
+}
+
+function showPage(pageId) {
+  currentPageType = pageId === 'homePage' ? 'home' : (pageId === 'videoPage' ? 'video' : 'quiz');
+  var pages = document.querySelectorAll('.page');
+  for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+  document.getElementById(pageId).classList.add('active');
+}
+
+function renderHome() {
+  renderTaskBoard();
+  renderStageGrid();
+  showPage('homePage');
+}
+
+function getVideoPlaceholder(labelPrefix) {
+  return '<div class="video-placeholder"><span>' + labelPrefix + '（560×315）</span></div>';
+}
+
+function buildVideoNode(stage, labelPrefix, containerId, withAnalysisLayer) {
+  var container = document.getElementById(containerId);
+  var content = '';
+  if (stage.videoUrl) {
+    content = '<video src="' + stage.videoUrl + '" controls playsinline autoplay></video>';
+  } else {
+    content = getVideoPlaceholder(labelPrefix);
+  }
+  if (withAnalysisLayer) {
+    content += '<div class="analysis-layer" id="analysisLayer"></div>';
+  }
+  container.innerHTML = content;
+}
+
+function openVideoPage(index) {
+  currentStageIndex = index;
+  var stage = STAGES[index];
+  document.getElementById('detailNameVideo').textContent = stage.name;
+  document.getElementById('detailProgressVideo').textContent = '第' + (index + 1) + '/' + STAGES.length + '关';
+  buildVideoNode(stage, '关卡视频', 'videoTeachingWrap', false);
+  showPage('videoPage');
+}
+
+function clickReward(stageId, cleared, rewarded) {
+  if (!cleared) {
+    showToast('请先完成该关卡教学！');
+  } else if (rewarded) {
+    showToast('已获得该奖励');
+  } else {
+    showToast('奖励已自动发放');
+  }
+}
+
+function claimStageReward(stageId, index) {
+  var cleared = !!state.stageCleared[stageId];
+  var rewarded = !!state.stageRewarded[stageId];
+  if (!cleared) {
+    showToast('请先完成该关卡教学！');
+    return;
+  }
+  if (rewarded) {
+    showToast('该奖励已领取');
+    return;
+  }
+  state.stageRewarded[stageId] = true;
+  saveState();
+  showToast('领取成功！');
+  renderStageGrid();
+  renderTaskBoard();
+}
+
+function openQuizPage(index, keepCurrentOrder) {
+  currentStageIndex = index;
+  selectedOptionKey = '';
+  answerLocked = false;
+  var stage = STAGES[index];
+  var cleared = !!state.stageCleared[stage.id];
+  document.getElementById('detailNameQuiz').textContent = stage.name;
+  document.getElementById('detailProgressQuiz').textContent = '第' + (index + 1) + '/' + STAGES.length + '关';
+  document.getElementById('quizQuestion').textContent = stage.question;
+  buildVideoNode(stage, '播放题目视频', 'quizVideoWrap', true);
+  if (!keepCurrentOrder) {
+    currentQuizOptions = stage.options.slice();
+  }
+  renderQuizOptions();
+  if (cleared) {
+    answerLocked = true;
+    var options = document.querySelectorAll('.option-item');
+    for (var i = 0; i < options.length; i++) {
+      var key = options[i].getAttribute('data-key');
+      options[i].classList.add('disabled');
+      if (key === stage.answer) options[i].classList.add('correct');
+    }
+    showAnalysis('已通关', stage.okText, true);
+  }
+  showPage('quizPage');
+}
+
+function renderQuizOptions() {
+  var html = '';
+  for (var i = 0; i < currentQuizOptions.length; i++) {
+    html += '<button class="option-item" data-key="' + currentQuizOptions[i].key + '" onclick="pickOption(this,\'' + currentQuizOptions[i].key + '\')">' + currentQuizOptions[i].text + '</button>';
+  }
+  document.getElementById('quizOptions').innerHTML = html;
+}
+
+function pickOption(element, key) {
+  if (answerLocked) return;
+  selectedOptionKey = key;
+  var options = document.querySelectorAll('.option-item');
+  for (var i = 0; i < options.length; i++) options[i].classList.remove('selected');
+  element.classList.add('selected');
+  setTimeout(function () {
+    submitAnswer();
+  }, 220);
+}
+
+function submitAnswer() {
+  if (!selectedOptionKey || answerLocked) return;
+  answerLocked = true;
+  var stage = STAGES[currentStageIndex];
+  var correct = selectedOptionKey === stage.answer;
+  var options = document.querySelectorAll('.option-item');
+  for (var i = 0; i < options.length; i++) {
+    var key = options[i].getAttribute('data-key');
+    options[i].classList.add('disabled');
+    if (key === stage.answer) options[i].classList.add('correct');
+    if (!correct && key === selectedOptionKey) options[i].classList.add('wrong');
+  }
+
+  if (correct) {
+    state.stageCleared[stage.id] = true;
+    saveState();
+  }
+
+  setTimeout(function () {
+    showAnalysis(correct ? '选择正确' : '选择错误', correct ? stage.okText : stage.errText, correct);
+  }, 320);
+}
+
+function findNextUnclearedIndex() {
+  for (var i = currentStageIndex + 1; i < STAGES.length; i++) {
+    if (!state.stageCleared[STAGES[i].id]) return i;
+  }
+  return -1;
+}
+
+function showAnalysis(title, text, isCorrect) {
+  var layer = document.getElementById('analysisLayer');
+  var buttonHtml = '';
+  if (isCorrect) {
+    var nextIndex = findNextUnclearedIndex();
+    if (nextIndex > -1) {
+      buttonHtml = '<button class="analysis-btn primary" onclick="openQuizPage(' + nextIndex + ')">下一题</button>';
+    } else {
+      buttonHtml = '<button class="analysis-btn primary" onclick="backHome()">返回首页</button>';
+    }
+  } else {
+    buttonHtml = '<button class="analysis-btn primary" onclick="retryCurrentQuiz()">重答本题</button>';
+  }
+
+  layer.innerHTML = '' +
+    '<div class="analysis-card">' +
+      '<div class="analysis-title ' + (isCorrect ? 'correct' : 'wrong') + '">' + title + '</div>' +
+      '<div class="analysis-text">解析：' + text + '</div>' +
+      buttonHtml +
+    '</div>';
+  layer.classList.add('show');
+}
+
+function retryCurrentQuiz() {
+  var stage = STAGES[currentStageIndex];
+  selectedOptionKey = '';
+  answerLocked = false;
+  currentQuizOptions = shuffleArray(stage.options);
+  var layer = document.getElementById('analysisLayer');
+  layer.classList.remove('show');
+  layer.innerHTML = '';
+  renderQuizOptions();
+  var video = document.querySelector('#quizVideoWrap video');
+  if (video) {
+    video.currentTime = 0;
+    video.play();
+  }
+}
+
+function backHome() {
+  var videos = document.querySelectorAll('video');
+  for (var i = 0; i < videos.length; i++) videos[i].pause();
+  renderHome();
+}
+
+loadState();
+renderHome();
+</script>
+</body>
+</html>

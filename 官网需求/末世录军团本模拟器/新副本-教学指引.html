@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>末世录军团本模拟器-教学指引 - 产品需求文档</title>
+<style>
+  body { font-family: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif; color: #333; line-height: 1.8; max-width: 1100px; margin: 0 auto; padding: 20px 36px; background: #fff; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 16px; font-size: 13px; }
+  th, td { border: 1px solid #d0d0d0; padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background-color: #f0f2f5; font-weight: bold; white-space: nowrap; }
+  h1 { font-size: 22px; border-bottom: 3px solid #4f6ef7; padding-bottom: 8px; color: #1a1e30; }
+  h2 { font-size: 17px; margin-top: 30px; border-left: 4px solid #4f6ef7; padding-left: 12px; color: #1a1e30; }
+  h3 { font-size: 15px; margin-top: 20px; color: #2c3e50; }
+  h4 { font-size: 14px; margin-top: 12px; color: #3b5580; }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 4px; line-height: 1.7; }
+  code { background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 12px; color: #c7254e; }
+  .tag-red { color: #ef4444; font-weight: bold; }
+  .tag-new { background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .section-sep { border: none; border-top: 1px solid #e5e7eb; margin: 24px 0; }
+  .placeholder { background: #fff3cd; border: 1px dashed #ffc107; padding: 8px 14px; border-radius: 6px; color: #856404; font-size: 13px; margin: 8px 0; }
+  .change-note { background: #fee2e2; border: 1px solid #fca5a5; padding: 10px 14px; border-radius: 6px; color: #991b1b; font-size: 13px; margin: 12px 0; }
+  blockquote { border-left: 3px solid #f59e0b; background: #fffbeb; margin: 8px 0; padding: 8px 14px; color: #92400e; font-size: 12px; border-radius: 0 6px 6px 0; }
+  strong { color: #1a1a2e; }
+</style>
+</head>
+<body>
+
+<h1>末世录军团本模拟器-教学指引</h1>
+
+<div style="background:#eef6ff;border:1px solid #b3d4fc;padding:14px 18px;border-radius:8px;margin-bottom:16px;">
+  <strong>📎 原型预览链接</strong><br>
+  <ul style="margin:8px 0 0;padding-left:18px;">
+    <li><strong>官网PC版（1920×1080）</strong>：<a href="https://yanglvlv.github.io/suile/%E5%AE%98%E7%BD%91%E9%9C%80%E6%B1%82/%E6%9C%AB%E4%B8%96%E5%BD%95%E5%86%9B%E5%9B%A2%E6%9C%AC%E6%A8%A1%E6%8B%9F%E5%99%A8/%E5%AE%98%E7%BD%91PC%E7%89%88/index.html" target="_blank">点击查看</a></li>
+    <li><strong>移动端H5版（750宽）</strong>：<a href="https://yanglvlv.github.io/suile/%E5%AE%98%E7%BD%91%E9%9C%80%E6%B1%82/%E6%9C%AB%E4%B8%96%E5%BD%95%E5%86%9B%E5%9B%A2%E6%9C%AC%E6%A8%A1%E6%8B%9F%E5%99%A8/%E7%A7%BB%E5%8A%A8%E7%AB%AFH5%E7%89%88/index.html" target="_blank">点击查看</a></li>
+    <li><strong>潘多拉版（600×540）</strong>：<a href="https://yanglvlv.github.io/suile/%E5%AE%98%E7%BD%91%E9%9C%80%E6%B1%82/%E6%9C%AB%E4%B8%96%E5%BD%95%E5%86%9B%E5%9B%A2%E6%9C%AC%E6%A8%A1%E6%8B%9F%E5%99%A8/%E6%BD%98%E5%A4%9A%E6%8B%89%E7%89%88/index.html" target="_blank">点击查看</a></li>
+  </ul>
+</div>
+
+<table>
+<tr><th>序号</th><th>变更概括</th><th>变更人</th><th>生成时间</th></tr>
+<tr><td>1</td><td>创建文档</td><td>iilyang</td><td>2026.04.20</td></tr>
+</table>
+
+<hr class="section-sep">
+
+<!-- ==================== 1. 变化点总结 ==================== -->
+<h2>1. 与狄瑞吉困难模式变化点</h2>
+<ul>
+  <li class="tag-red">无顶部导航栏Tab切换（本次不分普通/困难）</li>
+  <li class="tag-red">任务内容变更</li>
+  <li class="tag-red">关卡相关：关卡数量变化（3个关卡）；关卡奖励改为手动领取（通关后点击奖励icon领取）。</li>
+  <li class="tag-red">教学流程：只变更了题的内容，其他均无变化。</li>
+</ul>
+
+<div class="change-note">
+  <strong>⚠️ 逻辑变更：</strong>答错后点击[重答本题]时，选项需要<strong>打乱顺序重新排列</strong>，而非保持原有顺序。
+</div>
+
+<hr class="section-sep">
+
+<!-- ==================== 2. 项目背景 ==================== -->
+<h2>2. 项目背景与目标</h2>
+<ul>
+  <li><strong>业务背景</strong>：配合游戏内新副本上线，通过H5活动降低用户学习门槛，提升副本参与率。</li>
+  <li><strong>礼包单时间</strong>：<span class="placeholder">待填：礼包单起止时间</span></li>
+  <li><strong>功能目标</strong>：建立"视频学习-答题验证-奖励反馈"的闭环。</li>
+  <li><strong>核心策略</strong>：
+    <ul>
+      <li>全关卡无锁开放，无强制观看时长。</li>
+      <li>关卡奖励与任务奖励均为手动领取确认。</li>
+    </ul>
+  </li>
+</ul>
+
+<h4>注意点</h4>
+<ul>
+  <li>答题不需要登录账号，领奖时需要登录账号且绑定角色信息。登录时，同步本地缓存关卡数据（合并处理），例如：本地完成阶段一、二，同步线上数据为完成阶段二、三，同步后数据应该为完成阶段一、二、三。</li>
+  <li>潘多拉红点逻辑：所有奖励未都领取时，每日首次登录弹；所有奖励都领取，则不弹。</li>
+</ul>
+
+<h4>TDK</h4>
+<table>
+<tr><th>项目</th><th>内容</th></tr>
+<tr><td>title</td><td>末世录军团本模拟器-地下城与勇士:创新世纪-DNF-官方网站-腾讯游戏</td></tr>
+<tr><td>description</td><td>《地下城与勇士:创新世纪》是全球2D横版格斗网络游戏（MMOACT）的先行者。无限连击的动作特性、极富多样化的职业分支、精准的操作与多样化副本体验，让玩家全方位体验打击爽快感。</td></tr>
+<tr><td>keywords</td><td>地下城与勇士:创新世纪,DNF,Dungeon&amp;Fighter,DF,D&amp;F,地下城,勇士...</td></tr>
+</table>
+
+<hr class="section-sep">
+
+<!-- ==================== 3. 页面信息架构 ==================== -->
+<h2>3. 页面信息架构与交互逻辑</h2>
+
+<!-- 模块一：任务栏 -->
+<h3>3.1 模块一：任务栏模块</h3>
+<h4>3.1.1 任务项内容</h4>
+
+<table>
+<tr><th>序号</th><th>任务名称</th><th>任务完成条件</th></tr>
+<tr><td>1</td><td>完成所有教学任务</td><td>完成全部3个关卡教学</td></tr>
+</table>
+
+<h4>3.1.2 任务状态与领取</h4>
+<table>
+<tr><th>状态</th><th>按钮文案</th><th>交互行为</th></tr>
+<tr><td>未完成</td><td>[未完成]（置灰）</td><td>点击提示：请先完成任务后，再来尝试</td></tr>
+<tr><td>已完成-未登录</td><td>[登录领取]</td><td>唤起登录 → 绑定角色 → 发奖</td></tr>
+<tr><td>已完成-已登录</td><td>[领取奖励]</td><td>直接发奖</td></tr>
+<tr><td>已领取</td><td>[已领取]（置灰）</td><td>无操作</td></tr>
+</table>
+
+<!-- 模块二：关卡列表 -->
+<h3>3.2 模块二：关卡列表</h3>
+<p><strong>功能定义</strong>：核心内容消费区，承载独立关卡入口。</p>
+<p><strong>规则设定</strong>：全量解锁，无前置依赖，支持乱序挑战。</p>
+
+<h4>3.2.1 关卡内容</h4>
+<div class="placeholder">
+  <strong>待填：关卡列表</strong><br>
+  格式示例：<br>
+  - Stage 1: 【关卡名称】<br>
+  - Stage 2: 【关卡名称】<br>
+  - Stage 3: 【关卡名称】<br>
+  - ...<br>
+  （请提供具体关卡数量和名称）
+</div>
+
+<h4>3.2.2 关卡卡片状态</h4>
+<table>
+<tr><th>状态</th><th>卡片展示</th><th>用户操作</th></tr>
+<tr><td>未通关</td><td>显示关卡名+视频入口</td><td>1、点击进入答题详情<br>2、点击奖励，提醒：请先完成该关卡教学！<br>3、点击「视频攻略」，查看本关卡完整视频。</td></tr>
+<tr><td>已通关-未领奖</td><td>显示通关标记+奖励icon高亮（可领取）</td><td>1、点击进入答题详情（已通关状态）<br>2、点击奖励icon，手动领取奖励。<br>3、点击「视频攻略」，查看本关卡完整视频。</td></tr>
+<tr><td>已通关-已领奖</td><td>显示通关标记+奖励icon已领取</td><td>1、点击进入答题详情（已通关状态）<br>2、点击奖励icon，提醒：已获得该奖励。<br>3、点击「视频攻略」，查看本关卡完整视频。</td></tr>
+</table>
+
+<!-- 模块三：答题详情 -->
+<h3>3.3 模块三：答题详情交互流程</h3>
+<p><strong>功能定义</strong>：用户进行视频学习、答题验证及获取解析反馈的核心闭环。</p>
+
+<h4>3.3.1 基础流程</h4>
+<ul>
+  <li>进入：点击列表卡片，打开详情弹窗。</li>
+  <li>观看：自动播放教学视频（支持拖拽、暂停，无强制时长）。</li>
+  <li>作答：视频下方展示题目与选项。</li>
+</ul>
+
+<h4>3.3.2 答题校验与解析反馈</h4>
+<p>视频学习 → 答题验证 → 解析反馈 → 引导登录/领奖。</p>
+
+<h4 style="color:#991b1b;">回答错误时：</h4>
+<ul>
+  <li><strong>交互表现</strong>：
+    <ul>
+      <li>展示解析弹窗【错误解析】文案。</li>
+      <li>操作引导：底部按钮变更为 [重答本题]。</li>
+    </ul>
+  </li>
+  <li><strong>用户动作</strong>：</li>
+</ul>
+<p>点击 [重答本题] → 解析弹窗关闭，视频重新播放且选项重置为可选状态，用户重新选择。</p>
+
+<div class="change-note">
+  <strong>⚠️ 新增逻辑变更（与困难模式不同）：</strong><br>
+  点击[重答本题]后，选项需要<strong>随机打乱顺序</strong>重新排列展示，不保持原有选项顺序。<br>
+  <em>目的：防止用户通过记忆位置直接点选，强化学习效果。</em>
+</div>
+
+<h4 style="color:#16a34a;">回答正确时：</h4>
+<ul>
+  <li><strong>交互表现</strong>：
+    <ul>
+      <li>展示解析弹窗【正确解析】文案。</li>
+    </ul>
+  </li>
+  <li><strong>按钮变化逻辑</strong>：</li>
+</ul>
+
+<table>
+<tr><th>关卡位置</th><th>按钮文案</th><th>交互行为 (Action)</th></tr>
+<tr>
+  <td>还有下一关未通过</td>
+  <td>[下一题]</td>
+  <td>点击直接进入下一个未通过的关卡题目。</td>
+</tr>
+<tr>
+  <td>所有关卡均已通过</td>
+  <td>[返回首页]</td>
+  <td>关闭弹窗回到关卡列表，用户可在首页点击关卡奖励icon手动领取奖励。</td>
+</tr>
+</table>
+
+<hr class="section-sep">
+
+<!-- ==================== 4. 题目内容 ==================== -->
+<h2>4. 题目内容配置</h2>
+
+<div class="placeholder">
+  <strong>待填：各关卡题目内容</strong><br><br>
+  每关需要提供以下信息：<br>
+  <table>
+  <tr><th>字段</th><th>说明</th></tr>
+  <tr><td>关卡名称</td><td>对应 Stage 名称</td></tr>
+  <tr><td>视频链接</td><td>教学视频地址</td></tr>
+  <tr><td>题目文案</td><td>答题题干</td></tr>
+  <tr><td>选项A/B/C/D</td><td>各选项文案</td></tr>
+  <tr><td>正确答案</td><td>正确选项标识</td></tr>
+  <tr><td>正确解析</td><td>答对时展示的解析文案</td></tr>
+  <tr><td>错误解析</td><td>答错时展示的解析文案</td></tr>
+  </table>
+  <br>
+  <strong>格式参考（每关一组）：</strong>
+  <pre style="background:#f8f9fa;padding:12px;border-radius:6px;font-size:12px;overflow-x:auto">
+Stage X: 【关卡名称】
+视频：【视频链接】
+题目：xxxxxxxxx？
+  A. xxxx
+  B. xxxx
+  C. xxxx
+  D. xxxx
+正确答案：X
+正确解析：xxxxxxxxx
+错误解析：xxxxxxxxx
+  </pre>
+</div>
+
+<hr class="section-sep">
+
+<!-- ==================== 5. 数据上报 ==================== -->
+<h2>5. 数据上报</h2>
+
+<table>
+<tr><th>活动名称</th><th>活动ID</th><th>页面位置</th><th>事件名称</th><th>事件类型</th><th>参数/属性</th></tr>
+<tr>
+  <td rowspan="4">末世录军团本模拟器</td>
+  <td rowspan="4" class="placeholder">待填：活动ID</td>
+  <td>活动页面</td>
+  <td>进入活动uv、pv</td>
+  <td>访问</td>
+  <td>1、进入方式client:(pc,H5)<br>2、来源origin:(潘多拉,官网)<br>3、open_id</td>
+</tr>
+<tr>
+  <td>关卡列表</td>
+  <td>关卡进入按钮点击</td>
+  <td>点击</td>
+  <td>stage_id: {关卡列表}</td>
+</tr>
+<tr>
+  <td>答题页</td>
+  <td>答题提交</td>
+  <td>点击</td>
+  <td>stage_id, answer, is_correct</td>
+</tr>
+<tr>
+  <td>领奖</td>
+  <td>领奖点击</td>
+  <td>点击</td>
+  <td>reward_type, stage_id</td>
+</tr>
+</table>
+
+<hr class="section-sep">
+
+<!-- ==================== 6. 活动规则 ==================== -->
+<h2>6. 活动规则</h2>
+
+<p>1、活动时间: <span class="placeholder">待填：起止时间</span></p>
+<p>2、本规则仅适用于通过本页面参与活动的用户</p>
+<p>3、本活动分为两类奖励，活动期间每个用户至多获取1份奖励</p>
+
+<h4>3.1 任务奖励</h4>
+<table>
+<tr><th>任务内容</th><th>奖励道具</th></tr>
+<tr><td>完成所有教学任务</td><td class="placeholder">待填：如"黑钻30天（1个）"</td></tr>
+</table>
+
+<h4>3.2 通关单关卡教学奖励</h4>
+<table>
+<tr><th>关卡名称</th><th>奖励道具</th></tr>
+<tr><td class="placeholder">待填：Stage 1 名称</td><td class="placeholder">待填：奖励</td></tr>
+<tr><td class="placeholder">待填：Stage 2 名称</td><td class="placeholder">待填：奖励</td></tr>
+<tr><td class="placeholder">待填：Stage 3 名称</td><td class="placeholder">待填：奖励</td></tr>
+<tr><td class="placeholder">待填：更多...</td><td class="placeholder">待填：奖励</td></tr>
+</table>
+
+<p>4、奖励将通过游戏邮件发送至您绑定的游戏角色</p>
+<p>5、本活动最终解释权归《地下城与勇士》运营团队所有</p>
+
+<hr class="section-sep">
+
+<!-- ==================== 附录：与上一版逻辑差异汇总 ==================== -->
+<h2>附录：与狄瑞吉困难模式逻辑差异汇总</h2>
+
+<table>
+<tr><th>模块</th><th>原逻辑（狄瑞吉困难）</th><th>新逻辑（末世录军团本模拟器）</th></tr>
+<tr>
+  <td>顶部导航栏</td>
+  <td>双Tab切换（普通/困难），默认困难</td>
+  <td><strong>无Tab切换</strong>，直接进入内容</td>
+</tr>
+<tr>
+  <td>重答本题</td>
+  <td>答错后点击[重答本题]，选项重置为可选状态，<strong>保持原有顺序</strong></td>
+  <td>答错后点击[重答本题]，选项重置为可选状态，<strong>选项随机打乱顺序重新排列</strong></td>
+</tr>
+<tr>
+  <td>副本数量</td>
+  <td>5个关卡</td>
+  <td>3个关卡（关卡一、关卡二、关卡三）</td>
+</tr>
+<tr>
+  <td>任务内容</td>
+  <td>完成准备阶段教学 / 完成所有教学</td>
+  <td>完成所有教学任务（全部3关通过）</td>
+</tr>
+<tr>
+  <td>题目内容</td>
+  <td>狄瑞吉相关题目</td>
+  <td class="placeholder">待填：新题目内容</td>
+</tr>
+</table>
+
+</body>
+</html>
