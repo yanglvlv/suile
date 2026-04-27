@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="《地下城与勇士:创新世纪》是全球2D横版格斗网络游戏（MMOACT）的先行者。无限连击的动作特性、极富多样化的职业分支、精准的操作与多样化副本体验，让玩家全方位体验打击爽快感。">
+<meta name="keywords" content="地下城与勇士:创新世纪,DNF,Dungeon&Fighter,DF,D&F,地下城,勇士,横版,2D,腾讯游戏,免费,ACT,转职,觉醒,阿拉德">
+<title>末世录军团本模拟器-地下城与勇士:创新世纪-DNF-官方网站-腾讯游戏</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  font-family:"PingFang SC","Microsoft YaHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:linear-gradient(180deg,#f8f8f8 0%,#f1f2f4 100%);
+  color:#1f2329;
+}
+button{font:inherit;border:none;background:none;color:inherit;cursor:pointer}
+
+:root{
+  --shell-width:602px;
+  --shell-min-height:544px;
+  --video-width:560px;
+  --video-height:315px;
+  --grid-columns:3;
+  --option-columns:2;
+  --page-padding:14px;
+  --header-title-size:32px;
+  --header-sub-size:14px;
+  --content-max-width:none;
+  --frame-label:'潘多拉 · 页面要求 600×540';
+  --frame-hint:'视频规范 560×315，答题双列';
+}
+
+body.mode-pandora{
+  --shell-width:602px;
+  --shell-min-height:544px;
+  --video-width:560px;
+  --video-height:315px;
+  --grid-columns:3;
+  --option-columns:2;
+  --page-padding:12px;
+  --header-title-size:30px;
+  --header-sub-size:13px;
+  --content-max-width:none;
+}
+body.mode-mobile{
+  --shell-width:340px;
+  --shell-min-height:741px;
+  --video-width:100%;
+  --video-height:auto;
+  --grid-columns:2;
+  --option-columns:1;
+  --page-padding:10px;
+  --header-title-size:20px;
+  --header-sub-size:12px;
+  --content-max-width:none;
+}
+body.mode-pc{
+  --shell-width:1920px;
+  --shell-min-height:1080px;
+  --video-width:1200px;
+  --video-height:560px;
+  --grid-columns:3;
+  --option-columns:2;
+  --page-padding:16px;
+  --header-title-size:24px;
+  --header-sub-size:13px;
+  --content-max-width:none;
+}
+
+.workspace{
+  min-height:100vh;
+  padding:22px 24px 40px;
+}
+.preview-toolbar{
+  max-width:1440px;
+  margin:0 auto 18px;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+}
+.preview-title-wrap{display:flex;flex-direction:column;gap:4px}
+.preview-title{
+  font-size:16px;
+  font-weight:700;
+  color:#2b2f36;
+}
+.preview-sub{
+  font-size:12px;
+  color:#8a9099;
+}
+.mode-switch{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.mode-btn{
+  min-width:116px;
+  padding:10px 14px;
+  border-radius:14px;
+  border:1px solid #d9dce3;
+  background:#fff;
+  box-shadow:0 2px 8px rgba(15,23,42,.04);
+  text-align:left;
+  transition:.2s ease;
+}
+.mode-btn:hover{transform:translateY(-1px);border-color:#c7ccd7;box-shadow:0 8px 18px rgba(15,23,42,.08)}
+.mode-btn.active{
+  border-color:#ffb13b;
+  background:linear-gradient(180deg,#fff7ea 0%,#fff 100%);
+  box-shadow:0 10px 22px rgba(255,177,59,.18);
+}
+.mode-btn-name{display:block;font-size:13px;font-weight:700;color:#23262d}
+.mode-btn-spec{display:block;margin-top:4px;font-size:11px;line-height:1.4;color:#8b9199}
+
+.preview-stage{
+  max-width:1440px;
+  margin:0 auto;
+  overflow:auto;
+  padding-bottom:10px;
+}
+.device-shell{
+  width:var(--shell-width);
+  min-height:var(--shell-min-height);
+  margin:0 auto;
+  position:relative;
+}
+.shell-note{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+.shell-note-pill,
+.shell-note-hint{
+  display:inline-flex;
+  align-items:center;
+  height:30px;
+  padding:0 12px;
+  border-radius:999px;
+  border:1px solid #d9dde5;
+  background:rgba(255,255,255,.9);
+  box-shadow:0 6px 14px rgba(15,23,42,.06);
+  white-space:nowrap;
+}
+.shell-note-pill{font-size:12px;font-weight:700;color:#2d333b}
+.shell-note-hint{font-size:11px;color:#7b828c}
+.app{
+  position:relative;
+  width:100%;
+  min-height:var(--shell-min-height);
+  background:#f6f6f7;
+  border:1px solid #dfe2e7;
+  border-radius:18px;
+  box-shadow:0 20px 48px rgba(15,23,42,.12);
+  overflow:hidden;
+}
+body.mode-mobile .app{border-radius:22px}
+
+.page{display:none;min-height:var(--shell-min-height)}
+.page.active{display:block}
+.page-inner{padding-bottom:20px}
+
+.topbar{
+  padding:18px var(--page-padding) 10px;
+  text-align:center;
+}
+.activity-title{
+  font-size:var(--header-title-size);
+  line-height:1.25;
+  font-weight:800;
+  letter-spacing:.02em;
+  color:#23262d;
+}
+.activity-sub{
+  margin-top:10px;
+  font-size:var(--header-sub-size);
+  line-height:1.6;
+  color:#545b66;
+}
+.user-line{
+  margin-top:14px;
+  font-size:12px;
+  line-height:1.6;
+  color:#5d6470;
+}
+.user-line a{color:#5d6470;text-decoration:none}
+.banner{
+  height:54px;
+  margin-top:14px;
+  border-top:1px solid #e4e6ea;
+  border-bottom:1px solid #e4e6ea;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  padding:0 var(--page-padding);
+  color:#4f5560;
+  background:linear-gradient(180deg,#fafafa 0%,#f5f5f6 100%);
+  font-size:12px;
+}
+body.mode-mobile .banner{height:52px}
+body.mode-pc .banner{height:52px}
+
+.content{
+  padding:10px var(--page-padding) 18px;
+}
+.card{
+  background:#fff;
+  border:1px solid #e0e3e8;
+  border-radius:10px;
+  box-shadow:0 4px 14px rgba(15,23,42,.05);
+}
+.task-board{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.task-item{
+  min-height:72px;
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.task-main{flex:1;min-width:0}
+.task-name{
+  font-size:14px;
+  line-height:1.4;
+  font-weight:700;
+  color:#23262d;
+}
+.task-reward{
+  margin-top:6px;
+  font-size:12px;
+  color:#8b9199;
+}
+.reward-icon,
+.detail-stage-icon,
+.stage-icon{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+  color:#666d78;
+  background:#fbfbfb;
+  border:1px solid #cfd5dd;
+}
+.reward-icon{
+  width:36px;
+  height:36px;
+  border-radius:4px;
+  font-size:10px;
+  line-height:1.2;
+  text-align:center;
+}
+.reward-icon:before,
+.reward-icon:after,
+.detail-stage-icon:before,
+.detail-stage-icon:after,
+.stage-icon:before,
+.stage-icon:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+.reward-icon:before,
+.detail-stage-icon:before,
+.stage-icon:before{
+  background:linear-gradient(135deg,transparent calc(50% - 1px),#b8bec7 calc(50% - 1px),#b8bec7 calc(50% + 1px),transparent calc(50% + 1px));
+}
+.reward-icon:after,
+.detail-stage-icon:after,
+.stage-icon:after{
+  background:linear-gradient(45deg,transparent calc(50% - 1px),#b8bec7 calc(50% - 1px),#b8bec7 calc(50% + 1px),transparent calc(50% + 1px));
+}
+.task-btn,
+.primary-btn,
+.ghost-btn,
+.pill-btn,
+.analysis-btn{
+  height:34px;
+  padding:0 18px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  transition:.2s ease;
+}
+.task-btn,
+.pill-btn,
+.analysis-btn{
+  border:1px solid #d4d8df;
+  background:linear-gradient(180deg,#fff 0%,#f5f5f5 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 4px 10px rgba(15,23,42,.06);
+}
+.task-btn.ready,
+.primary-btn,
+.analysis-btn.primary{
+  color:#8c5300;
+  border-color:#ffcf81;
+  background:linear-gradient(180deg,#fff5df 0%,#ffe3b0 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 8px 18px rgba(255,177,59,.18);
+}
+.task-btn.done,
+.pill-btn.done{
+  color:#9ca3ad;
+  background:linear-gradient(180deg,#fafafa 0%,#f1f2f4 100%);
+}
+.task-btn.locked{
+  color:#b5bac3;
+  cursor:not-allowed;
+}
+.primary-btn:hover,
+.analysis-btn.primary:hover,
+.task-btn.ready:hover,
+.pill-btn:hover,
+.ghost-btn:hover{
+  transform:translateY(-1px);
+}
+
+.stage-section{
+  margin-top:10px;
+  padding:10px 10px 12px;
+}
+.stage-heading{
+  font-size:16px;
+  line-height:1.5;
+  font-weight:800;
+  text-align:center;
+  color:#252a32;
+  margin-bottom:12px;
+}
+.stage-grid{
+  display:grid;
+  grid-template-columns:repeat(var(--grid-columns), minmax(0,1fr));
+  gap:10px;
+}
+.stage-card{
+  min-height:180px;
+  padding:18px 16px 12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+.stage-card.wide{grid-column:span 2}
+.stage-name{
+  min-height:44px;
+  font-size:16px;
+  line-height:1.35;
+  font-weight:800;
+  color:#2b2f36;
+}
+.stage-icon{
+  width:82px;
+  height:82px;
+  margin-top:12px;
+  border-radius:4px;
+  font-size:15px;
+  line-height:1.35;
+  text-align:center;
+  white-space:pre-line;
+}
+.stage-icon.learned .learned-mask{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,.72);
+  color:#444b55;
+  font-size:11px;
+  font-weight:700;
+}
+.reward-chip{
+  margin-top:12px;
+  padding:4px 10px;
+  border-radius:999px;
+  background:#fff4e0;
+  font-size:12px;
+  line-height:1.2;
+  font-weight:700;
+  color:#f49b16;
+}
+.reward-chip.got{background:#f0f1f3;color:#9ea4ad}
+.stage-actions{
+  margin-top:auto;
+  width:100%;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:10px;
+}
+.video-entry{
+  width:42px;
+  min-width:42px;
+  padding:6px 0;
+  border:1px solid #aeb4bd;
+  border-radius:2px;
+  background:#fff;
+  box-shadow:0 4px 10px rgba(15,23,42,.05);
+  font-size:12px;
+  line-height:1.2;
+  font-weight:700;
+  color:#414854;
+}
+.enter-btn{
+  min-width:72px;
+}
+
+.detail-top{
+  padding:8px var(--page-padding) 0;
+}
+.detail-bar{
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 10px;
+  border:1px solid #dfe2e7;
+  border-radius:4px;
+  background:#fff;
+}
+.back-mobile{display:none}
+.detail-stage-icon{
+  width:28px;
+  height:28px;
+  border-radius:2px;
+  font-size:9px;
+  line-height:1.1;
+  text-align:center;
+}
+.detail-name{
+  font-size:14px;
+  font-weight:800;
+  color:#2b2f36;
+}
+.detail-progress{
+  font-size:12px;
+  font-weight:700;
+  color:#434a54;
+}
+.detail-spacer{flex:1}
+.ghost-btn{
+  height:28px;
+  padding:0 14px;
+  border:1px solid #71757e;
+  border-radius:6px;
+  background:#666a73;
+  color:#fff;
+  box-shadow:0 2px 6px rgba(15,23,42,.12);
+}
+
+.video-panel{
+  margin-top:8px;
+  padding:16px 0 18px;
+  border:1px solid #e1e4e8;
+  border-radius:4px;
+  background:#f7f7f7;
+  box-shadow:0 4px 12px rgba(15,23,42,.04);
+}
+.video-wrap{
+  position:relative;
+  width:var(--video-width);
+  max-width:calc(100% - 24px);
+  margin:0 auto;
+  height:var(--video-height);
+  border:1px solid #aeb4bd;
+  background:#eceef1;
+  overflow:hidden;
+}
+body.mode-mobile .video-wrap{
+  width:calc(100% - 20px);
+  aspect-ratio:390/270;
+  height:auto;
+}
+.video-wrap video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  background:#000;
+}
+.video-placeholder{
+  position:relative;
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#31353c;
+  font-size:26px;
+  font-weight:700;
+  background:linear-gradient(180deg,#efefef 0%,#e9eaed 100%);
+}
+.video-placeholder:before,
+.video-placeholder:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+.video-placeholder:before{
+  background:linear-gradient(33deg,transparent calc(50% - 1px),#b0b5be calc(50% - 1px),#b0b5be calc(50% + 1px),transparent calc(50% + 1px));
+}
+.video-placeholder:after{
+  background:linear-gradient(147deg,transparent calc(50% - 1px),#b0b5be calc(50% - 1px),#b0b5be calc(50% + 1px),transparent calc(50% + 1px));
+}
+body.mode-mobile .video-placeholder{font-size:20px}
+body.mode-pc .video-placeholder{font-size:28px}
+.video-placeholder span{position:relative;z-index:1;padding:0 14px;background:rgba(239,239,239,.92)}
+.analysis-layer{
+  position:absolute;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  background:rgba(250,251,252,.88);
+  backdrop-filter:blur(2px);
+}
+.analysis-layer.show{display:flex}
+.analysis-card{
+  width:min(520px,100%);
+  padding:22px 22px 18px;
+  border-radius:14px;
+  border:1px solid #e0e4ea;
+  background:rgba(255,255,255,.96);
+  box-shadow:0 18px 34px rgba(15,23,42,.12);
+}
+.analysis-title{
+  font-size:22px;
+  line-height:1.2;
+  font-weight:800;
+  margin-bottom:12px;
+}
+.analysis-title.correct{color:#1f7a42}
+.analysis-title.wrong{color:#d84343}
+.analysis-text{
+  font-size:14px;
+  line-height:1.8;
+  color:#4d5560;
+  margin-bottom:18px;
+}
+body.mode-mobile .analysis-title{font-size:18px}
+body.mode-mobile .analysis-text{font-size:13px}
+
+.quiz-wrap{
+  padding:14px var(--page-padding) 18px;
+}
+.quiz-title{
+  margin:2px auto 12px;
+  max-width:980px;
+  text-align:center;
+  font-size:18px;
+  line-height:1.55;
+  font-weight:800;
+  color:#2a2f36;
+}
+.option-grid{
+  display:grid;
+  grid-template-columns:repeat(var(--option-columns), minmax(0,1fr));
+  gap:8px;
+}
+.option-item{
+  min-height:56px;
+  padding:14px 16px;
+  border:1px solid #dadfe6;
+  border-radius:4px;
+  background:linear-gradient(180deg,#fff 0%,#f9f9fa 100%);
+  box-shadow:0 3px 10px rgba(15,23,42,.05);
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  font-size:14px;
+  line-height:1.6;
+  font-weight:700;
+  color:#404651;
+  text-align:left;
+  transition:.18s ease;
+}
+.option-item:hover{transform:translateY(-1px);border-color:#c7ced8;box-shadow:0 8px 18px rgba(15,23,42,.08)}
+.option-item.selected{
+  border-color:#ffbe59;
+  background:linear-gradient(180deg,#fff8e8 0%,#fff0ce 100%);
+  color:#8b5300;
+}
+.option-item.correct{
+  border-color:#9ad0aa;
+  background:linear-gradient(180deg,#f5fff8 0%,#e8faee 100%);
+  color:#1d7441;
+}
+.option-item.wrong{
+  border-color:#f0b0b0;
+  background:linear-gradient(180deg,#fff8f8 0%,#ffeaea 100%);
+  color:#bb3030;
+}
+.option-item.disabled{pointer-events:none}
+
+.toast{
+  position:fixed;
+  left:50%;
+  top:42px;
+  transform:translateX(-50%) translateY(-10px);
+  padding:10px 16px;
+  border-radius:999px;
+  background:rgba(33,37,43,.9);
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+  opacity:0;
+  transition:.2s ease;
+  pointer-events:none;
+  z-index:999;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+body.mode-mobile .workspace{padding:16px 10px 28px}
+body.mode-mobile .preview-toolbar{gap:10px}
+body.mode-mobile .preview-title{font-size:15px}
+body.mode-mobile .preview-sub{font-size:11px}
+body.mode-mobile .mode-switch{width:100%}
+body.mode-mobile .mode-btn{flex:1;min-width:auto;padding:9px 10px;border-radius:12px}
+body.mode-mobile .shell-note{flex-direction:column;align-items:flex-start}
+body.mode-mobile .task-board{gap:8px}
+body.mode-mobile .task-item{min-height:74px;padding:10px}
+body.mode-mobile .task-name{font-size:12px}
+body.mode-mobile .task-reward{font-size:11px}
+body.mode-mobile .task-btn{padding:0 12px}
+body.mode-mobile .stage-section{padding:10px 8px 12px}
+body.mode-mobile .stage-heading{font-size:15px;margin-bottom:10px}
+body.mode-mobile .stage-card{min-height:188px;padding:14px 10px 10px}
+body.mode-mobile .stage-card.wide{grid-column:span 2}
+body.mode-mobile .stage-name{min-height:40px;font-size:13px}
+body.mode-mobile .stage-icon{width:68px;height:68px;font-size:13px}
+body.mode-mobile .reward-chip{font-size:11px;padding:4px 8px}
+body.mode-mobile .stage-actions{gap:8px}
+body.mode-mobile .video-entry{width:40px;font-size:11px}
+body.mode-mobile .detail-bar{padding:10px 8px;gap:8px}
+body.mode-mobile .detail-name{font-size:13px}
+body.mode-mobile .detail-progress{font-size:11px}
+body.mode-mobile .back-mobile{display:inline-flex}
+body.mode-mobile .back-desktop{display:none}
+body.mode-mobile .quiz-wrap{padding:12px 10px 18px}
+body.mode-mobile .quiz-title{font-size:15px;margin-bottom:10px}
+body.mode-mobile .option-item{min-height:52px;padding:12px 12px;font-size:13px}
+
+body.mode-pandora .page-inner,
+body.mode-pc .page-inner{padding-bottom:14px}
+body.mode-pandora .activity-title{letter-spacing:0}
+body.mode-pandora .video-panel{padding:8px 0 10px}
+body.mode-pandora .quiz-wrap{padding-top:10px}
+body.mode-pc .topbar{padding-top:16px}
+body.mode-pc .activity-title{font-size:24px}
+body.mode-pc .activity-sub{margin-top:6px}
+body.mode-pc .user-line{margin-top:8px}
+body.mode-pc .content{padding-top:10px}
+body.mode-pc .task-item{min-height:46px;padding:10px 12px}
+body.mode-pc .task-name{font-size:13px}
+body.mode-pc .reward-icon{width:30px;height:30px;font-size:9px}
+body.mode-pc .stage-section{padding:8px 8px 12px}
+body.mode-pc .stage-card{min-height:150px;padding:14px 12px 10px}
+body.mode-pc .stage-name{min-height:32px;font-size:14px}
+body.mode-pc .stage-icon{width:56px;height:56px;font-size:11px;margin-top:10px}
+body.mode-pc .reward-chip{font-size:11px;padding:3px 8px;margin-top:8px}
+body.mode-pc .video-entry{width:38px;font-size:11px}
+body.mode-pc .detail-bar{min-height:30px;padding:0 8px;gap:8px}
+body.mode-pc .ghost-btn{height:24px;padding:0 12px;border-radius:5px;font-size:11px}
+body.mode-pc .video-panel{padding:8px 0 12px}
+body.mode-pc .quiz-wrap{padding-top:8px}
+body.mode-pc .quiz-title{font-size:16px;margin-bottom:8px}
+body.mode-pc .option-grid{max-width:740px;margin:0 auto}
+body.mode-pc .option-item{min-height:38px;padding:8px 12px;font-size:12px;line-height:1.45}
+body.mode-pc .analysis-card{width:520px}
+
+@media (max-width: 1360px){
+  body.mode-pc .preview-stage{padding-bottom:16px}
+}
+.rules-section{padding:12px var(--page-padding) 18px;text-align:center}
+.rules-title{font-size:13px;font-weight:700;color:#8b9199;margin-bottom:6px}
+.rules-content{font-size:11px;line-height:1.8;color:#9ea4ad;text-align:left;max-width:600px;margin:0 auto}
+.rules-content p{margin:0}
+body.mode-pandora .rules-section{display:none}
+body.mode-mobile .rules-section{padding:12px 10px 18px}
+body.mode-mobile .rules-title{font-size:12px}
+body.mode-mobile .rules-content{font-size:10px;max-width:320px}
+body.mode-pc .rules-section{padding:10px 320px 16px}
+body.mode-pc .rules-title{font-size:12px}
+body.mode-pc .rules-content{font-size:11px}
+.rules-icon{display:none;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.08);border:1.5px solid #b5bac3;color:#8b9199;font-size:13px;font-weight:800;cursor:pointer;margin-left:6px;vertical-align:middle;transition:all .2s;line-height:1}
+.rules-icon:hover{background:rgba(0,0,0,.12);transform:scale(1.1)}
+body.mode-pandora .rules-icon{display:inline-flex}
+.rules-modal-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);z-index:9999}
+.rules-modal-overlay.show{display:flex}
+.rules-modal{width:min(460px,calc(100% - 40px));padding:22px 24px;border-radius:14px;background:#fff;box-shadow:0 18px 44px rgba(0,0,0,.18)}
+.rules-modal-title{font-size:16px;font-weight:800;color:#23262d;margin-bottom:12px;text-align:center}
+.rules-modal-body{font-size:13px;line-height:1.8;color:#545b66}
+.rules-modal-body p{margin:0}
+.rules-modal-close{display:block;margin:14px auto 0;height:32px;padding:0 22px;border-radius:999px;border:1px solid #d4d8df;background:linear-gradient(180deg,#fff 0%,#f5f5f5 100%);font-size:12px;font-weight:700;color:#545b66;cursor:pointer}
+</style>
+</head>
+<body class="mode-pandora">
+<div class="workspace">
+  <div class="preview-toolbar">
+    <div class="preview-title-wrap">
+      <div class="preview-title">末世录军团本模拟器 · 原型对照预览</div>
+      <div class="preview-sub">按你给的 `狄瑞吉困难` 导出稿重排：只保留渠道切换外壳，页面内结构走当前活动样式。</div>
+    </div>
+    <div class="mode-switch">
+      <button class="mode-btn active" data-mode="pandora" onclick="switchMode('pandora')">
+        <span class="mode-btn-name">潘多拉</span>
+        <span class="mode-btn-spec">页面要求 600×540 · 视频 560×315</span>
+      </button>
+      <button class="mode-btn" data-mode="mobile" onclick="switchMode('mobile')">
+        <span class="mode-btn-name">移动端 H5</span>
+        <span class="mode-btn-spec">原型画布约 340×741 · 视频 390×270</span>
+      </button>
+      <button class="mode-btn" data-mode="pc" onclick="switchMode('pc')">
+        <span class="mode-btn-name">官网 PC</span>
+        <span class="mode-btn-spec">页面要求 1920×1080 · 视频 1200×560</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="preview-stage">
+    <div class="device-shell">
+      <div class="shell-note">
+        <span class="shell-note-pill" id="shellLabel">潘多拉 · 页面要求 600×540</span>
+        <span class="shell-note-hint" id="shellHint">视频规范 560×315，答题双列</span>
+      </div>
+
+      <div class="app">
+        <div class="page active" id="homePage">
+          <div class="page-inner">
+            <div class="topbar">
+              <div class="activity-title">末世录军团本模拟器<span class="rules-icon" onclick="showRulesModal()">?</span></div>
+              <div class="activity-sub">熟悉机制，轻松通关</div>
+              <div class="user-line">欢迎您，QQ昵称，服务器名称 角色名称 [切换角色] [注销]</div>
+              <div class="banner">[banner图]</div>
+            </div>
+
+            <div class="content">
+              <div class="task-board" id="taskBoard"></div>
+              <div class="card stage-section">
+                <div class="stage-heading">完成教学关卡得奖励</div>
+                <div class="stage-grid" id="stageGrid"></div>
+              </div>
+            </div>
+            <div class="rules-section">
+              <div class="rules-title">活动规则</div>
+              <div class="rules-content">
+                <p>1、活动时间：待填</p>
+                <p>2、本规则仅适用于通过本页面参与活动的用户</p>
+                <p>3、本活动分为两类奖励，活动期间每个用户至多获取1份奖励</p>
+                <p>4、奖励将通过游戏邮件发送至您绑定的游戏角色</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page" id="videoPage">
+          <div class="page-inner">
+            <div class="detail-top">
+              <div class="detail-bar">
+                <button class="ghost-btn back-mobile" onclick="backHome()">返回首页</button>
+                <div class="detail-stage-icon">关卡<br>图标</div>
+                <div class="detail-name" id="detailNameVideo"></div>
+                <div class="detail-progress" id="detailProgressVideo"></div>
+                <div class="detail-spacer"></div>
+                <button class="ghost-btn back-desktop" onclick="backHome()">返回首页</button>
+              </div>
+            </div>
+            <div class="content">
+              <div class="video-panel">
+                <div class="video-wrap" id="videoTeachingWrap"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page" id="quizPage">
+          <div class="page-inner">
+            <div class="topbar" id="quizTopbar">
+              <div class="activity-title">末世录军团本模拟器</div>
+              <div class="activity-sub">熟悉机制，轻松通关</div>
+              <div class="user-line">欢迎您，QQ昵称，服务器名称 角色名称 [切换角色] [注销]</div>
+              <div class="banner">[banner图]</div>
+            </div>
+
+            <div class="detail-top">
+              <div class="detail-bar">
+                <button class="ghost-btn back-mobile" onclick="backHome()">返回首页</button>
+                <div class="detail-stage-icon">关卡<br>图标</div>
+                <div class="detail-name" id="detailNameQuiz"></div>
+                <div class="detail-progress" id="detailProgressQuiz"></div>
+                <div class="detail-spacer"></div>
+                <button class="ghost-btn back-desktop" onclick="backHome()">返回首页</button>
+              </div>
+            </div>
+
+            <div class="content">
+              <div class="video-panel">
+                <div class="video-wrap" id="quizVideoWrap">
+                  <div class="analysis-layer" id="analysisLayer"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="quiz-wrap">
+              <div class="quiz-title" id="quizQuestion"></div>
+              <div class="option-grid" id="quizOptions"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="rules-modal-overlay" id="rulesModal" onclick="hideRulesModal(event)">
+  <div class="rules-modal">
+    <div class="rules-modal-title">活动规则</div>
+    <div class="rules-modal-body">
+      <p>1、活动时间：待填</p>
+      <p>2、本规则仅适用于通过本页面参与活动的用户</p>
+      <p>3、本活动分为两类奖励，活动期间每个用户至多获取1份奖励</p>
+      <p>4、奖励将通过游戏邮件发送至您绑定的游戏角色</p>
+    </div>
+    <button class="rules-modal-close" onclick="document.getElementById('rulesModal').classList.remove('show')">关闭</button>
+  </div>
+</div>
+
+<script>
+var MODES = {
+  pandora: {
+    bodyClass: 'mode-pandora',
+    label: '潘多拉 · 页面要求 600×540',
+    hint: '视频规范 560×315，答题双列',
+    videoText: '560×315',
+    quizHeader: true
+  },
+  mobile: {
+    bodyClass: 'mode-mobile',
+    label: '移动端 H5 · 原型画布约 340×741',
+    hint: '视频规范 390×270，答题单列',
+    videoText: '390×270',
+    quizHeader: true
+  },
+  pc: {
+    bodyClass: 'mode-pc',
+    label: '官网 PC · 页面要求 1920×1080',
+    hint: '视频规范 1200×560，答题双列',
+    videoText: '1200×560',
+    quizHeader: true
+  }
+};
+
+var TASKS = [
+  { id: 'task1', name: '完成准备阶段教学', reward: '奖励名称', condition: [1] },
+  { id: 'task2', name: '完成所有教学', reward: '奖励名称', condition: 'all' }
+];
+
+var STAGES = [
+  {
+    id: 1,
+    name: '准备阶段',
+    reward: '雷米援助*5',
+    videoUrl: '',
+    question: '待填：准备阶段的题目内容？',
+    options: [
+      { key: 'A', text: '待填：选项一' },
+      { key: 'B', text: '待填：选项二' },
+      { key: 'C', text: '待填：选项三' },
+      { key: 'D', text: '待填：选项四' }
+    ],
+    answer: 'A',
+    okText: '待填：准备阶段正确解析',
+    errText: '待填：准备阶段错误解析'
+  },
+  {
+    id: 2,
+    name: '一阶段',
+    reward: '雷米援助*5',
+    videoUrl: '',
+    question: '待填：一阶段的题目内容？',
+    options: [
+      { key: 'A', text: '待填：选项一' },
+      { key: 'B', text: '待填：选项二' },
+      { key: 'C', text: '待填：选项三' },
+      { key: 'D', text: '待填：选项四' }
+    ],
+    answer: 'B',
+    okText: '待填：一阶段正确解析',
+    errText: '待填：一阶段错误解析'
+  },
+  {
+    id: 3,
+    name: '二阶段',
+    reward: '雷米援助*5',
+    videoUrl: '',
+    question: '待填：二阶段的题目内容？',
+    options: [
+      { key: 'A', text: '待填：选项一' },
+      { key: 'B', text: '待填：选项二' },
+      { key: 'C', text: '待填：选项三' },
+      { key: 'D', text: '待填：选项四' }
+    ],
+    answer: 'C',
+    okText: '待填：二阶段正确解析',
+    errText: '待填：二阶段错误解析'
+  },
+  {
+    id: 4,
+    name: '三阶段',
+    reward: '雷米援助*5',
+    videoUrl: '',
+    question: '待填：三阶段的题目内容？',
+    options: [
+      { key: 'A', text: '待填：选项一' },
+      { key: 'B', text: '待填：选项二' },
+      { key: 'C', text: '待填：选项三' },
+      { key: 'D', text: '待填：选项四' }
+    ],
+    answer: 'D',
+    okText: '待填：三阶段正确解析',
+    errText: '待填：三阶段错误解析'
+  },
+  {
+    id: 5,
+    name: '四阶段',
+    reward: '雷米援助*5',
+    videoUrl: '',
+    question: '待填：四阶段的题目内容？',
+    options: [
+      { key: 'A', text: '待填：选项一' },
+      { key: 'B', text: '待填：选项二' },
+      { key: 'C', text: '待填：选项三' },
+      { key: 'D', text: '待填：选项四' }
+    ],
+    answer: 'A',
+    okText: '待填：四阶段正确解析',
+    errText: '待填：四阶段错误解析'
+  }
+];
+
+var STORE_KEY = 'legion-simulator-prototype-v3';
+var state = {
+  stageCleared: {},
+  stageRewarded: {},
+  taskClaimed: {}
+};
+var currentMode = 'pandora';
+var currentStageIndex = 0;
+var currentQuizOptions = [];
+var selectedOptionKey = '';
+var currentPageType = 'home';
+var answerLocked = false;
+
+function loadState() {
+  try {
+    var raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') state = parsed;
+    }
+  } catch (e) {}
+  if (!state.stageCleared) state.stageCleared = {};
+  if (!state.stageRewarded) state.stageRewarded = {};
+  if (!state.taskClaimed) state.taskClaimed = {};
+}
+
+function saveState() {
+  localStorage.setItem(STORE_KEY, JSON.stringify(state));
+}
+
+function showToast(text) {
+  var toast = document.getElementById('toast');
+  toast.textContent = text;
+  toast.classList.add('show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(function () {
+    toast.classList.remove('show');
+  }, 1800);
+}
+
+function shuffleArray(list) {
+  var arr = list.slice();
+  for (var i = arr.length - 1; i > 0; i--) {
+    var randomIndex = Math.floor(Math.random() * (i + 1));
+    var temp = arr[i];
+    arr[i] = arr[randomIndex];
+    arr[randomIndex] = temp;
+  }
+  return arr;
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  document.body.className = MODES[mode].bodyClass;
+  document.getElementById('shellLabel').textContent = MODES[mode].label;
+  document.getElementById('shellHint').textContent = MODES[mode].hint;
+  var buttons = document.querySelectorAll('.mode-btn');
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].classList.toggle('active', buttons[i].getAttribute('data-mode') === mode);
+  }
+  if (currentPageType === 'home') {
+    renderHome();
+  } else if (currentPageType === 'video') {
+    openVideoPage(currentStageIndex);
+  } else {
+    openQuizPage(currentStageIndex, true);
+  }
+}
+
+function isTaskComplete(task) {
+  var i;
+  if (task.condition === 'all') {
+    for (i = 0; i < STAGES.length; i++) {
+      if (!state.stageCleared[STAGES[i].id]) return false;
+    }
+    return true;
+  }
+  for (i = 0; i < task.condition.length; i++) {
+    if (!state.stageCleared[task.condition[i]]) return false;
+  }
+  return true;
+}
+
+function renderTaskBoard() {
+  var html = '';
+  for (var i = 0; i < TASKS.length; i++) {
+    var task = TASKS[i];
+    var complete = isTaskComplete(task);
+    var claimed = !!state.taskClaimed[task.id];
+    var buttonClass = 'task-btn locked';
+    var buttonText = '领取';
+    if (claimed) {
+      buttonClass = 'task-btn done';
+      buttonText = '已领取';
+    } else if (complete) {
+      buttonClass = 'task-btn ready';
+      buttonText = '领取';
+    }
+
+    html += '' +
+      '<div class="task-item card">' +
+        '<div class="task-main">' +
+          '<div class="task-name">' + task.name + '</div>' +
+          '<div class="task-reward">' + task.reward + '</div>' +
+        '</div>' +
+        '<div class="reward-icon">奖励<br>icon</div>' +
+        '<button class="' + buttonClass + '" onclick="claimTask(\'' + task.id + '\')">' + buttonText + '</button>' +
+      '</div>';
+  }
+  document.getElementById('taskBoard').innerHTML = html;
+}
+
+function claimTask(taskId) {
+  var task = null;
+  for (var i = 0; i < TASKS.length; i++) {
+    if (TASKS[i].id === taskId) {
+      task = TASKS[i];
+      break;
+    }
+  }
+  if (!task) return;
+  if (state.taskClaimed[taskId]) {
+    showToast('该奖励已领取');
+    return;
+  }
+  if (!isTaskComplete(task)) {
+    showToast('请先完成对应教学');
+    return;
+  }
+  state.taskClaimed[taskId] = true;
+  saveState();
+  renderTaskBoard();
+  showToast('领取成功');
+}
+
+function getStageCardClass(index) {
+  if (currentMode === 'mobile' && index === STAGES.length - 1 && STAGES.length % 2 === 1) return 'stage-card card wide';
+  if ((currentMode === 'pandora' || currentMode === 'pc') && STAGES.length === 5 && index === 4) return 'stage-card card wide';
+  return 'stage-card card';
+}
+
+function renderStageGrid() {
+  var html = '';
+  for (var i = 0; i < STAGES.length; i++) {
+    var stage = STAGES[i];
+    var cleared = !!state.stageCleared[stage.id];
+    var rewarded = !!state.stageRewarded[stage.id];
+    var rewardClass = rewarded ? 'reward-chip got' : 'reward-chip';
+    var rewardText = rewarded ? '已获得：' + stage.reward : '可获得：' + stage.reward;
+    var iconClass = cleared ? 'stage-icon learned' : 'stage-icon';
+    html += '' +
+      '<div class="' + getStageCardClass(i) + '">' +
+        '<div class="stage-name">' + stage.name + '</div>' +
+        '<div class="' + iconClass + '">关卡\n图标' + (cleared ? '<span class="learned-mask">已学习</span>' : '') + '</div>' +
+        '<div class="' + rewardClass + '">' + rewardText + '</div>' +
+        '<div class="stage-actions">' +
+          '<button class="video-entry" onclick="openVideoPage(' + i + ')">视频<br>教学</button>' +
+          '<button class="pill-btn enter-btn" onclick="openQuizPage(' + i + ')">进入</button>' +
+        '</div>' +
+      '</div>';
+  }
+  document.getElementById('stageGrid').innerHTML = html;
+}
+
+function showPage(pageId) {
+  currentPageType = pageId === 'homePage' ? 'home' : (pageId === 'videoPage' ? 'video' : 'quiz');
+  var pages = document.querySelectorAll('.page');
+  for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+  document.getElementById(pageId).classList.add('active');
+}
+
+function renderHome() {
+  renderTaskBoard();
+  renderStageGrid();
+  showPage('homePage');
+}
+
+function getVideoPlaceholder(labelPrefix) {
+  return '<div class="video-placeholder"><span>' + labelPrefix + '（' + MODES[currentMode].videoText + '）</span></div>';
+}
+
+function buildVideoNode(stage, labelPrefix, containerId, withAnalysisLayer) {
+  var container = document.getElementById(containerId);
+  var content = '';
+  if (stage.videoUrl) {
+    content = '<video src="' + stage.videoUrl + '" controls playsinline autoplay></video>';
+  } else {
+    content = getVideoPlaceholder(labelPrefix);
+  }
+  if (withAnalysisLayer) {
+    content += '<div class="analysis-layer" id="analysisLayer"></div>';
+  }
+  container.innerHTML = content;
+}
+
+function openVideoPage(index) {
+  currentStageIndex = index;
+  var stage = STAGES[index];
+  document.getElementById('detailNameVideo').textContent = stage.name;
+  document.getElementById('detailProgressVideo').textContent = '第' + (index + 1) + '/' + STAGES.length + '关';
+  buildVideoNode(stage, '关卡视频', 'videoTeachingWrap', false);
+  showPage('videoPage');
+}
+
+function openQuizPage(index, keepCurrentOrder) {
+  currentStageIndex = index;
+  selectedOptionKey = '';
+  answerLocked = false;
+  var stage = STAGES[index];
+  document.getElementById('detailNameQuiz').textContent = stage.name;
+  document.getElementById('detailProgressQuiz').textContent = '第' + (index + 1) + '/' + STAGES.length + '关';
+  document.getElementById('quizQuestion').textContent = stage.question;
+  buildVideoNode(stage, '播放题目视频', 'quizVideoWrap', true);
+  if (!keepCurrentOrder) {
+    currentQuizOptions = stage.options.slice();
+  }
+  renderQuizOptions();
+  showPage('quizPage');
+}
+
+function renderQuizOptions() {
+  var html = '';
+  for (var i = 0; i < currentQuizOptions.length; i++) {
+    html += '<button class="option-item" data-key="' + currentQuizOptions[i].key + '" onclick="pickOption(this,\'' + currentQuizOptions[i].key + '\')">' + currentQuizOptions[i].text + '</button>';
+  }
+  document.getElementById('quizOptions').innerHTML = html;
+}
+
+function pickOption(element, key) {
+  if (answerLocked) return;
+  selectedOptionKey = key;
+  var options = document.querySelectorAll('.option-item');
+  for (var i = 0; i < options.length; i++) options[i].classList.remove('selected');
+  element.classList.add('selected');
+  setTimeout(function () {
+    submitAnswer();
+  }, 220);
+}
+
+function submitAnswer() {
+  if (!selectedOptionKey || answerLocked) return;
+  answerLocked = true;
+  var stage = STAGES[currentStageIndex];
+  var correct = selectedOptionKey === stage.answer;
+  var options = document.querySelectorAll('.option-item');
+  for (var i = 0; i < options.length; i++) {
+    var key = options[i].getAttribute('data-key');
+    options[i].classList.add('disabled');
+    if (key === stage.answer) options[i].classList.add('correct');
+    if (!correct && key === selectedOptionKey) options[i].classList.add('wrong');
+  }
+
+  if (correct) {
+    state.stageCleared[stage.id] = true;
+    state.stageRewarded[stage.id] = true;
+    saveState();
+  }
+
+  setTimeout(function () {
+    showAnalysis(correct ? '选择正确' : '选择错误', correct ? stage.okText : stage.errText, correct);
+  }, 320);
+}
+
+function findNextUnclearedIndex() {
+  for (var i = currentStageIndex + 1; i < STAGES.length; i++) {
+    if (!state.stageCleared[STAGES[i].id]) return i;
+  }
+  return -1;
+}
+
+function showAnalysis(title, text, isCorrect) {
+  var layer = document.getElementById('analysisLayer');
+  var buttonHtml = '';
+  if (isCorrect) {
+    var nextIndex = findNextUnclearedIndex();
+    if (nextIndex > -1) {
+      buttonHtml = '<button class="analysis-btn primary" onclick="openQuizPage(' + nextIndex + ')">下一题</button>';
+    } else {
+      buttonHtml = '<button class="analysis-btn primary" onclick="backHome()">返回首页</button>';
+    }
+  } else {
+    buttonHtml = '<button class="analysis-btn primary" onclick="retryCurrentQuiz()">重答本题</button>';
+  }
+
+  layer.innerHTML = '' +
+    '<div class="analysis-card">' +
+      '<div class="analysis-title ' + (isCorrect ? 'correct' : 'wrong') + '">' + title + '</div>' +
+      '<div class="analysis-text">解析：' + text + '</div>' +
+      buttonHtml +
+    '</div>';
+  layer.classList.add('show');
+}
+
+function retryCurrentQuiz() {
+  var stage = STAGES[currentStageIndex];
+  selectedOptionKey = '';
+  answerLocked = false;
+  currentQuizOptions = shuffleArray(stage.options);
+  var layer = document.getElementById('analysisLayer');
+  layer.classList.remove('show');
+  layer.innerHTML = '';
+  renderQuizOptions();
+  var video = document.querySelector('#quizVideoWrap video');
+  if (video) {
+    video.currentTime = 0;
+    video.play();
+  }
+}
+
+function backHome() {
+  var videos = document.querySelectorAll('video');
+  for (var i = 0; i < videos.length; i++) videos[i].pause();
+  renderHome();
+}
+
+loadState();
+renderHome();
+
+function showRulesModal() {
+  document.getElementById('rulesModal').classList.add('show');
+}
+function hideRulesModal(e) {
+  if (e && e.target === document.getElementById('rulesModal')) {
+    document.getElementById('rulesModal').classList.remove('show');
+  }
+}
+</script>
+</body>
+</html>

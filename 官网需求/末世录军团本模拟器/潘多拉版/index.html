@@ -155,6 +155,15 @@ body{background:radial-gradient(circle at top,#324055 0%,#202a39 40%,#121821 100
 .analysis-btn{height:26px;font-size:10px}
 #quizTopbar{display:none}
 .toast{top:16px;font-size:10px;padding:6px 12px}
+.rules-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.5);color:#fff;font-size:12px;font-weight:800;cursor:pointer;margin-left:4px;vertical-align:middle;transition:all .2s;line-height:1}
+.rules-icon:hover{background:rgba(255,255,255,.35);transform:scale(1.1)}
+.rules-modal-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:9999}
+.rules-modal-overlay.show{display:flex}
+.rules-modal{width:min(420px,calc(100% - 40px));padding:18px 20px;border-radius:12px;background:#fff;box-shadow:0 16px 40px rgba(0,0,0,.2)}
+.rules-modal-title{font-size:15px;font-weight:800;color:#23262d;margin-bottom:10px;text-align:center}
+.rules-modal-body{font-size:11px;line-height:1.8;color:#545b66}
+.rules-modal-body p{margin:0}
+.rules-modal-close{display:block;margin:12px auto 0;height:28px;padding:0 20px;border-radius:999px;border:1px solid #d4d8df;background:linear-gradient(180deg,#fff 0%,#f5f5f5 100%);font-size:11px;font-weight:700;color:#545b66;cursor:pointer}
 @media(max-width:720px){
   .pandora-frame{padding:10px;border-radius:22px}
   .pandora-topbar{padding:0 2px 10px;font-size:11px}
@@ -179,7 +188,7 @@ body{background:radial-gradient(circle at top,#324055 0%,#202a39 40%,#121821 100
           <div class="page-inner">
             <div class="topbar">
               <div class="topbar-inner">
-              <div class="activity-title">末世录军团本模拟器</div>
+              <div class="activity-title">末世录军团本模拟器<span class="rules-icon" onclick="showRulesModal()">?</span></div>
               <div class="activity-sub">熟悉机制，轻松通关</div>
               </div>
             </div>
@@ -256,6 +265,18 @@ body{background:radial-gradient(circle at top,#324055 0%,#202a39 40%,#121821 100
       </div>
     </div>
   <div class="toast" id="toast"></div>
+  <div class="rules-modal-overlay" id="rulesModal" onclick="hideRulesModal(event)">
+    <div class="rules-modal">
+      <div class="rules-modal-title">活动规则</div>
+      <div class="rules-modal-body">
+        <p>1、活动时间：待填</p>
+        <p>2、本规则仅适用于通过本页面参与活动的用户</p>
+        <p>3、本活动分为两类奖励，活动期间每个用户至多获取1份奖励</p>
+        <p>4、奖励将通过游戏邮件发送至您绑定的游戏角色</p>
+      </div>
+      <button class="rules-modal-close" onclick="hideRulesModal()">关闭</button>
+    </div>
+  </div>
 </div>
 </div>
 <script>
@@ -644,6 +665,14 @@ function backHome() {
 
 loadState();
 renderHome();
+
+function showRulesModal() {
+  document.getElementById('rulesModal').classList.add('show');
+}
+function hideRulesModal(e) {
+  if (e && e.target !== document.getElementById('rulesModal') && e.target.className !== 'rules-modal-close') return;
+  document.getElementById('rulesModal').classList.remove('show');
+}
 </script>
 </body>
 </html>
