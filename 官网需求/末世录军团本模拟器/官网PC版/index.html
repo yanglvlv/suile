@@ -92,9 +92,9 @@ button{font:inherit;border:none;background:none;color:inherit;cursor:pointer}
 .option-item.disabled{pointer-events:none}
 .toast{position:fixed;left:50%;top:42px;transform:translateX(-50%) translateY(-10px);padding:10px 16px;border-radius:999px;background:rgba(33,37,43,.9);color:#fff;font-size:12px;font-weight:700;opacity:0;transition:.2s ease;pointer-events:none;z-index:999}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-html,body{width:1920px;height:1080px;overflow:hidden;background:#f6f6f7}
-.app{width:1920px;height:1080px;border:none;border-radius:0;box-shadow:none}
-.page{height:1080px;overflow-y:auto;overflow-x:hidden}
+html,body{width:100%;min-width:1200px;min-height:1080px;overflow-x:auto;overflow-y:hidden;background:#f6f6f7}
+.app{width:100%;min-height:1080px;border:none;border-radius:0;box-shadow:none}
+.page{min-height:1080px;overflow-y:auto;overflow-x:hidden}
 .page-inner{min-height:100%;display:flex;flex-direction:column;padding-bottom:0}
 .topbar{padding:0;text-align:center;background:linear-gradient(180deg,#2a1a3e 0%,#1a2a4a 50%,#1e3a5a 100%);color:#fff;position:relative;overflow:hidden}
 .topbar::before{content:'背景 Banner 占位';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px;color:rgba(255,255,255,.1);font-weight:800;letter-spacing:6px;pointer-events:none}
