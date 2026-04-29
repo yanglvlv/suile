@@ -855,14 +855,17 @@ section{padding:70px 16px 50px}
 #m2 .final-reward{padding:14px 18px;gap:14px}#m2 .final-reward .chest{width:44px;height:44px;font-size:22px}#m2 .final-reward .info h3{font-size:14px}
 #m2 .photo-btn{padding:12px 36px;font-size:13px}
 #m3 .live-stage{grid-template-columns:1fr;padding:0;background:transparent;border:none;box-shadow:none;overflow:visible}
-#m3 .live-side{display:none}
-#m3 .live-main{padding:0;display:flex;flex-direction:row;gap:14px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:8px}
-#m3 .live-main::-webkit-scrollbar{display:none}
-#m3 .live-panel{display:flex !important;flex:0 0 78vw;scroll-snap-align:center}
-#m3 .img-placeholder{aspect-ratio:3/4;min-height:auto;border-radius:20px;padding:24px 20px;width:100%;justify-content:flex-end;background:linear-gradient(180deg,rgba(20,10,40,.3) 0%,rgba(10,5,20,.95) 100%),linear-gradient(135deg,#1a0a2e,#0a0414)}
-#m3 .img-placeholder .img-icon{font-size:56px;position:absolute;top:30%;left:50%;transform:translate(-50%,-50%)}
-#m3 .img-placeholder .img-label{font-size:18px}
-#m3 .img-placeholder .img-hint{font-size:11px}
+#m3 .live-side{padding:0;border:none;display:flex;flex-direction:row;gap:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;border-bottom:1px solid rgba(255,215,0,.15);margin-bottom:14px;border-right:none}
+#m3 .live-side::-webkit-scrollbar{display:none}
+#m3 .side-card{grid-template-columns:1fr;gap:4px;padding:10px 16px;text-align:center;flex:0 0 auto;white-space:nowrap;border:none;border-bottom:2px solid transparent;border-radius:0;background:transparent}
+#m3 .side-card.active{border-bottom-color:#FFD700;background:rgba(255,215,0,.06)}
+#m3 .side-card .icon-box{display:none}
+#m3 .side-card .text h4{font-size:13px}
+#m3 .side-card .text p{display:none}
+#m3 .side-card .mini-tag{display:none}
+#m3 .side-card::before{display:none}
+#m3 .live-main{padding:0}
+#m3 .img-placeholder{border-radius:14px;min-height:200px}
 #m4 .m4-showcase{grid-template-columns:1fr;padding:20px;gap:20px}#m4 .m4-showcase.reverse{direction:ltr}#m4 .m4-info h3{font-size:18px}
 #m5 .lego-showcase{grid-template-columns:1fr;padding:20px;gap:20px}#m5 .lego-info h3{font-size:22px}#m5 .lego-features{grid-template-columns:1fr}
 footer{padding:24px 16px}
@@ -1722,13 +1725,8 @@ function initSectionActions(){
   // 第三屏：左侧卡片切换右侧面板（PC）/ 直接跳转（移动端）
   const sideCards = document.querySelectorAll('#m3 .live-side .side-card');
   const livePanels = document.querySelectorAll('#m3 .live-panel');
-  const toasts = ['跳转到发布会直播页','跳转到发布会回放页','展开速览长图','跳转到口令码兑换页','跳转到CG动画页','跳转到版本前瞻页'];
   sideCards.forEach((card, idx) => {
     card.addEventListener('click', () => {
-      if(window.innerWidth <= 768){
-        showToast(toasts[idx] || '跳转中...');
-        return;
-      }
       sideCards.forEach(c => c.classList.remove('active'));
       card.classList.add('active');
       livePanels.forEach(p => p.classList.remove('active'));
