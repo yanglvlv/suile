@@ -165,7 +165,7 @@ section{position:relative;min-height:100vh;padding:70px 40px 40px;z-index:1;disp
   position:fixed;inset:0;z-index:500;pointer-events:none;
   background:radial-gradient(ellipse at center,rgba(10,5,20,0) 0%,rgba(10,5,20,0) 100%);
   transition:background .6s;
-  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
   display:flex;align-items:flex-start;justify-content:center;
 }
 #summon-overlay.active{
@@ -1130,7 +1130,7 @@ footer{padding:24px 16px}
         <h3>从夯到拉评分</h3>
         <div class="m4-sub">PLAYER RATING SYSTEM</div>
         <p>选手定妆照展示 + 五级评分标签（夯爆了 / 顶级 / 人上人 / NPC / 拉完了）+ 经典评语，玩家可以为喜爱的选手打出自己的评分。</p>
-        <button class="m4-enter" data-toast="跳转到从夯到拉评分页面">进入评分 →</button>
+        <button class="m4-enter" data-href="#" onclick="showToast('正在跳转到从夯到拉评分页面...');setTimeout(()=>window.open('#','_blank'),500)">进入评分 →</button>
       </div>
     </div>
     <!-- 每日赛果预测 -->
@@ -1144,7 +1144,7 @@ footer{padding:24px 16px}
         <h3>每日赛果预测</h3>
         <div class="m4-sub">DAILY MATCH PREDICTION</div>
         <p>左右选手 VS 对阵展示，玩家可以点击"支持他"为选手投票，实时显示当前支持率，赛后公布预测结果。</p>
-        <button class="m4-enter" data-toast="跳转到每日赛果预测页面">参与预测 →</button>
+        <button class="m4-enter" data-href="#" onclick="showToast('正在跳转到每日赛果预测页面...');setTimeout(()=>window.open('#','_blank'),500)">参与预测 →</button>
       </div>
     </div>
   </div>
@@ -1182,7 +1182,7 @@ footer{padding:24px 16px}
           <div class="lego-feat"><div class="icon">⚔️</div><div class="label">经典角色人偶</div></div>
           <div class="lego-feat"><div class="icon">📦</div><div class="label">2000+ 零件</div></div>
         </div>
-        <button class="lego-btn" data-toast="跳转到DNF×LEGO联名详情页">🧱 了解详情</button>
+        <button class="lego-btn" data-href="#" onclick="showToast('正在跳转到线下活动详情页...');setTimeout(()=>window.open('#','_blank'),500)">🎯 了解详情</button>
       </div>
     </div>
   </div>
