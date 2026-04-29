@@ -1033,7 +1033,7 @@ footer{padding:24px 16px}
 <section id="m3">
   <div class="sec-title">CHAPTER 03 · LIVE</div>
   <h2 class="sec-headline">十八周年 · 发布会</h2>
-  <p class="sec-desc">点击图片跳转对应内容页</p>
+  <p class="sec-desc">直播 · 回放 · 速览 · 口令码 · CG · 版本前瞻</p>
   <div class="live-stage">
     <div class="live-side">
       <div class="side-card active" data-idx="0">
@@ -1072,42 +1072,42 @@ footer{padding:24px 16px}
         <div class="img-placeholder" data-toast="跳转到发布会直播页">
           <div class="img-icon">📡</div>
           <div class="img-label">发布会直播</div>
-          <div class="img-hint">点击图片跳转 →</div>
+          <div class="img-hint">2026.06.16 18:00 准时开播</div>
         </div>
       </div>
       <div class="live-panel" data-panel="1">
         <div class="img-placeholder" data-toast="跳转到发布会回放页">
           <div class="img-icon">📼</div>
           <div class="img-label">精彩回放</div>
-          <div class="img-hint">点击图片跳转 →</div>
+          <div class="img-hint">错过直播？全程高清回放</div>
         </div>
       </div>
       <div class="live-panel" data-panel="2">
         <div class="img-placeholder" data-toast="展开速览长图">
           <div class="img-icon">⚡</div>
           <div class="img-label">一分钟速览</div>
-          <div class="img-hint">点击查看长图 →</div>
+          <div class="img-hint">一张长图看完全部亮点</div>
         </div>
       </div>
       <div class="live-panel" data-panel="3">
         <div class="img-placeholder" data-toast="跳转到口令码兑换页">
           <div class="img-icon">🎁</div>
           <div class="img-label">口令码兑换</div>
-          <div class="img-hint">点击跳转兑换 →</div>
+          <div class="img-hint">输入口令码领取专属奖励</div>
         </div>
       </div>
       <div class="live-panel" data-panel="4">
         <div class="img-placeholder" data-toast="跳转到CG动画页">
           <div class="img-icon">🎬</div>
           <div class="img-label">CG 动画</div>
-          <div class="img-hint">点击图片跳转 →</div>
+          <div class="img-hint">18周年纪念CG · 全新剧情</div>
         </div>
       </div>
       <div class="live-panel" data-panel="5">
         <div class="img-placeholder" data-toast="跳转到版本前瞻页">
           <div class="img-icon">📰</div>
           <div class="img-label">版本前瞻</div>
-          <div class="img-hint">点击图片跳转 →</div>
+          <div class="img-hint">新版本内容抢先一览</div>
         </div>
       </div>
     </div>
@@ -1124,7 +1124,7 @@ footer{padding:24px 16px}
       <div class="m4-visual" data-toast="跳转到从夯到拉评分页面">
         <div class="m4-vis-icon">⭐</div>
         <div class="m4-vis-text">从夯到拉评分</div>
-        <div class="m4-vis-hint">图片占位 · 点击跳转 →</div>
+        <div class="m4-vis-hint">为选手打出你的评分</div>
       </div>
       <div class="m4-info">
         <h3>从夯到拉评分</h3>
@@ -1138,7 +1138,7 @@ footer{padding:24px 16px}
       <div class="m4-visual" data-toast="跳转到每日赛果预测页面">
         <div class="m4-vis-icon">🏆</div>
         <div class="m4-vis-text">每日赛果预测</div>
-        <div class="m4-vis-hint">图片占位 · 点击跳转 →</div>
+        <div class="m4-vis-hint">支持你看好的选手</div>
       </div>
       <div class="m4-info">
         <h3>每日赛果预测</h3>
@@ -1186,7 +1186,7 @@ footer{padding:24px 16px}
       </div>
     </div>
   </div>
-  <p class="m5-note">内容包含线下活动展示，引导跳转至活动主页面</p>
+  <p class="m5-note">DNF × LEGO 官方联名，点击了解详情并跳转至活动主页面</p>
 </section>
 
 <footer>
@@ -1522,15 +1522,6 @@ function updateOrbit(){
   `;
 }
 
-function animateNum(){
-  const el = document.getElementById('reserveNum');
-  let cur = 1283647;
-  setInterval(()=>{
-    cur += Math.floor(Math.random()*3);
-    el.textContent = cur.toLocaleString();
-  },2500);
-}
-
 let phoneBound = false;
 
 function initReserve(){
@@ -1543,6 +1534,11 @@ function initReserve(){
   const phoneSubmitBtn = document.getElementById('phoneSubmitBtn');
 
   reserveBtn.addEventListener('click',()=>{
+    if(!isLoggedIn){
+      showToast('请先登录后再预约');
+      document.getElementById('loginModal').classList.add('show');
+      return;
+    }
     if(phoneBound){
       showToast('您已预约成功，奖励将在活动开始后发放');
       return;
