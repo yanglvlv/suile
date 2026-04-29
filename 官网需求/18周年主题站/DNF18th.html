@@ -165,6 +165,8 @@ section{position:relative;min-height:100vh;padding:70px 40px 40px;z-index:1;disp
   position:fixed;inset:0;z-index:500;pointer-events:none;
   background:radial-gradient(ellipse at center,rgba(10,5,20,0) 0%,rgba(10,5,20,0) 100%);
   transition:background .6s;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  display:flex;align-items:flex-start;justify-content:center;
 }
 #summon-overlay.active{
   pointer-events:auto;
@@ -173,7 +175,7 @@ section{position:relative;min-height:100vh;padding:70px 40px 40px;z-index:1;disp
 }
 /* 光束效果 */
 #summon-overlay .beams{
-  position:absolute;top:50%;left:50%;
+  position:fixed;top:50%;left:50%;
   width:1200px;height:1200px;transform:translate(-50%,-50%) scale(0);
   background:
     conic-gradient(from 0deg,
@@ -194,7 +196,7 @@ section{position:relative;min-height:100vh;padding:70px 40px 40px;z-index:1;disp
 }
 /* 中心魔法阵 */
 #summon-overlay .magic-circle{
-  position:absolute;top:50%;left:50%;
+  position:fixed;top:50%;left:50%;
   width:500px;height:500px;transform:translate(-50%,-50%) rotate(0);
   border:2px solid rgba(255,215,0,.3);border-radius:50%;
   opacity:0;transition:opacity .6s;
@@ -218,10 +220,9 @@ section{position:relative;min-height:100vh;padding:70px 40px 40px;z-index:1;disp
 
 /* 召唤卡牌（两阶段：先小卡翻转 → 再展开大面板） */
 #summon-card{
-  position:absolute;top:50%;left:50%;
-  width:900px;height:560px;margin:-280px 0 0 -450px;
-  opacity:0;
-  pointer-events:none;
+  position:relative;
+  width:900px;max-width:95vw;min-height:560px;margin:80px auto;
+  opacity:0;pointer-events:none;
 }
 #summon-overlay.active #summon-card{opacity:1;pointer-events:auto}
 
@@ -405,9 +406,10 @@ section{position:relative;min-height:100vh;padding:70px 40px 40px;z-index:1;disp
 #summon-card .summon-close:hover{background:rgba(255,215,0,.2);transform:rotate(90deg)}
 
 @media(max-width:960px){
-  #summon-card{width:92vw;height:auto;min-height:500px;margin:-250px 0 0 -46vw}
-  #summon-card .summon-inner{grid-template-columns:1fr;grid-template-rows:280px 1fr}
-  #summon-card .summon-portrait{height:280px;border-right:none;border-bottom:1px solid rgba(255,215,0,.2)}
+  #summon-card{width:95vw;margin:60px auto}
+  #summon-card .summon-inner{grid-template-columns:1fr;grid-template-rows:220px 1fr}
+  #summon-card .summon-portrait{height:220px;border-right:none;border-bottom:1px solid rgba(255,215,0,.2)}
+  #summon-card .flip-card{width:160px;height:230px;margin:-115px 0 0 -80px}
 }
 
 /* 召唤时的粒子爆发 */
@@ -846,7 +848,7 @@ footer p + p{margin-top:6px}
 section{padding:70px 16px 50px}
 #hero{min-height:100vh;min-height:100dvh}#hero .main-title{font-size:60px}#hero .sub-title{font-size:16px;letter-spacing:6px}#hero .desc{font-size:12px;margin-bottom:36px}#hero .reserve-btn{padding:14px 48px;font-size:14px}
 .sec-headline{font-size:32px}.sec-desc{font-size:12px}
-#m2 .orbit-stage{height:420px;touch-action:pan-x}#m2 .orbit-ring{width:560px;height:560px}
+#m2 .orbit-stage{height:420px}#m2 .orbit-ring{width:560px;height:560px}
 .card{width:120px;height:180px;margin:-90px 0 0 -60px}
 #m2 .orbit-btn{width:38px;height:38px;font-size:15px}
 #m2 .orbit-controls{display:none}
@@ -1387,13 +1389,17 @@ function initOrbit(radius, radiusZ, tiltX){
     updateOrbit();
   });
 
-  // 触摸左右滑动
+  // 触摸左右滑动（只拦截水平方向，垂直方向不阻止）
   const stage = document.getElementById('orbitStage');
-  let touchStartX = 0;
-  stage.addEventListener('touchstart',e=>{ touchStartX = e.touches[0].clientX; },{passive:true});
+  let touchStartX = 0, touchStartY = 0;
+  stage.addEventListener('touchstart',e=>{
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  },{passive:true});
   stage.addEventListener('touchend',e=>{
     const dx = e.changedTouches[0].clientX - touchStartX;
-    if(Math.abs(dx) > 40){
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5){
       if(dx < 0) orbitState.currentIndex = (orbitState.currentIndex + 1) % TOTAL;
       else orbitState.currentIndex = (orbitState.currentIndex - 1 + TOTAL) % TOTAL;
       updateOrbit();
