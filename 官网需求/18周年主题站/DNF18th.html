@@ -849,6 +849,7 @@ section{padding:70px 16px 50px}
 #m2 .orbit-stage{height:420px;touch-action:pan-x}#m2 .orbit-ring{width:560px;height:560px}
 .card{width:120px;height:180px;margin:-90px 0 0 -60px}
 #m2 .orbit-btn{width:38px;height:38px;font-size:15px}
+#m2 .orbit-controls{display:none}
 #m2 .final-reward{padding:14px 18px;gap:14px}#m2 .final-reward .chest{width:44px;height:44px;font-size:22px}#m2 .final-reward .info h3{font-size:14px}
 #m2 .photo-btn{padding:12px 36px;font-size:13px}
 #m3 .live-stage{grid-template-columns:1fr;padding:0;background:transparent;border:none;box-shadow:none}
@@ -942,6 +943,7 @@ footer{padding:24px 16px}
     <div class="chest">✦</div>
     <div class="info">
       <h3>查看角色信息 & 领取奖励</h3>
+      <p>点击已解锁的卡牌，回顾职业故事并领取专属道具</p>
       <div class="arrow-hint">点击此处或上方卡牌 →</div>
     </div>
   </div>
@@ -1398,11 +1400,14 @@ function initOrbit(radius, radiusZ, tiltX){
     }
   },{passive:true});
 
-  // PC滚轮横滑（在卡牌区域内阻止页面滚动）
+  // PC滚轮横滑（仅卡牌轨道区域内劫持，区域外正常滚动页面）
   stage.addEventListener('wheel',e=>{
+    const rect = stage.getBoundingClientRect();
+    const inArea = e.clientY >= rect.top && e.clientY <= rect.bottom && e.clientX >= rect.left && e.clientX <= rect.right;
+    if(!inArea) return;
     e.preventDefault();
-    if(Math.abs(e.deltaY) > 5 || Math.abs(e.deltaX) > 5){
-      const d = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+    const d = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+    if(Math.abs(d) > 3){
       if(d > 0) orbitState.currentIndex = (orbitState.currentIndex + 1) % TOTAL;
       else orbitState.currentIndex = (orbitState.currentIndex - 1 + TOTAL) % TOTAL;
       updateOrbit();
