@@ -815,8 +815,10 @@ footer p + p{margin-top:6px}
 #side-nav .dot .tip{position:absolute;right:24px;top:50%;transform:translateY(-50%);padding:4px 12px;background:rgba(0,0,0,.8);border:1px solid rgba(255,215,0,.3);border-radius:4px;font-size:11px;color:#FFD700;white-space:nowrap;letter-spacing:1px;opacity:0;pointer-events:none;transition:opacity .3s}
 #side-nav .dot:hover .tip{opacity:1}
 
-#toast{position:fixed;left:50%;bottom:60px;transform:translateX(-50%) translateY(100px);padding:14px 28px;background:linear-gradient(135deg,rgba(255,215,0,.95),rgba(255,165,0,.95));color:#1a0e2e;border-radius:30px;font-size:13px;font-weight:700;letter-spacing:2px;z-index:200;opacity:0;transition:all .4s;pointer-events:none;box-shadow:0 10px 40px rgba(255,215,0,.4)}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* 弹幕容器 */
+#danmaku-layer{position:fixed;top:80px;left:0;right:0;height:200px;z-index:200;pointer-events:none;overflow:hidden}
+.danmaku-item{position:absolute;white-space:nowrap;padding:8px 20px;background:linear-gradient(135deg,rgba(255,215,0,.9),rgba(255,165,0,.9));color:#1a0e2e;border-radius:20px;font-size:13px;font-weight:700;letter-spacing:2px;box-shadow:0 4px 16px rgba(255,215,0,.4);animation:danmaku-fly linear forwards;pointer-events:none}
+@keyframes danmaku-fly{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
 
 /* 登录态 */
 .nav-user{display:flex;align-items:center;gap:12px}
@@ -1232,7 +1234,7 @@ footer{padding:24px 16px}
   </div>
 </div>
 
-<div id="toast">预约成功 · 奖励已发放</div>
+<div id="danmaku-layer"></div>
 
 <!-- 召唤立绘蒙层 -->
 <div id="summon-overlay">
@@ -1702,11 +1704,16 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(()=>t.classList.remove('show'),2200);
+  const layer = document.getElementById('danmaku-layer');
+  const item = document.createElement('div');
+  item.className = 'danmaku-item';
+  item.textContent = msg;
+  const top = Math.floor(Math.random() * 5) * 36 + 8;
+  const duration = 4 + Math.random() * 2;
+  item.style.top = top + 'px';
+  item.style.animationDuration = duration + 's';
+  layer.appendChild(item);
+  item.addEventListener('animationend',()=>item.remove());
 }
 
 function initObserver(){
