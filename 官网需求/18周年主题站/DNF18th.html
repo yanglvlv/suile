@@ -845,6 +845,28 @@ footer p + p{margin-top:6px}
 .lm-icon{font-size:20px}
 .login-tip{font-size:10px;color:rgba(255,255,255,.3);letter-spacing:1px}
 
+/* 绑定手机弹窗 */
+.phone-modal{position:fixed;inset:0;z-index:700;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(8px)}
+.phone-modal.show{display:flex}
+.phone-modal-inner{width:90%;max-width:380px;padding:32px 24px;background:linear-gradient(180deg,#1a0e2e,#0a0612);border:1px solid rgba(255,215,0,.3);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center;position:relative}
+.phone-close{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.4);border:1px solid rgba(255,215,0,.3);display:flex;align-items:center;justify-content:center;color:#FFD700;font-size:14px;cursor:pointer}
+.phone-close:hover{background:rgba(255,215,0,.2)}
+.phone-icon{font-size:40px;margin-bottom:10px}
+.phone-modal-inner h3{font-size:18px;color:#FFD700;letter-spacing:2px;margin-bottom:8px}
+.phone-desc{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:20px}
+.phone-form{display:flex;flex-direction:column;gap:12px}
+.phone-input{padding:14px 16px;background:rgba(0,0,0,.4);border:1px solid rgba(255,215,0,.25);border-radius:10px;color:#fff;font-size:15px;letter-spacing:2px;text-align:center;transition:all .3s}
+.phone-input:focus{outline:none;border-color:#FFD700;box-shadow:0 0 16px rgba(255,215,0,.2)}
+.code-row{display:grid;grid-template-columns:1fr auto;gap:10px}
+.code-input-sm{padding:12px 14px;background:rgba(0,0,0,.4);border:1px solid rgba(255,215,0,.25);border-radius:10px;color:#fff;font-size:14px;letter-spacing:4px;text-align:center}
+.code-input-sm:focus{outline:none;border-color:#FFD700}
+.send-code-btn{padding:12px 16px;border:1px solid rgba(255,215,0,.4);border-radius:10px;background:transparent;color:#FFD700;font-size:12px;letter-spacing:1px;cursor:pointer;transition:all .3s;white-space:nowrap}
+.send-code-btn:hover{background:rgba(255,215,0,.1)}
+.send-code-btn.counting{opacity:.5;cursor:default}
+.phone-submit{padding:14px;background:linear-gradient(135deg,#FFD700,#FFA500);border:none;border-radius:10px;color:#1a0e2e;font-weight:800;font-size:14px;letter-spacing:3px;cursor:pointer;transition:all .3s}
+.phone-submit:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,215,0,.4)}
+.phone-tip{font-size:10px;color:rgba(255,255,255,.3);margin-top:14px;letter-spacing:1px}
+
 @media(max-width:1200px){#m3 .live-stage{grid-template-columns:1fr}#m3 .live-side{padding-right:0;border-right:none;border-bottom:1px solid rgba(255,215,0,.1);padding-bottom:10px;margin-bottom:12px}#m5 .lego-showcase{grid-template-columns:1fr}#m2 .orbit-stage{height:540px}#m2 .orbit-ring{width:900px;height:900px}}
 @media(max-width:768px){
 #top-nav{padding:0 16px;height:50px}#top-nav .brand{font-size:15px}#top-nav .links{display:none}
@@ -1191,6 +1213,25 @@ footer{padding:24px 16px}
   </div>
 </div>
 
+<!-- 绑定手机弹窗 -->
+<div class="phone-modal" id="phoneModal">
+  <div class="phone-modal-inner">
+    <div class="phone-close" id="phoneClose">×</div>
+    <div class="phone-icon">📱</div>
+    <h3>绑定手机号领取奖励</h3>
+    <p class="phone-desc">为了保障您的账号安全和奖励发放，请先绑定手机号</p>
+    <div class="phone-form">
+      <input type="tel" class="phone-input" id="phoneInput" placeholder="请输入手机号" maxlength="11">
+      <div class="code-row">
+        <input type="text" class="code-input-sm" id="smsCodeInput" placeholder="验证码" maxlength="6">
+        <button class="send-code-btn" id="sendCodeBtn">获取验证码</button>
+      </div>
+      <button class="phone-submit" id="phoneSubmitBtn">确认绑定并预约</button>
+    </div>
+    <div class="phone-tip">绑定后即可参与预约、领取奖励等活动</div>
+  </div>
+</div>
+
 <div id="toast">预约成功 · 奖励已发放</div>
 
 <!-- 召唤立绘蒙层 -->
@@ -1488,9 +1529,53 @@ function animateNum(){
   },2500);
 }
 
+let phoneBound = false;
+
 function initReserve(){
-  document.getElementById('reserveBtn').addEventListener('click',()=>{
-    showToast('🎁 18周年专属礼包已发放');
+  const reserveBtn = document.getElementById('reserveBtn');
+  const phoneModal = document.getElementById('phoneModal');
+  const phoneClose = document.getElementById('phoneClose');
+  const phoneInput = document.getElementById('phoneInput');
+  const smsCodeInput = document.getElementById('smsCodeInput');
+  const sendCodeBtn = document.getElementById('sendCodeBtn');
+  const phoneSubmitBtn = document.getElementById('phoneSubmitBtn');
+
+  reserveBtn.addEventListener('click',()=>{
+    if(phoneBound){
+      showToast('您已预约成功，奖励将在活动开始后发放');
+      return;
+    }
+    phoneModal.classList.add('show');
+  });
+
+  phoneClose.addEventListener('click',()=> phoneModal.classList.remove('show'));
+  phoneModal.addEventListener('click',e=>{ if(e.target===phoneModal) phoneModal.classList.remove('show') });
+
+  sendCodeBtn.addEventListener('click',()=>{
+    const phone = phoneInput.value.trim();
+    if(!/^1\d{10}$/.test(phone)){ showToast('请输入正确的手机号'); return; }
+    if(sendCodeBtn.classList.contains('counting')) return;
+    sendCodeBtn.classList.add('counting');
+    let sec = 60;
+    sendCodeBtn.textContent = sec + 's';
+    const timer = setInterval(()=>{
+      sec--;
+      sendCodeBtn.textContent = sec + 's';
+      if(sec <= 0){ clearInterval(timer); sendCodeBtn.classList.remove('counting'); sendCodeBtn.textContent = '获取验证码'; }
+    },1000);
+    showToast('验证码已发送');
+  });
+
+  phoneSubmitBtn.addEventListener('click',()=>{
+    const phone = phoneInput.value.trim();
+    const code = smsCodeInput.value.trim();
+    if(!/^1\d{10}$/.test(phone)){ showToast('请输入正确的手机号'); return; }
+    if(code.length < 4){ showToast('请输入验证码'); return; }
+    phoneBound = true;
+    phoneModal.classList.remove('show');
+    showToast('绑定成功 · 预约完成 · 限定道具奖励已发放');
+    reserveBtn.querySelector('span').textContent = '✔ 已预约';
+    reserveBtn.style.opacity = '.7';
   });
 }
 
