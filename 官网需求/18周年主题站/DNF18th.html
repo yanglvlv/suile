@@ -941,9 +941,8 @@ footer{padding:24px 16px}
   <div class="final-reward" id="detailEntrance">
     <div class="chest">✦</div>
     <div class="info">
-      <h3>点击卡牌查看详情 & 领取奖励</h3>
-      <p>翻开已解锁的职业卡牌，查看版本故事、经典装备与情怀记忆，还可以领取每日专属道具奖励</p>
-      <div class="arrow-hint">点击此处或上方卡牌立即查看 →</div>
+      <h3>查看角色信息 & 领取奖励</h3>
+      <div class="arrow-hint">点击此处或上方卡牌 →</div>
     </div>
   </div>
 
@@ -1399,11 +1398,12 @@ function initOrbit(radius, radiusZ, tiltX){
     }
   },{passive:true});
 
-  // PC滚轮横滑
+  // PC滚轮横滑（在卡牌区域内阻止页面滚动）
   stage.addEventListener('wheel',e=>{
-    if(Math.abs(e.deltaY) > 10){
-      e.preventDefault();
-      if(e.deltaY > 0) orbitState.currentIndex = (orbitState.currentIndex + 1) % TOTAL;
+    e.preventDefault();
+    if(Math.abs(e.deltaY) > 5 || Math.abs(e.deltaX) > 5){
+      const d = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      if(d > 0) orbitState.currentIndex = (orbitState.currentIndex + 1) % TOTAL;
       else orbitState.currentIndex = (orbitState.currentIndex - 1 + TOTAL) % TOTAL;
       updateOrbit();
     }
