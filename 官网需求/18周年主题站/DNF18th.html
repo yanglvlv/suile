@@ -161,6 +161,7 @@ section{position:relative;min-height:100vh;padding:70px 40px 40px;z-index:1;disp
 #m2 .orbit-btn:hover{background:rgba(255,215,0,.2);box-shadow:0 0 20px rgba(255,215,0,.4);transform:scale(1.08)}
 
 /* ============ 立绘召唤蒙层 ============ */
+body.overlay-open{overflow:hidden}
 #summon-overlay{
   position:fixed;inset:0;z-index:500;pointer-events:none;
   background:radial-gradient(ellipse at center,rgba(10,5,20,0) 0%,rgba(10,5,20,0) 100%);
@@ -1661,6 +1662,7 @@ function openSummon(card){
   sumCard.classList.remove('panel-show');
   void sumCard.offsetWidth;
   overlay.classList.add('active');
+  document.body.classList.add('overlay-open');
   sumCard.classList.add('summoning');
 
   // 翻转结束后（2s）小卡消失 + 大面板展开
@@ -1804,11 +1806,13 @@ function openPhoto(){
   });
 
   overlay.classList.add('active');
+  document.body.classList.add('overlay-open');
 }
 
 function closePhoto(){
   document.getElementById('photo-overlay').classList.remove('active');
   document.getElementById('roleModal').classList.remove('show');
+  document.body.classList.remove('overlay-open');
 }
 
 function initSectionActions(){
