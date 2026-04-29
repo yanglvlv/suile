@@ -822,10 +822,14 @@ footer p + p{margin-top:6px}
 .nav-user{display:flex;align-items:center;gap:12px}
 .login-btn{padding:6px 18px;border-radius:20px;border:1px solid #FFD700;background:transparent;color:#FFD700;font-size:12px;letter-spacing:2px;cursor:pointer;transition:all .3s;font-weight:700}
 .login-btn:hover{background:#FFD700;color:#1a0e2e}
-.user-info{display:flex;align-items:center;gap:8px;font-size:12px;color:#FFD700}
-.user-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#FFD700,#FFA500);display:flex;align-items:center;justify-content:center;font-size:14px}
-.logout-btn{padding:4px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.5);font-size:10px;cursor:pointer;transition:all .3s}
-.logout-btn:hover{border-color:rgba(255,255,255,.4);color:#fff}
+.user-panel{display:flex;align-items:center;gap:10px}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#FFD700,#FFA500);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.user-detail{display:flex;flex-direction:column;gap:2px}
+.user-name{font-size:12px;color:#FFD700;font-weight:700;letter-spacing:1px}
+.user-server{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:1px}
+.user-actions{display:flex;gap:6px}
+.switch-btn{padding:4px 10px;border-radius:10px;border:1px solid rgba(255,215,0,.3);background:transparent;color:rgba(255,215,0,.7);font-size:10px;cursor:pointer;transition:all .3s;letter-spacing:1px}
+.switch-btn:hover{border-color:#FFD700;color:#FFD700;background:rgba(255,215,0,.1)}
 
 .login-modal{position:fixed;inset:0;z-index:700;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(8px)}
 .login-modal.show{display:flex}
@@ -1757,18 +1761,30 @@ function initLogin(){
       const method = btn.dataset.method === 'qq' ? 'QQ' : '微信';
       isLoggedIn = true;
       modal.classList.remove('show');
+      const uid = Math.floor(Math.random()*9000+1000);
       navUser.innerHTML = `
-        <div class="user-info">
+        <div class="user-panel" id="userPanel">
           <div class="user-avatar">🎮</div>
-          <span>勇士${Math.floor(Math.random()*9000+1000)}</span>
-          <button class="logout-btn" id="logoutBtn">退出</button>
+          <div class="user-detail">
+            <span class="user-name">勇士${uid}</span>
+            <span class="user-server">跨3B · Lv110 · 剑魂</span>
+          </div>
+          <div class="user-actions">
+            <button class="switch-btn" id="switchCharBtn">换角色</button>
+            <button class="switch-btn" id="switchAccBtn">换账号</button>
+          </div>
         </div>`;
       showToast(method + ' 登录成功');
-      document.getElementById('logoutBtn').addEventListener('click',()=>{
+
+      document.getElementById('switchCharBtn').addEventListener('click',()=>{
+        showToast('选择角色功能（跳转角色选择页）');
+      });
+      document.getElementById('switchAccBtn').addEventListener('click',()=>{
         isLoggedIn = false;
         navUser.innerHTML = '<button class="login-btn" id="loginBtn">登录</button>';
         document.getElementById('loginBtn').addEventListener('click',()=> modal.classList.add('show'));
-        showToast('已退出登录');
+        showToast('已退出，请重新登录');
+        modal.classList.add('show');
       });
     });
   });
