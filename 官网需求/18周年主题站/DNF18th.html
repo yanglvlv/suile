@@ -826,9 +826,7 @@ footer p + p{margin-top:6px}
 #side-nav .dot:hover .tip{opacity:1}
 
 /* 弹幕容器 */
-#danmaku-layer{position:fixed;top:80px;left:0;right:0;height:200px;z-index:200;pointer-events:none;overflow:hidden}
-.danmaku-item{position:absolute;white-space:nowrap;padding:8px 20px;background:linear-gradient(135deg,rgba(255,215,0,.9),rgba(255,165,0,.9));color:#1a0e2e;border-radius:20px;font-size:13px;font-weight:700;letter-spacing:2px;box-shadow:0 4px 16px rgba(255,215,0,.4);animation:danmaku-fly linear forwards;pointer-events:none}
-@keyframes danmaku-fly{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+/* 提示 */
 
 /* 登录态 */
 .nav-user{display:flex;align-items:center;gap:12px}
@@ -1047,7 +1045,7 @@ footer{padding:24px 16px}
   <h2 class="sec-headline">版本信息摘要</h2>
   <p class="sec-desc">全新版本内容抢先一览，点击了解详情</p>
   <div class="version-grid">
-    <div class="version-card" onclick="showToast('跳转到新职业详情页...');setTimeout(()=>window.open('#','_blank'),500)">
+    <div class="version-card" onclick="showToast('跳转到新职业详情页...')">
       <div class="vc-img"><div class="vc-icon">⚔️</div></div>
       <div class="vc-body">
         <div class="vc-tag">NEW CLASS</div>
@@ -1056,7 +1054,7 @@ footer{padding:24px 16px}
         <button class="vc-btn">查看详情 <span class="arrow">→</span></button>
       </div>
     </div>
-    <div class="version-card" onclick="showToast('跳转到新玩法详情页...');setTimeout(()=>window.open('#','_blank'),500)">
+    <div class="version-card" onclick="showToast('跳转到新玩法详情页...')">
       <div class="vc-img"><div class="vc-icon">🎮</div></div>
       <div class="vc-body">
         <div class="vc-tag">NEW GAMEPLAY</div>
@@ -1065,7 +1063,7 @@ footer{padding:24px 16px}
         <button class="vc-btn">查看详情 <span class="arrow">→</span></button>
       </div>
     </div>
-    <div class="version-card" onclick="showToast('跳转到版本活动详情页...');setTimeout(()=>window.open('#','_blank'),500)">
+    <div class="version-card" onclick="showToast('跳转到版本活动详情页...')">
       <div class="vc-img"><div class="vc-icon">🎁</div></div>
       <div class="vc-body">
         <div class="vc-tag">EVENTS</div>
@@ -1074,7 +1072,7 @@ footer{padding:24px 16px}
         <button class="vc-btn">查看详情 <span class="arrow">→</span></button>
       </div>
     </div>
-    <div class="version-card" onclick="showToast('跳转到版本前瞻详情页...');setTimeout(()=>window.open('#','_blank'),500)">
+    <div class="version-card" onclick="showToast('跳转到版本前瞻详情页...')">
       <div class="vc-img"><div class="vc-icon">📰</div></div>
       <div class="vc-body">
         <div class="vc-tag">PREVIEW</div>
@@ -1313,7 +1311,7 @@ footer{padding:24px 16px}
   </div>
 </div>
 
-<div id="danmaku-layer"></div>
+
 
 <!-- 召唤立绘蒙层 -->
 <div id="summon-overlay">
@@ -1774,16 +1772,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 function showToast(msg){
-  const layer = document.getElementById('danmaku-layer');
-  const item = document.createElement('div');
-  item.className = 'danmaku-item';
-  item.textContent = msg;
-  const top = Math.floor(Math.random() * 5) * 36 + 8;
-  const duration = 4 + Math.random() * 2;
-  item.style.top = top + 'px';
-  item.style.animationDuration = duration + 's';
-  layer.appendChild(item);
-  item.addEventListener('animationend',()=>item.remove());
+  alert(msg);
 }
 
 function initObserver(){

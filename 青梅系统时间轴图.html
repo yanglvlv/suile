@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>青梅系统 II 期进展重点概要</title>
+  <style>
+    :root {
+      --text: #163334;
+      --muted: #6a7f80;
+      --line: #d8e3e1;
+      --done: #1f9d74;
+      --done-soft: #e9fbf3;
+      --now: #0f8b8d;
+      --now-soft: #e7fbfb;
+      --plan: #2e6cf6;
+      --plan-soft: #eef3ff;
+      --shadow: 0 18px 60px rgba(18, 39, 42, 0.08);
+      --radius-lg: 22px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(31, 157, 116, 0.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(46, 108, 246, 0.10), transparent 24%),
+        linear-gradient(180deg, #f7fbfa 0%, #eff5f4 100%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.65;
+      padding: 48px 24px;
+    }
+
+    .board {
+      max-width: 1240px;
+      margin: 0 auto;
+      position: relative;
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.78));
+      border: 1px solid rgba(22, 51, 52, 0.08);
+      box-shadow: var(--shadow);
+      padding: 32px 28px 28px;
+      overflow: hidden;
+    }
+
+    .board-head {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .board-head h2 {
+      font-size: 26px;
+      line-height: 1.2;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .board-head p {
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 760px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid rgba(22,51,52,0.08);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .legend i {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .track {
+      position: relative;
+      padding: 20px 6px 8px;
+    }
+
+    .track-inner {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      align-items: center;
+    }
+
+    .track-inner::before {
+      content: "";
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg,
+        rgba(31,157,116,0.28) 0%,
+        rgba(31,157,116,0.32) 30%,
+        rgba(15,139,141,0.32) 55%,
+        rgba(46,108,246,0.28) 100%);
+    }
+
+    .track-inner::after {
+      content: "";
+      position: absolute;
+      right: -2px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 16px solid rgba(46,108,246,0.6);
+      z-index: 2;
+    }
+
+    .split-labels {
+      position: absolute;
+      top: 10px;
+      left: 18px;
+      right: 18px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .split-label {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    .split-label.right { text-align: right; }
+
+    .today {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--now-soft);
+      color: var(--now);
+      border: 1px solid rgba(15,139,141,0.22);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .item {
+      position: relative;
+      height: 400px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .item::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      border: 4px solid currentColor;
+      box-shadow: 0 0 0 8px rgba(255,255,255,0.92);
+      z-index: 3;
+    }
+
+    .item.top { align-items: flex-start; padding-bottom: 170px; }
+    .item.bottom { align-items: flex-end; padding-top: 240px; }
+    .item.middle { align-items: center; }
+
+    .item-card {
+      width: 100%;
+      position: relative;
+      border-radius: var(--radius-lg);
+      padding: 20px 18px 18px;
+      background: #fff;
+      border: 1px solid rgba(22, 51, 52, 0.08);
+      box-shadow: 0 16px 40px rgba(18, 39, 42, 0.08);
+      min-height: 170px;
+    }
+
+    .item-card::after {
+      content: "";
+      position: absolute;
+      left: 26px;
+      width: 2px;
+      height: 40px;
+      background: currentColor;
+      opacity: 0.28;
+    }
+
+    .top .item-card::after { bottom: -40px; }
+    .bottom .item-card::after { top: -40px; }
+    .middle .item-card::after { display: none; }
+    .middle::before { display: none; }
+
+    .state {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: 0.04em;
+    }
+
+    .time {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+
+    .title {
+      font-size: 22px;
+      line-height: 1.25;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .done { color: var(--done); }
+    .done .item-card { background: linear-gradient(180deg, #ffffff 0%, #f4fff9 100%); }
+    .done .state { color: var(--done); background: var(--done-soft); }
+
+    .now-phase { color: var(--now); }
+    .now-phase .item-card {
+      background: linear-gradient(180deg, #ffffff 0%, #e9fafb 100%);
+      border-color: rgba(15,139,141,0.35);
+      box-shadow: 0 20px 44px rgba(15,139,141,0.14);
+    }
+    .now-phase .state { color: #fff; background: var(--now); }
+    .now-phase::before {
+      box-shadow: 0 0 0 8px rgba(15,139,141,0.14), 0 0 0 16px rgba(15,139,141,0.06);
+    }
+
+    .plan { color: var(--plan); }
+    .plan .item-card { background: linear-gradient(180deg, #ffffff 0%, #f4f7ff 100%); }
+    .plan .state { color: var(--plan); background: var(--plan-soft); }
+
+    .conclusion {
+      margin-top: 22px;
+      border-radius: 20px;
+      padding: 20px 22px;
+      background: linear-gradient(135deg, rgba(15,139,141,0.10), rgba(46,108,246,0.08));
+      border: 1px solid rgba(15,139,141,0.18);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .conclusion-icon {
+      min-width: 56px;
+      height: 56px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: var(--now);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      flex-shrink: 0;
+      box-shadow: 0 10px 24px rgba(15,139,141,0.28);
+    }
+
+    .conclusion-body { flex: 1; min-width: 260px; }
+
+    .conclusion-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .conclusion-steps {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .conclusion-steps span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid rgba(22,51,52,0.08);
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .conclusion-steps em {
+      font-style: normal;
+      color: var(--now);
+      font-weight: 800;
+    }
+
+    .conclusion-steps i {
+      font-style: normal;
+      color: var(--now);
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    @media (max-width: 960px) {
+      .track-inner { grid-template-columns: repeat(2, 1fr); }
+      .track-inner::before { display: none; }
+      .item { height: auto; padding: 0 !important; }
+      .item.top, .item.bottom { align-items: stretch; }
+      .item::before { display: none; }
+      .item-card::after { display: none; }
+      .split-labels { position: static; margin-bottom: 12px; }
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 24px 14px; }
+      .board { padding: 20px 16px; }
+      .track-inner { grid-template-columns: 1fr; }
+      .conclusion { flex-direction: column; align-items: flex-start; }
+      .conclusion-steps i { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <section class="board">
+    <div class="board-head">
+      <div>
+        <h2>青梅系统 II 期进展重点概要</h2>
+      </div>
+      <div class="legend">
+        <span><i style="background: var(--done)"></i> 已完成</span>
+        <span><i style="background: var(--now)"></i> 现在</span>
+        <span><i style="background: var(--plan)"></i> 将来</span>
+      </div>
+    </div>
+
+    <div class="track">
+      <div class="track-inner">
+        <article class="item bottom done">
+          <div class="item-card">
+            <div class="state">已完成</div>
+            <div class="time">2026 · 2～4 月</div>
+            <div class="title">团队交接</div>
+            <div class="desc">青梅运营、产品、开发均交接至随乐内部闭环。</div>
+          </div>
+        </article>
+
+        <article class="item bottom done">
+          <div class="item-card">
+            <div class="state">已完成</div>
+            <div class="time">2026 · 3～4 月</div>
+            <div class="title">需求调研</div>
+            <div class="desc">与产品使用方进行深度调研，细化迭代需求。</div>
+          </div>
+        </article>
+
+        <article class="item middle now-phase">
+          <div class="item-card">
+            <div class="state">现在</div>
+            <div class="time">2026 · 4 月底</div>
+            <div class="title">需求宣讲</div>
+            <div class="desc">运营、产品与开发确认需求及排期。</div>
+          </div>
+        </article>
+
+        <article class="item top plan">
+          <div class="item-card">
+            <div class="state">将来</div>
+            <div class="time">2026 · 6 月 30 日</div>
+            <div class="title">关键需求落地</div>
+            <div class="desc">数据溯源 & 系统自动计算能力模块落地。</div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="conclusion">
+      <div class="conclusion-icon">结论</div>
+      <div class="conclusion-body">
+        <div class="conclusion-title">青梅 II 期需求宣讲于 4 月底完成，当前开发排期施工如期进行，进展顺利。</div>
+        <div class="conclusion-steps">
+          <span><em>5 月底</em>完成阶段能力落地</span>
+          <i>→</i>
+          <span><em>6 月中旬</em>进入关键能力测试</span>
+          <i>→</i>
+          <span><em>6 月 30 日</em>能力落地</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
