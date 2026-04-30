@@ -537,6 +537,26 @@ section{position:relative;min-height:100vh;padding:70px 40px 40px;z-index:1;disp
 #m3 .ceremony-btn{padding:14px 48px;background:linear-gradient(135deg,#FFD700,#FFA500);border:none;border-radius:8px;color:#1a0e2e;font-size:15px;font-weight:800;letter-spacing:3px;cursor:pointer;transition:all .3s}
 #m3 .ceremony-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,215,0,.5)}
 #m3 .ceremony-note{margin-top:14px;font-size:11px;color:rgba(255,255,255,.4);letter-spacing:1px}
+#m3 .ceremony-lock-tip{display:none;padding:14px 48px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:rgba(255,255,255,.5);font-size:15px;font-weight:700;letter-spacing:3px}
+#m3 .ceremony-btn.hidden{display:none}
+
+/* 拆礼物动效 */
+.gift-overlay{position:fixed;inset:0;z-index:800;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.8);backdrop-filter:blur(8px)}
+.gift-overlay.active{display:flex}
+.gift-box{position:relative;display:flex;flex-direction:column;align-items:center;gap:20px}
+.gift-lid{font-size:100px;animation:gift-bounce 0.6s ease-out;transform-origin:bottom center}
+@keyframes gift-bounce{0%{transform:scale(1) translateY(0)}30%{transform:scale(1.2) translateY(-30px)}50%{transform:scale(0.9) translateY(0)}70%{transform:scale(1.05) translateY(-10px)}100%{transform:scale(1) translateY(0)}}
+.gift-box.opened .gift-lid{animation:gift-open 0.8s ease-out forwards}
+@keyframes gift-open{0%{transform:translateY(0) rotateZ(0) scale(1);opacity:1}100%{transform:translateY(-120px) rotateZ(-30deg) scale(0.5);opacity:0}}
+.gift-content{opacity:0;transform:scale(0.5);transition:all 0.5s ease-out 0.6s;display:flex;flex-direction:column;align-items:center;gap:16px}
+.gift-box.opened .gift-content{opacity:1;transform:scale(1)}
+.gift-sparkle{font-size:40px;animation:sparkle-spin 2s linear infinite}
+@keyframes sparkle-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.gift-reward-icon{font-size:64px;filter:drop-shadow(0 0 20px rgba(255,215,0,.6))}
+.gift-reward-text{font-size:16px;color:#fff;text-align:center;line-height:1.8;letter-spacing:1px}
+.gift-reward-text b{color:#FFD700;font-size:20px}
+.gift-close-btn{margin-top:10px;padding:12px 36px;background:linear-gradient(135deg,#FFD700,#FFA500);border:none;border-radius:8px;color:#1a0e2e;font-size:14px;font-weight:800;letter-spacing:3px;cursor:pointer;transition:all .3s}
+.gift-close-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,215,0,.5)}
 
 /* MODULE 4 — 版本信息摘要 */
 #m4{background:linear-gradient(180deg,#15091f 0%,#0d0718 100%)}
@@ -1082,11 +1102,25 @@ footer{padding:24px 16px}
           <div class="reward-desc">18成人礼限定称号</div>
         </div>
       </div>
-      <button class="ceremony-btn" id="ceremonyClaimBtn" onclick="alert('领取成功！18成人礼限定称号已发放至您的账号')">领取奖励</button>
+      <button class="ceremony-btn" id="ceremonyClaimBtn">🎁 领取奖励</button>
+      <div class="ceremony-lock-tip" id="ceremonyLockTip">🔒 待 6月11日 开启</div>
       <p class="ceremony-note">* 需登录并满足以上条件方可领取</p>
     </div>
   </div>
 </section>
+
+<!-- 拆礼物动效蒙层 -->
+<div class="gift-overlay" id="giftOverlay">
+  <div class="gift-box" id="giftBox">
+    <div class="gift-lid">🎁</div>
+    <div class="gift-content">
+      <div class="gift-sparkle">✨</div>
+      <div class="gift-reward-icon">🏅</div>
+      <div class="gift-reward-text">恭喜获得<br><b>18成人礼限定称号</b></div>
+      <button class="gift-close-btn" id="giftCloseBtn">收下奖励</button>
+    </div>
+  </div>
+</div>
 
 <section id="m4">
   <div class="sec-title">CHAPTER 04 · VERSION</div>
@@ -2015,11 +2049,57 @@ function initLogin(){
   });
 }
 
+// ============ 18成人礼 ============
+function initCeremony(){
+  const btn = document.getElementById('ceremonyClaimBtn');
+  const lockTip = document.getElementById('ceremonyLockTip');
+  const overlay = document.getElementById('giftOverlay');
+  const giftBox = document.getElementById('giftBox');
+  const closeBtn = document.getElementById('giftCloseBtn');
+
+  // 判断是否在6月11日之后（活动开启时间）
+  const now = new Date();
+  const openDate = new Date(now.getFullYear(), 5, 11); // 6月11日
+  const isOpen = now >= openDate;
+
+  if(isOpen){
+    btn.style.display = '';
+    lockTip.style.display = 'none';
+  } else {
+    btn.style.display = 'none';
+    lockTip.style.display = '';
+  }
+
+  // 点击领取 → 拆礼物动效
+  btn.addEventListener('click', ()=>{
+    overlay.classList.add('active');
+    giftBox.classList.remove('opened');
+    // 点击礼物盒触发打开
+    setTimeout(()=>{
+      giftBox.classList.add('opened');
+    }, 800);
+  });
+
+  // 关闭
+  closeBtn.addEventListener('click', ()=>{
+    overlay.classList.remove('active');
+    btn.textContent = '✔ 已领取';
+    btn.style.opacity = '0.5';
+    btn.disabled = true;
+  });
+  overlay.addEventListener('click', e=>{
+    if(e.target === overlay){
+      overlay.classList.remove('active');
+    }
+  });
+}
+
 function initAll(){
   renderTimeline();
   renderCards();
   initReserve();
   initRoleModal();
+  initCeremony();
   initPhoto();
   initObserver();
   initScrollSpy();
