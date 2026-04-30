@@ -1944,13 +1944,13 @@ function initLogin(){
           </div>
           <div class="user-actions">
             <button class="switch-btn" id="switchCharBtn">换角色</button>
-            <button class="switch-btn" id="switchAccBtn">换账号</button>
+            <button class="switch-btn" id="switchAccBtn">注销</button>
           </div>
         </div>`;
       showToast(method + ' 登录成功');
 
       document.getElementById('switchCharBtn').addEventListener('click',()=>{
-        showToast('选择角色功能（跳转角色选择页）');
+        document.getElementById('roleModal').classList.add('show');
       });
       document.getElementById('switchAccBtn').addEventListener('click',()=>{
         isLoggedIn = false;
