@@ -537,7 +537,7 @@ section{position:relative;min-height:100vh;padding:70px 40px 40px;z-index:1;disp
 #m3 .ceremony-btn{padding:14px 48px;background:linear-gradient(135deg,#FFD700,#FFA500);border:none;border-radius:8px;color:#1a0e2e;font-size:15px;font-weight:800;letter-spacing:3px;cursor:pointer;transition:all .3s}
 #m3 .ceremony-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,215,0,.5)}
 #m3 .ceremony-note{margin-top:14px;font-size:11px;color:rgba(255,255,255,.4);letter-spacing:1px}
-#m3 .ceremony-lock-tip{display:none;padding:14px 48px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:rgba(255,255,255,.5);font-size:15px;font-weight:700;letter-spacing:3px}
+#m3 .ceremony-lock-tip{padding:14px 48px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:rgba(255,255,255,.5);font-size:15px;font-weight:700;letter-spacing:3px;text-align:center}
 #m3 .ceremony-btn.hidden{display:none}
 
 /* 拆礼物动效 */
@@ -2063,11 +2063,11 @@ function initCeremony(){
   const isOpen = now >= openDate;
 
   if(isOpen){
-    btn.style.display = '';
+    btn.style.display = 'inline-block';
     lockTip.style.display = 'none';
   } else {
     btn.style.display = 'none';
-    lockTip.style.display = '';
+    lockTip.style.display = 'block';
   }
 
   // 点击领取 → 拆礼物动效
