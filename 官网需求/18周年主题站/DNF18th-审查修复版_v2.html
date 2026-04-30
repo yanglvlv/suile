@@ -1011,35 +1011,35 @@ footer{padding:24px 16px}
     <button class="photo-switch-btn" id="photoSwitchBtn">🔄 切换角色</button>
     <button class="photo-reward" id="photoReward">🎁 领取合影奖励</button>
   </div>
-  <!-- 角色选择弹窗 -->
-  <div class="role-modal" id="roleModal">
-    <div class="role-modal-inner">
-      <div class="role-modal-close" id="roleModalClose">×</div>
-      <h4>请选择大区</h4>
-      <p class="role-warn">○ 我同意"本活动获取并存储到的游戏区服和角色相关信息，仅用于该活动的抽奖、领取、发货、签到等操作"</p>
-      <div class="role-select-form">
-        <select class="role-select" id="roleAreaSelect">
-          <option value="">请选择大区</option>
-          <option value="跨1">跨1</option>
-          <option value="跨2">跨2</option>
-          <option value="跨3A">跨3A</option>
-          <option value="跨3B">跨3B</option>
-          <option value="跨4">跨4</option>
-          <option value="跨5">跨5</option>
-          <option value="跨6">跨6</option>
-        </select>
-        <select class="role-select" id="roleServerSelect">
-          <option value="">请选择服务器</option>
-        </select>
-      </div>
-      <div class="role-modal-actions">
-        <button class="role-confirm" id="roleConfirmBtn">确 定</button>
-        <button class="role-cancel" id="roleCancelBtn">取 消</button>
-      </div>
+</div>
+
+<!-- 角色选择弹窗（全局） -->
+<div class="role-modal" id="roleModal">
+  <div class="role-modal-inner">
+    <div class="role-modal-close" id="roleModalClose">×</div>
+    <h4>请选择大区</h4>
+    <p class="role-warn">○ 我同意"本活动获取并存储到的游戏区服和角色相关信息，仅用于该活动的抽奖、领取、发货、签到等操作"</p>
+    <div class="role-select-form">
+      <select class="role-select" id="roleAreaSelect">
+        <option value="">请选择大区</option>
+        <option value="跨1">跨1</option>
+        <option value="跨2">跨2</option>
+        <option value="跨3A">跨3A</option>
+        <option value="跨3B">跨3B</option>
+        <option value="跨4">跨4</option>
+        <option value="跨5">跨5</option>
+        <option value="跨6">跨6</option>
+      </select>
+      <select class="role-select" id="roleServerSelect">
+        <option value="">请选择服务器</option>
+      </select>
+    </div>
+    <div class="role-modal-actions">
+      <button class="role-confirm" id="roleConfirmBtn">确 定</button>
+      <button class="role-cancel" id="roleCancelBtn">取 消</button>
     </div>
   </div>
 </div>
-
 <section id="m3">
   <div class="sec-title">CHAPTER 03 · VERSION</div>
   <h2 class="sec-headline">版本信息摘要</h2>
@@ -1832,17 +1832,15 @@ function initPhoto(){
   });
 }
 
-function openPhoto(){
-  const overlay = document.getElementById('photo-overlay');
+// ============ 选区选服弹窗初始化（全局） ============
+function initRoleModal(){
   const modal = document.getElementById('roleModal');
-  const switchBtn = document.getElementById('photoSwitchBtn');
   const modalClose = document.getElementById('roleModalClose');
   const cancelBtn = document.getElementById('roleCancelBtn');
   const confirmBtn = document.getElementById('roleConfirmBtn');
   const areaSelect = document.getElementById('roleAreaSelect');
   const serverSelect = document.getElementById('roleServerSelect');
 
-  // 服务器数据
   const serverData = {
     '跨1':['广东1区','广东2区','广东3区','北京1区','北京2区'],
     '跨2':['上海1区','上海2区','浙江1区','江苏1区'],
@@ -1863,20 +1861,26 @@ function openPhoto(){
     });
   };
 
-  switchBtn.onclick = ()=> modal.classList.add('show');
   modalClose.onclick = ()=> modal.classList.remove('show');
   cancelBtn.onclick = ()=> modal.classList.remove('show');
   confirmBtn.onclick = ()=>{
     const area = areaSelect.value;
     const server = serverSelect.value;
-    if(!area){ showToast('请选择大区'); return; }
-    if(!server){ showToast('请选择服务器'); return; }
-    showToast('已选择「'+area+' · '+server+'」');
+    if(!area){ alert('请选择大区'); return; }
+    if(!server){ alert('请选择服务器'); return; }
+    alert('已选择「'+area+' · '+server+'」');
     modal.classList.remove('show');
   };
   modal.addEventListener('click', e=>{
     if(e.target === modal) modal.classList.remove('show');
   });
+}
+
+function openPhoto(){
+  const overlay = document.getElementById('photo-overlay');
+  const switchBtn = document.getElementById('photoSwitchBtn');
+
+  switchBtn.onclick = ()=> document.getElementById('roleModal').classList.add('show');
 
   overlay.classList.add('active');
 }
@@ -1967,6 +1971,7 @@ function initAll(){
   renderTimeline();
   renderCards();
   initReserve();
+  initRoleModal();
   initPhoto();
   initObserver();
   initScrollSpy();
